@@ -9,6 +9,9 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import AssessmentList from "./pages/AssessmentList";
+import AssessmentForm from "./pages/AssessmentForm";
+import AssessmentDetail from "./pages/AssessmentDetail";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -28,6 +31,26 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessments" element={
+              <ProtectedRoute>
+                <AssessmentList />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment/:id" element={
+              <ProtectedRoute>
+                <AssessmentDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment/:id/edit" element={
+              <ProtectedRoute>
+                <AssessmentForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment/new" element={
+              <ProtectedRoute>
+                <AssessmentForm />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
