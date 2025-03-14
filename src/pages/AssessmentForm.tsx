@@ -40,7 +40,7 @@ import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
 const AssessmentForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const isNewAssessment = id === "new";
   
