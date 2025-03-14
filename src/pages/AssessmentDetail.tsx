@@ -1,11 +1,8 @@
-
 import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  indicators, 
-  getHealthCategory 
-} from "@/models/assessment";
+import { indicators } from "@/models/indicators";
+import { getHealthCategory } from "@/models/health-categories";
 import { 
   BarChart, 
   Bar, 
@@ -18,7 +15,6 @@ import {
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Edit, Download, FileSpreadsheet, FileText } from "lucide-react";
 
-// Mock assessment data - in a real app this would come from an API
 const mockAssessments = [
   {
     id: "1",
@@ -82,7 +78,6 @@ const AssessmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // In a real app, this would be a database or API call
   const assessment = mockAssessments.find(a => a.id === id);
   
   const handleEdit = () => {
@@ -99,11 +94,9 @@ const AssessmentDetail = () => {
     }
   };
   
-  // Prepare chart data
   const chartData = useMemo(() => {
     if (!assessment) return [];
     
-    // Group by category
     return Object.entries(assessment.values).map(([indicatorId, valueObj]) => {
       const indicator = indicators.find(ind => ind.id === indicatorId);
       return {
@@ -115,7 +108,6 @@ const AssessmentDetail = () => {
     });
   }, [assessment]);
   
-  // Group indicators by category
   const categoryData = useMemo(() => {
     if (!assessment) return {};
     
@@ -216,7 +208,6 @@ const AssessmentDetail = () => {
         </div>
       </div>
       
-      {/* Chart Section */}
       <div className="border rounded-lg p-4 mb-8 bg-background">
         <h2 className="text-lg font-semibold mb-4">Grafik Penilaian</h2>
         <ResponsiveContainer width="100%" height={300}>
@@ -233,7 +224,6 @@ const AssessmentDetail = () => {
         </ResponsiveContainer>
       </div>
       
-      {/* Detailed Assessment */}
       {Object.entries(categoryData).map(([category, indicators]) => (
         <div key={category} className="border rounded-lg p-4 mb-6 bg-background">
           <h2 className="text-lg font-semibold mb-4">Aspek {category}</h2>

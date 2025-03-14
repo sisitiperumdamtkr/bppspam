@@ -1,5 +1,6 @@
-
-import { Assessment, indicators, getHealthCategory } from "@/models/assessment";
+import { Assessment } from "@/models/types";
+import { indicators } from "@/models/indicators";
+import { getHealthCategory } from "@/models/health-categories";
 
 // Function to export assessment data to CSV
 export const exportToCSV = (assessment: Assessment): string => {

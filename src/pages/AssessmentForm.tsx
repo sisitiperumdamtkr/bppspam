@@ -26,13 +26,18 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Assessment, 
-  Indicator, 
-  Value, 
-  indicators, 
+  Value 
+} from "@/models/types";
+import { 
+  indicators 
+} from "@/models/indicators";
+import { 
   calculateScore, 
-  calculateTotalScore,
+  calculateTotalScore 
+} from "@/models/scoring";
+import {
   getHealthCategory 
-} from "@/models/assessment";
+} from "@/models/health-categories";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
