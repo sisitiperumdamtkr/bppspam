@@ -46,7 +46,7 @@ const mockAssessments = [
       "biaya_diklat": { value: 5.5, score: 3 }
     },
     totalScore: 3.75,
-    status: "completed"
+    status: "completed" as "completed" | "draft"
   },
   {
     id: "2",
@@ -74,7 +74,7 @@ const mockAssessments = [
       "biaya_diklat": { value: 3.8, score: 2 }
     },
     totalScore: 2.95,
-    status: "completed"
+    status: "completed" as "completed" | "draft"
   }
 ];
 

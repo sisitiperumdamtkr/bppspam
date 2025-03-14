@@ -33,7 +33,7 @@ import {
   calculateTotalScore,
   getHealthCategory 
 } from "@/models/assessment";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
 
