@@ -111,7 +111,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-white py-6">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-600">&copy; {new Date().getFullYear()} HealthWise PDAM. All rights reserved.</p>
+          <p className="text-gray-600">&copy; {new Date().getFullYear()} PERUMDAM TKR. Sub Bag Pengembangan Sistem.</p>
         </div>
       </footer>
     </div>
