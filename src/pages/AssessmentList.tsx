@@ -5,12 +5,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
+import { getHealthCategory } from "@/models/health-categories";
 
 // Mock assessment data - in a real app this would come from an API
+// Updated to show only PERUMDAM TIRTA KERTA RAHARJA assessments over different years
 const mockAssessments = [
   {
     id: "1",
-    name: "PDAM Tirta Pakuan",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
     year: 2023,
     date: "2023-05-15",
     totalScore: 3.75,
@@ -18,10 +20,26 @@ const mockAssessments = [
   },
   {
     id: "2",
-    name: "PDAM Tirta Raharja",
-    year: 2023,
-    date: "2023-06-22",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2022,
+    date: "2022-06-22",
     totalScore: 2.95,
+    status: "completed",
+  },
+  {
+    id: "3",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2021,
+    date: "2021-05-10",
+    totalScore: 3.45,
+    status: "completed",
+  },
+  {
+    id: "4",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2020,
+    date: "2020-06-18",
+    totalScore: 2.75,
     status: "completed",
   },
 ];
@@ -39,9 +57,9 @@ const AssessmentList = () => {
   };
 
   return (
-    <DashboardLayout title="Penilaian PDAM">
+    <DashboardLayout title="Penilaian PERUMDAM">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Penilaian PDAM</h1>
+        <h1 className="text-2xl font-bold">Penilaian PERUMDAM TIRTA KERTA RAHARJA</h1>
         <Button onClick={handleCreateNew} className="flex items-center gap-2">
           <PlusCircle className="h-4 w-4" />
           Buat Penilaian Baru
@@ -58,13 +76,7 @@ const AssessmentList = () => {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {mockAssessments.map((assessment) => {
-            const healthCategory = assessment.totalScore >= 3.4
-              ? { category: "Sehat", color: "bg-green-500" }
-              : assessment.totalScore >= 2.8
-                ? { category: "Cukup Sehat", color: "bg-blue-500" }
-                : assessment.totalScore >= 2.2
-                  ? { category: "Kurang Sehat", color: "bg-yellow-500" }
-                  : { category: "Sakit", color: "bg-red-500" };
+            const healthCategory = getHealthCategory(assessment.totalScore);
                   
             return (
               <div 
@@ -73,13 +85,10 @@ const AssessmentList = () => {
                 onClick={() => handleViewAssessment(assessment.id)}
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-semibold">{assessment.name}</h3>
+                  <h3 className="font-semibold">Tahun {assessment.year}</h3>
                   <div className={`${healthCategory.color} text-white text-xs px-2 py-1 rounded-full`}>
                     {healthCategory.category}
                   </div>
-                </div>
-                <div className="text-sm text-muted-foreground mb-3">
-                  Tahun: {assessment.year}
                 </div>
                 <div className="text-sm text-muted-foreground mb-3">
                   Tanggal: {new Date(assessment.date).toLocaleDateString('id-ID')}

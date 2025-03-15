@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -50,10 +49,10 @@ const AssessmentForm = () => {
   const { user } = useAuth();
   const isNewAssessment = id === "new";
   
-  // Initialize with empty assessment or fetch existing data
+  // Initialize with PERUMDAM TIRTA KERTA RAHARJA as the company name
   const [assessment, setAssessment] = useState<Assessment>({
     id: isNewAssessment ? crypto.randomUUID() : id || "",
-    name: "",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
     year: new Date().getFullYear(),
     date: new Date().toISOString().split("T")[0],
     userId: user?.id || "",
@@ -486,8 +485,8 @@ const AssessmentForm = () => {
               name="name"
               value={assessment.name}
               onChange={handleInputChange}
-              placeholder="Masukkan nama PDAM"
-              className="mt-1"
+              readOnly
+              className="mt-1 bg-gray-50"
             />
           </div>
           <div>

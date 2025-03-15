@@ -7,26 +7,29 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PlusCircle, BarChart2, FileText, ListChecks, Clock } from "lucide-react";
 import { getHealthCategory } from "@/models/assessment";
 
-// Mock data for dashboard
+// Mock data for dashboard - now only for PERUMDAM TIRTA KERTA RAHARJA
 const recentAssessments = [
   {
     id: "1",
-    name: "PDAM Kota Surabaya",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2023,
     date: "2023-05-15",
     score: 3.75,
     status: "completed"
   },
   {
     id: "2",
-    name: "PDAM Kabupaten Sidoarjo",
-    date: "2023-04-20",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2022,
+    date: "2022-04-20",
     score: 3.2,
     status: "completed"
   },
   {
     id: "3",
-    name: "PDAM Kota Malang",
-    date: "2023-03-10",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2021,
+    date: "2021-03-10",
     score: 2.6,
     status: "completed"
   }
@@ -43,13 +46,13 @@ const Dashboard = () => {
           <CardHeader className="pb-2">
             <CardTitle>Selamat Datang, {user?.name}</CardTitle>
             <CardDescription>
-              Sistem Penilaian Tingkat Kesehatan PDAM berdasarkan BPPSPAM
+              Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
             </CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-gray-600">
-              Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PDAM sesuai dengan standar 
-              BPPSPAM dengan perhitungan otomatis dan pembuatan laporan yang komprehensif.
+              Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan standar 
+              BPPSPAM dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
             </p>
           </CardContent>
           <CardFooter>
@@ -74,7 +77,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  Input data penilaian PDAM berdasarkan indikator BPPSPAM
+                  Input data penilaian tahunan berdasarkan indikator BPPSPAM
                 </p>
               </CardContent>
             </Card>
@@ -90,7 +93,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  Lihat riwayat penilaian yang telah dilakukan sebelumnya
+                  Lihat riwayat penilaian yang telah dilakukan dari tahun ke tahun
                 </p>
               </CardContent>
             </Card>
@@ -106,7 +109,7 @@ const Dashboard = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  Lihat laporan penilaian dalam bentuk grafik dan tabel
+                  Lihat tren kinerja PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun
                 </p>
               </CardContent>
             </Card>
@@ -123,7 +126,7 @@ const Dashboard = () => {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b">
-                    <th className="text-left py-3 px-2 font-medium">Nama PDAM</th>
+                    <th className="text-left py-3 px-2 font-medium">Tahun</th>
                     <th className="text-left py-3 px-2 font-medium">Tanggal</th>
                     <th className="text-left py-3 px-2 font-medium">Skor</th>
                     <th className="text-left py-3 px-2 font-medium">Kategori</th>
@@ -135,7 +138,7 @@ const Dashboard = () => {
                     const healthCategory = getHealthCategory(assessment.score);
                     return (
                       <tr key={assessment.id} className="border-b hover:bg-gray-50">
-                        <td className="py-3 px-2">{assessment.name}</td>
+                        <td className="py-3 px-2">{assessment.year}</td>
                         <td className="py-3 px-2">{new Date(assessment.date).toLocaleDateString('id-ID')}</td>
                         <td className="py-3 px-2">{assessment.score.toFixed(2)}</td>
                         <td className="py-3 px-2">
