@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, FileText } from "lucide-react";
+import DashboardLayout from "@/components/DashboardLayout";
 
 // Mock assessment data - in a real app this would come from an API
 const mockAssessments = [
@@ -38,7 +39,7 @@ const AssessmentList = () => {
   };
 
   return (
-    <div className="container mx-auto py-6">
+    <DashboardLayout title="Penilaian PDAM">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Penilaian PDAM</h1>
         <Button onClick={handleCreateNew} className="flex items-center gap-2">
@@ -97,7 +98,7 @@ const AssessmentList = () => {
           })}
         </div>
       )}
-    </div>
+    </DashboardLayout>
   );
 };
 

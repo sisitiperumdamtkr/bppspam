@@ -1,3 +1,4 @@
+
 import React, { useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import {
 } from "recharts";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Edit, Download, FileSpreadsheet, FileText } from "lucide-react";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const mockAssessments = [
   {
@@ -134,22 +136,24 @@ const AssessmentDetail = () => {
   
   if (!assessment) {
     return (
-      <div className="container mx-auto py-6 text-center">
-        <p>Penilaian tidak ditemukan</p>
-        <Button 
-          onClick={() => navigate("/assessments")}
-          className="mt-4"
-        >
-          Kembali ke Daftar Penilaian
-        </Button>
-      </div>
+      <DashboardLayout title="Detail Penilaian">
+        <div className="text-center">
+          <p>Penilaian tidak ditemukan</p>
+          <Button 
+            onClick={() => navigate("/assessments")}
+            className="mt-4"
+          >
+            Kembali ke Daftar Penilaian
+          </Button>
+        </div>
+      </DashboardLayout>
     );
   }
   
   const healthCategory = getHealthCategory(assessment.totalScore);
   
   return (
-    <div className="container mx-auto py-6">
+    <DashboardLayout title="Detail Penilaian">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Detail Penilaian</h1>
         <div className="flex gap-2">
@@ -253,7 +257,7 @@ const AssessmentDetail = () => {
           </div>
         </div>
       ))}
-    </div>
+    </DashboardLayout>
   );
 };
 

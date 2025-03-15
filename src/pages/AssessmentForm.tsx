@@ -26,7 +26,6 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Assessment, 
-  Value,
   Indicator
 } from "@/models/types";
 import { 
@@ -42,6 +41,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const AssessmentForm = () => {
   const { id } = useParams();
@@ -152,14 +152,14 @@ const AssessmentForm = () => {
     acc[indicator.category].push(indicator);
     return acc;
   }, {});
+
+  const pageTitle = isNewAssessment ? "Penilaian Baru" : "Edit Penilaian";
   
   return (
-    <div className="container mx-auto py-6">
+    <DashboardLayout title={pageTitle}>
       <div className="flex flex-col gap-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">
-            {isNewAssessment ? "Penilaian Baru" : "Edit Penilaian"}
-          </h1>
+          <h1 className="text-2xl font-bold">{pageTitle}</h1>
           <div className="flex gap-2">
             {!isNewAssessment && (
               <>
@@ -315,7 +315,7 @@ const AssessmentForm = () => {
           )}
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
