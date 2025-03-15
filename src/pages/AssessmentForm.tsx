@@ -26,7 +26,8 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Assessment, 
-  Value 
+  Value,
+  Indicator
 } from "@/models/types";
 import { 
   indicators 
