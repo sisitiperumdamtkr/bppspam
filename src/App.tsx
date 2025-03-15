@@ -12,6 +12,8 @@ import NotFound from "./pages/NotFound";
 import AssessmentList from "./pages/AssessmentList";
 import AssessmentForm from "./pages/AssessmentForm";
 import AssessmentDetail from "./pages/AssessmentDetail";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -51,6 +53,16 @@ const App = () => (
             <Route path="/assessment/new" element={
               <ProtectedRoute>
                 <AssessmentForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/reports" element={
+              <ProtectedRoute>
+                <Reports />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
