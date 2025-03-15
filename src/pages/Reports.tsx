@@ -41,11 +41,11 @@ import { Button } from "@/components/ui/button";
 import { Download, Printer, Filter } from "lucide-react";
 import { getHealthCategory } from "@/models/health-categories";
 
-// Mock data for reports - updated to include only PERUMDAM TIRTA KERTA RAHARJA over different years
+// Mock data for reports
 const mockAssessments = [
   {
     id: "1",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    name: "PDAM Tirta Pakuan",
     year: 2023,
     date: "2023-05-15",
     totalScore: 3.75,
@@ -59,23 +59,23 @@ const mockAssessments = [
   },
   {
     id: "2",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2022,
-    date: "2022-06-22",
-    totalScore: 3.25,
+    name: "PDAM Tirta Raharja",
+    year: 2023,
+    date: "2023-06-22",
+    totalScore: 2.95,
     aspectScores: {
-      Keuangan: 3.3,
-      Pelayanan: 3.2,
-      Operasional: 3.3,
-      SDM: 3.2
+      Keuangan: 3.1,
+      Pelayanan: 2.8,
+      Operasional: 3.0,
+      SDM: 2.9
     },
     status: "completed",
   },
   {
     id: "3",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2021,
-    date: "2021-05-10",
+    name: "PDAM Tirta Pakuan",
+    year: 2022,
+    date: "2022-05-10",
     totalScore: 3.45,
     aspectScores: {
       Keuangan: 3.5,
@@ -87,9 +87,9 @@ const mockAssessments = [
   },
   {
     id: "4",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2020,
-    date: "2020-06-18",
+    name: "PDAM Tirta Raharja",
+    year: 2022,
+    date: "2022-06-18",
     totalScore: 2.75,
     aspectScores: {
       Keuangan: 2.9,
@@ -101,15 +101,15 @@ const mockAssessments = [
   },
   {
     id: "5",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2019,
-    date: "2019-05-20",
-    totalScore: 2.5,
+    name: "PDAM Tirta Pakuan",
+    year: 2021,
+    date: "2021-05-20",
+    totalScore: 3.25,
     aspectScores: {
-      Keuangan: 2.6,
-      Pelayanan: 2.5,
-      Operasional: 2.4,
-      SDM: 2.5
+      Keuangan: 3.3,
+      Pelayanan: 3.2,
+      Operasional: 3.3,
+      SDM: 3.2
     },
     status: "completed",
   },
@@ -126,36 +126,44 @@ const ASPECT_COLORS = {
 
 const Reports = () => {
   const navigate = useNavigate();
+  const [selectedPdam, setSelectedPdam] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState<string>("all");
   
-  // Get unique years
+  // Get unique PDAM names and years
+  const pdamNames = Array.from(new Set(mockAssessments.map(a => a.name)));
   const years = Array.from(new Set(mockAssessments.map(a => a.year))).sort((a, b) => b - a);
   
   // Filter assessments based on selection
   const filteredAssessments = mockAssessments.filter(assessment => {
+    const pdamMatch = selectedPdam === "all" || assessment.name === selectedPdam;
     const yearMatch = selectedYear === "all" || assessment.year.toString() === selectedYear;
-    return yearMatch;
+    return pdamMatch && yearMatch;
   });
   
   // Prepare data for trend chart
   const trendData = years.map(year => {
-    const yearAssessment = mockAssessments.find(a => a.year === year);
+    const yearAssessments = mockAssessments.filter(a => a.year === year);
+    const avgScore = yearAssessments.length > 0 
+      ? yearAssessments.reduce((sum, a) => sum + a.totalScore, 0) / yearAssessments.length
+      : 0;
     
     return {
       year,
-      score: yearAssessment ? parseFloat(yearAssessment.totalScore.toFixed(2)) : 0
+      score: parseFloat(avgScore.toFixed(2))
     };
   }).sort((a, b) => a.year - b.year); // Sort by year ascending
   
-  // Prepare data for aspect comparison over years
-  const aspectOverYearsData = years.map(year => {
-    const yearAssessment = mockAssessments.find(a => a.year === year);
+  // Prepare data for aspect comparison
+  const aspectData = pdamNames.map(pdamName => {
+    const latestAssessment = mockAssessments
+      .filter(a => a.name === pdamName)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
     
     return {
-      year,
-      ...yearAssessment?.aspectScores
+      name: pdamName,
+      ...latestAssessment?.aspectScores
     };
-  }).sort((a, b) => a.year - b.year); // Sort by year ascending
+  });
   
   // Prepare data for category distribution
   const categoryDistributionData = mockAssessments.reduce((acc, assessment) => {
@@ -171,15 +179,15 @@ const Reports = () => {
     return acc;
   }, [] as { name: string; value: number }[]);
   
-  // Prepare data for radar chart - latest assessment
-  const latestAssessment = mockAssessments.sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )[0];
-  
+  // Prepare data for radar chart
   const radarData = Object.keys(ASPECT_COLORS).map(aspect => {
+    const avgScore = filteredAssessments.length > 0
+      ? filteredAssessments.reduce((sum, a) => sum + (a.aspectScores[aspect as keyof typeof a.aspectScores] || 0), 0) / filteredAssessments.length
+      : 0;
+    
     return {
       aspect,
-      score: latestAssessment?.aspectScores[aspect as keyof typeof latestAssessment.aspectScores] || 0
+      score: parseFloat(avgScore.toFixed(2))
     };
   });
   
@@ -191,7 +199,7 @@ const Reports = () => {
     <DashboardLayout title="Laporan">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Laporan Penilaian PERUMDAM TIRTA KERTA RAHARJA</h1>
+          <h1 className="text-2xl font-bold">Laporan Penilaian PDAM</h1>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handlePrint} className="flex items-center gap-2">
               <Printer className="h-4 w-4" />
@@ -211,6 +219,26 @@ const Reports = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="pdam-select">PDAM</Label>
+                <Select
+                  value={selectedPdam}
+                  onValueChange={(value) => setSelectedPdam(value)}
+                >
+                  <SelectTrigger id="pdam-select">
+                    <SelectValue placeholder="Pilih PDAM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Semua PDAM</SelectItem>
+                    {pdamNames.map((name) => (
+                      <SelectItem key={name} value={name}>
+                        {name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="year-select">Tahun</Label>
                 <Select 
@@ -292,7 +320,7 @@ const Reports = () => {
             <CardHeader>
               <CardTitle>Tren Skor Tahunan</CardTitle>
               <CardDescription>
-                Perkembangan skor penilaian PERUMDAM TIRTA KERTA RAHARJA per tahun
+                Rata-rata skor penilaian PDAM per tahun
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -318,22 +346,22 @@ const Reports = () => {
             </CardContent>
           </Card>
           
-          {/* Aspect Comparison Over Years */}
+          {/* Aspect Comparison */}
           <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Perkembangan Aspek Penilaian</CardTitle>
+              <CardTitle>Perbandingan Aspek Penilaian</CardTitle>
               <CardDescription>
-                Skor per aspek dari tahun ke tahun
+                Skor per aspek untuk setiap PDAM (data terbaru)
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  data={aspectOverYearsData}
+                  data={aspectData}
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="year" />
+                  <XAxis dataKey="name" />
                   <YAxis domain={[0, 5]} />
                   <Tooltip />
                   <Legend />
@@ -355,7 +383,7 @@ const Reports = () => {
             <CardHeader>
               <CardTitle>Distribusi Kategori Penilaian</CardTitle>
               <CardDescription>
-                Jumlah penilaian per kategori kesehatan
+                Jumlah penilaian per kategori
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -385,9 +413,9 @@ const Reports = () => {
           {/* Radar Chart */}
           <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Profil Kinerja Terkini</CardTitle>
+              <CardTitle>Profil Kinerja PDAM</CardTitle>
               <CardDescription>
-                Skor per aspek penilaian pada tahun terbaru ({latestAssessment?.year})
+                Skor rata-rata untuk setiap aspek penilaian
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -397,7 +425,7 @@ const Reports = () => {
                   <PolarAngleAxis dataKey="aspect" />
                   <PolarRadiusAxis domain={[0, 5]} />
                   <Radar
-                    name="Skor Aspek"
+                    name="Skor Rata-rata"
                     dataKey="score"
                     stroke="#8884d8"
                     fill="#8884d8"
@@ -416,7 +444,7 @@ const Reports = () => {
           <CardHeader>
             <CardTitle>Data Penilaian</CardTitle>
             <CardDescription>
-              Daftar penilaian PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun
+              Daftar semua penilaian PDAM yang telah dilakukan
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -424,6 +452,7 @@ const Reports = () => {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="border-b">
+                    <th className="text-left p-2">PDAM</th>
                     <th className="text-left p-2">Tahun</th>
                     <th className="text-left p-2">Tanggal</th>
                     <th className="text-right p-2">Skor</th>
@@ -436,6 +465,7 @@ const Reports = () => {
                     return (
                       <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer" 
                           onClick={() => navigate(`/assessment/${assessment.id}`)}>
+                        <td className="p-2">{assessment.name}</td>
                         <td className="p-2">{assessment.year}</td>
                         <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
                         <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>
