@@ -1,52 +1,47 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { getHealthCategory } from "@/models/health-categories";
-
-// Mock assessment data - in a real app this would come from an API
-// Updated to show only PERUMDAM TIRTA KERTA RAHARJA assessments over different years
-const mockAssessments = [
-  {
-    id: "1",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2023,
-    date: "2023-05-15",
-    totalScore: 3.75,
-    status: "completed",
-  },
-  {
-    id: "2",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2022,
-    date: "2022-06-22",
-    totalScore: 2.95,
-    status: "completed",
-  },
-  {
-    id: "3",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2021,
-    date: "2021-05-10",
-    totalScore: 3.45,
-    status: "completed",
-  },
-  {
-    id: "4",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2020,
-    date: "2020-06-18",
-    totalScore: 2.75,
-    status: "completed",
-  },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { Assessment } from "@/models/types";
 
 const AssessmentList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [assessments, setAssessments] = useState<Assessment[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Fetch assessments from Supabase
+    const fetchAssessments = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('assessments')
+          .select('*')
+          .order('year', { ascending: false });
+        
+        if (error) {
+          console.error('Error fetching assessments:', error);
+          return;
+        }
+        
+        setAssessments(data || []);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAssessments();
+  }, [user]);
   
   const handleCreateNew = () => {
     navigate("/assessment/new");
@@ -66,7 +61,11 @@ const AssessmentList = () => {
         </Button>
       </div>
       
-      {mockAssessments.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-10">
+          <p className="text-muted-foreground">Memuat data...</p>
+        </div>
+      ) : assessments.length === 0 ? (
         <div className="text-center py-10">
           <p className="text-muted-foreground mb-4">Belum ada penilaian yang dibuat</p>
           <Button onClick={handleCreateNew} variant="outline">
@@ -75,7 +74,7 @@ const AssessmentList = () => {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {mockAssessments.map((assessment) => {
+          {assessments.map((assessment) => {
             const healthCategory = getHealthCategory(assessment.totalScore);
                   
             return (

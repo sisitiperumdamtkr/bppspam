@@ -1,5 +1,5 @@
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { indicators } from "@/models/indicators";
@@ -16,71 +16,73 @@ import {
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Edit, Download, FileSpreadsheet, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
-
-const mockAssessments = [
-  {
-    id: "1",
-    name: "PDAM Tirta Pakuan",
-    year: 2023,
-    date: "2023-05-15",
-    userId: "1",
-    values: {
-      "roe": { value: 8.5, score: 4 },
-      "rasio_operasi": { value: 0.65, score: 4 },
-      "cash_ratio": { value: 1.2, score: 5 },
-      "efektivitas_penagihan": { value: 91, score: 5 },
-      "solvabilitas": { value: 2.5, score: 4 },
-      "cakupan_pelayanan": { value: 75, score: 4 },
-      "kualitas_air": { value: 98, score: 4 },
-      "kontinuitas_air": { value: 22, score: 4 },
-      "penanganan_pengaduan": { value: 92, score: 4 },
-      "efisiensi_produksi": { value: 85, score: 4 },
-      "tingkat_kehilangan_air": { value: 18, score: 3 },
-      "jam_operasi": { value: 22, score: 4 },
-      "tekanan_air": { value: 0.95, score: 4 },
-      "penggantian_meter": { value: 18, score: 4 },
-      "rasio_pegawai": { value: 5.5, score: 3 },
-      "rasio_diklat": { value: 35, score: 4 },
-      "biaya_diklat": { value: 5.5, score: 3 }
-    },
-    totalScore: 3.75,
-    status: "completed" as "completed" | "draft"
-  },
-  {
-    id: "2",
-    name: "PDAM Tirta Raharja",
-    year: 2023,
-    date: "2023-06-22",
-    userId: "1",
-    values: {
-      "roe": { value: 4.2, score: 3 },
-      "rasio_operasi": { value: 0.78, score: 3 },
-      "cash_ratio": { value: 0.85, score: 3 },
-      "efektivitas_penagihan": { value: 83, score: 3 },
-      "solvabilitas": { value: 1.9, score: 3 },
-      "cakupan_pelayanan": { value: 62, score: 4 },
-      "kualitas_air": { value: 92, score: 3 },
-      "kontinuitas_air": { value: 18, score: 3 },
-      "penanganan_pengaduan": { value: 82, score: 3 },
-      "efisiensi_produksi": { value: 75, score: 3 },
-      "tingkat_kehilangan_air": { value: 26, score: 2 },
-      "jam_operasi": { value: 18, score: 3 },
-      "tekanan_air": { value: 0.75, score: 3 },
-      "penggantian_meter": { value: 12, score: 3 },
-      "rasio_pegawai": { value: 7.5, score: 2 },
-      "rasio_diklat": { value: 28, score: 3 },
-      "biaya_diklat": { value: 3.8, score: 2 }
-    },
-    totalScore: 2.95,
-    status: "completed" as "completed" | "draft"
-  }
-];
+import { supabase } from "@/integrations/supabase/client";
+import { Assessment } from "@/models/types";
 
 const AssessmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [assessment, setAssessment] = useState<Assessment | null>(null);
+  const [loading, setLoading] = useState(true);
   
-  const assessment = mockAssessments.find(a => a.id === id);
+  useEffect(() => {
+    const fetchAssessment = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        
+        // Fetch assessment details
+        const { data: assessmentData, error: assessmentError } = await supabase
+          .from('assessments')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (assessmentError) {
+          console.error('Error fetching assessment:', assessmentError);
+          return;
+        }
+        
+        if (!assessmentData) {
+          console.error('Assessment not found');
+          return;
+        }
+        
+        // Fetch assessment values
+        const { data: valuesData, error: valuesError } = await supabase
+          .from('assessment_values')
+          .select('*')
+          .eq('assessment_id', id);
+        
+        if (valuesError) {
+          console.error('Error fetching assessment values:', valuesError);
+          return;
+        }
+        
+        // Create values object from the fetched values
+        const values = valuesData.reduce((acc, curr) => {
+          acc[curr.indicator_id] = { 
+            value: curr.value, 
+            score: curr.score
+          };
+          return acc;
+        }, {});
+        
+        // Set the assessment with the values
+        setAssessment({
+          ...assessmentData,
+          values: values
+        });
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAssessment();
+  }, [id]);
   
   const handleEdit = () => {
     navigate(`/assessment/${id}/edit`);
@@ -133,6 +135,16 @@ const AssessmentDetail = () => {
     
     return result;
   }, [assessment]);
+  
+  if (loading) {
+    return (
+      <DashboardLayout title="Detail Penilaian">
+        <div className="text-center py-10">
+          <p className="text-muted-foreground">Memuat data...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
   
   if (!assessment) {
     return (

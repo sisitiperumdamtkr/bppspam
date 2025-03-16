@@ -1,42 +1,48 @@
 
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { PlusCircle, BarChart2, FileText, ListChecks, Clock } from "lucide-react";
-import { getHealthCategory } from "@/models/assessment";
-
-// Mock data for dashboard - now only for PERUMDAM TIRTA KERTA RAHARJA
-const recentAssessments = [
-  {
-    id: "1",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2023,
-    date: "2023-05-15",
-    score: 3.75,
-    status: "completed"
-  },
-  {
-    id: "2",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2022,
-    date: "2022-04-20",
-    score: 3.2,
-    status: "completed"
-  },
-  {
-    id: "3",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2021,
-    date: "2021-03-10",
-    score: 2.6,
-    status: "completed"
-  }
-];
+import { getHealthCategory } from "@/models/health-categories";
+import { supabase } from "@/integrations/supabase/client";
+import { Assessment } from "@/models/types";
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const [recentAssessments, setRecentAssessments] = useState<Assessment[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch recent assessments from Supabase
+    const fetchRecentAssessments = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('assessments')
+          .select('*')
+          .order('year', { ascending: false })
+          .limit(3);
+        
+        if (error) {
+          console.error('Error fetching recent assessments:', error);
+          return;
+        }
+        
+        setRecentAssessments(data || []);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchRecentAssessments();
+  }, [user]);
 
   return (
     <DashboardLayout title="Dashboard">
@@ -44,7 +50,7 @@ const Dashboard = () => {
         {/* Welcome Card */}
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle>Selamat Datang, {user?.name}</CardTitle>
+            <CardTitle>Selamat Datang, {user?.name || 'Pengguna'}</CardTitle>
             <CardDescription>
               Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
             </CardDescription>
@@ -122,44 +128,59 @@ const Dashboard = () => {
             <CardTitle className="text-xl">Penilaian Terakhir</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b">
-                    <th className="text-left py-3 px-2 font-medium">Tahun</th>
-                    <th className="text-left py-3 px-2 font-medium">Tanggal</th>
-                    <th className="text-left py-3 px-2 font-medium">Skor</th>
-                    <th className="text-left py-3 px-2 font-medium">Kategori</th>
-                    <th className="text-left py-3 px-2 font-medium">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentAssessments.map((assessment) => {
-                    const healthCategory = getHealthCategory(assessment.score);
-                    return (
-                      <tr key={assessment.id} className="border-b hover:bg-gray-50">
-                        <td className="py-3 px-2">{assessment.year}</td>
-                        <td className="py-3 px-2">{new Date(assessment.date).toLocaleDateString('id-ID')}</td>
-                        <td className="py-3 px-2">{assessment.score.toFixed(2)}</td>
-                        <td className="py-3 px-2">
-                          <span className={`px-2 py-1 rounded-full text-xs ${healthCategory.color.replace('bg-', 'bg-opacity-20 text-').replace('-500', '-700')}`}>
-                            {healthCategory.category}
-                          </span>
-                        </td>
-                        <td className="py-3 px-2">
-                          <Link to={`/assessment/${assessment.id}`}>
-                            <Button variant="outline" size="sm">
-                              <FileText className="h-3 w-3 mr-1" />
-                              Detail
-                            </Button>
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+            {loading ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">Memuat data...</p>
+              </div>
+            ) : recentAssessments.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">Belum ada penilaian yang dibuat</p>
+                <Link to="/assessment/new" className="inline-block mt-2">
+                  <Button variant="outline" size="sm">
+                    Buat Penilaian Pertama
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-2 font-medium">Tahun</th>
+                      <th className="text-left py-3 px-2 font-medium">Tanggal</th>
+                      <th className="text-left py-3 px-2 font-medium">Skor</th>
+                      <th className="text-left py-3 px-2 font-medium">Kategori</th>
+                      <th className="text-left py-3 px-2 font-medium">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentAssessments.map((assessment) => {
+                      const healthCategory = getHealthCategory(assessment.totalScore);
+                      return (
+                        <tr key={assessment.id} className="border-b hover:bg-gray-50">
+                          <td className="py-3 px-2">{assessment.year}</td>
+                          <td className="py-3 px-2">{new Date(assessment.date).toLocaleDateString('id-ID')}</td>
+                          <td className="py-3 px-2">{assessment.totalScore.toFixed(2)}</td>
+                          <td className="py-3 px-2">
+                            <span className={`px-2 py-1 rounded-full text-xs ${healthCategory.color.replace('bg-', 'bg-opacity-20 text-').replace('-500', '-700')}`}>
+                              {healthCategory.category}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2">
+                            <Link to={`/assessment/${assessment.id}`}>
+                              <Button variant="outline" size="sm">
+                                <FileText className="h-3 w-3 mr-1" />
+                                Detail
+                              </Button>
+                            </Link>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
           <CardFooter>
             <Link to="/assessments">
