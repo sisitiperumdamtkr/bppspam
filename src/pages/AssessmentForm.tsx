@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,12 @@ import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { getAssessmentById, createAssessment, updateAssessment } from "@/services/assessmentService";
+
+// New interface for formula inputs
+interface FormulaInput {
+  name: string;
+  label: string;
+}
 
 const AssessmentForm = () => {
   const { id } = useParams();
@@ -194,9 +201,40 @@ const AssessmentForm = () => {
     </div>
   );
   
-  const getFormulaInputs = (indicatorId: string) => {
+  // Fix: Make sure getFormulaInputs always returns an array
+  const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
+    // Default empty array to return if no matching case
+    const defaultInputs: FormulaInput[] = [];
+    
     switch (indicatorId) {
-      // ... keep existing formula inputs configuration
+      case "roc":
+        return [
+          { name: "ebit", label: "EBIT" },
+          { name: "total_capital", label: "Total Modal" }
+        ];
+      case "current_ratio":
+        return [
+          { name: "current_assets", label: "Aset Lancar" },
+          { name: "current_liabilities", label: "Kewajiban Lancar" }
+        ];
+      case "debt_equity_ratio":
+        return [
+          { name: "total_debt", label: "Total Utang" },
+          { name: "equity", label: "Ekuitas" }
+        ];
+      case "full_cost_recovery":
+        return [
+          { name: "operating_income", label: "Pendapatan Operasional" },
+          { name: "operating_expense", label: "Beban Operasional" }
+        ];
+      case "efficiency_ratio":
+        return [
+          { name: "operating_expense", label: "Beban Operasional" },
+          { name: "operating_income", label: "Pendapatan Operasional" }
+        ];
+      // Add cases for other indicators
+      default:
+        return defaultInputs;
     }
   };
   

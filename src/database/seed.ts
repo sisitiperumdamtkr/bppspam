@@ -25,7 +25,7 @@ export const seedData = async () => {
         date: '2023-05-15',
         userId: admin.id,
         totalScore: 3.75,
-        status: 'completed',
+        status: 'completed' as 'draft' | 'completed',
       },
       {
         id: '2',
@@ -34,7 +34,7 @@ export const seedData = async () => {
         date: '2022-06-22',
         userId: admin.id,
         totalScore: 2.95,
-        status: 'completed',
+        status: 'completed' as 'draft' | 'completed',
       },
       {
         id: '3',
@@ -43,7 +43,7 @@ export const seedData = async () => {
         date: '2021-05-10',
         userId: admin.id,
         totalScore: 3.45,
-        status: 'completed',
+        status: 'completed' as 'draft' | 'completed',
       },
       {
         id: '4',
@@ -52,7 +52,7 @@ export const seedData = async () => {
         date: '2020-06-18',
         userId: admin.id,
         totalScore: 2.75,
-        status: 'completed',
+        status: 'completed' as 'draft' | 'completed',
       },
     ];
 
