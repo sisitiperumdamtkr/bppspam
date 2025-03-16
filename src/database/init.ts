@@ -29,6 +29,7 @@ export const initializeDatabase = async (forceSync: boolean = false) => {
     return true;
   } catch (error) {
     console.error('Database initialization failed:', error);
+    // Don't throw the error, return false instead to allow the app to continue
     return false;
   }
 };
