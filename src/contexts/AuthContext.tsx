@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { loginUser, registerUser } from "@/services/authService";
 
 interface User {
   id: string;
@@ -42,17 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setLoading(true);
     try {
-      // Mock login - in a real app, this would be an API call
-      // For demo purposes, we'll just set a mock user
-      const mockUser: User = {
-        id: "1",
-        name: email.split("@")[0],
-        email,
-        role: email.includes("admin") ? "admin" : "user",
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem("user", JSON.stringify(mockUser));
+      const userData = await loginUser(email, password);
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -64,16 +57,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (name: string, email: string, password: string) => {
     setLoading(true);
     try {
-      // Mock registration - in a real app, this would be an API call
-      const mockUser: User = {
-        id: "1",
-        name,
-        email,
-        role: "user",
-      };
-      
-      setUser(mockUser);
-      localStorage.setItem("user", JSON.stringify(mockUser));
+      const userData = await registerUser(name, email, password);
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
     } catch (error) {
       console.error("Registration error:", error);
       throw error;
