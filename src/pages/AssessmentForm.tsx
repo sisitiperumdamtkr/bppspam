@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,13 +41,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { getAssessmentById, createAssessment, updateAssessment } from "@/services/assessmentService";
-
-// New interface for formula inputs
-interface FormulaInput {
-  name: string;
-  label: string;
-}
 
 const AssessmentForm = () => {
   const { id } = useParams();
@@ -57,9 +49,7 @@ const AssessmentForm = () => {
   const { user } = useAuth();
   const isNewAssessment = id === "new";
   
-  const [loading, setLoading] = useState(!isNewAssessment);
-  const [error, setError] = useState<string | null>(null);
-  
+  // Initialize with PERUMDAM TIRTA KERTA RAHARJA as the company name
   const [assessment, setAssessment] = useState<Assessment>({
     id: isNewAssessment ? crypto.randomUUID() : id || "",
     name: "PERUMDAM TIRTA KERTA RAHARJA",
@@ -71,25 +61,7 @@ const AssessmentForm = () => {
     status: "draft"
   });
   
-  useEffect(() => {
-    const fetchAssessment = async () => {
-      if (isNewAssessment || !id) return;
-      
-      setLoading(true);
-      try {
-        const data = await getAssessmentById(id);
-        setAssessment(data);
-      } catch (err) {
-        console.error("Error fetching assessment:", err);
-        setError("Failed to load assessment data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchAssessment();
-  }, [id, isNewAssessment]);
-  
+  // State for formula inputs
   const [formulaInputs, setFormulaInputs] = useState<Record<string, Record<string, number>>>({});
   
   const [showExportOptions, setShowExportOptions] = useState(false);
@@ -107,6 +79,7 @@ const AssessmentForm = () => {
     inputName: string, 
     value: number
   ) => {
+    // Update formula inputs
     setFormulaInputs(prev => ({
       ...prev,
       [indicatorId]: {
@@ -115,28 +88,162 @@ const AssessmentForm = () => {
       }
     }));
     
+    // Calculate formula value based on inputs
     const indicator = indicators.find(ind => ind.id === indicatorId);
     if (!indicator) return;
     
     let calculatedValue: number = 0;
     
+    // Calculate value based on the indicator
     switch (indicatorId) {
-      // ... keep existing formula calculation logic
+      case "roe":
+        // ROE = Laba Bersih / Jumlah Ekuitas × 100%
+        const labaBersih = formulaInputs[indicatorId]?.labaBersih || 0;
+        const ekuitas = formulaInputs[indicatorId]?.ekuitas || 1; // Prevent division by zero
+        calculatedValue = (labaBersih / ekuitas) * 100;
+        break;
+      
+      case "rasio_operasi":
+        // Rasio Operasi = Biaya Operasi / Pendapatan Operasi
+        const biayaOperasi = formulaInputs[indicatorId]?.biayaOperasi || 0;
+        const pendapatanOperasi = formulaInputs[indicatorId]?.pendapatanOperasi || 1;
+        calculatedValue = biayaOperasi / pendapatanOperasi;
+        break;
+      
+      case "cash_ratio":
+        // Cash Ratio = (Kas + Setara Kas) / Utang Lancar
+        const kas = formulaInputs[indicatorId]?.kas || 0;
+        const setaraKas = formulaInputs[indicatorId]?.setaraKas || 0;
+        const utangLancar = formulaInputs[indicatorId]?.utangLancar || 1;
+        calculatedValue = (kas + setaraKas) / utangLancar;
+        break;
+      
+      case "efektivitas_penagihan":
+        // Efektivitas Penagihan = Jumlah Penerimaan Rek Air / Jumah Rekening Air × 100%
+        const penerimaanRekAir = formulaInputs[indicatorId]?.penerimaanRekAir || 0;
+        const jumlahRekeningAir = formulaInputs[indicatorId]?.jumlahRekeningAir || 1;
+        calculatedValue = (penerimaanRekAir / jumlahRekeningAir) * 100;
+        break;
+      
+      case "solvabilitas":
+        // Solvabilitas = Total Aktiva / Total Utang × 100%
+        const totalAktiva = formulaInputs[indicatorId]?.totalAktiva || 0;
+        const totalUtang = formulaInputs[indicatorId]?.totalUtang || 1;
+        calculatedValue = (totalAktiva / totalUtang) * 100;
+        break;
+      
+      case "cakupan_pelayanan":
+        // Cakupan Pelayanan = Jumlah Penduduk Terlayani / Jumlah Penduduk × 100%
+        const pendudukTerlayani = formulaInputs[indicatorId]?.pendudukTerlayani || 0;
+        const totalPenduduk = formulaInputs[indicatorId]?.totalPenduduk || 1;
+        calculatedValue = (pendudukTerlayani / totalPenduduk) * 100;
+        break;
+      
+      case "pertumbuhan_pelanggan":
+        // Pertumbuhan Pelanggan = (Pelanggan tahun ini - tahun lalu) / tahun lalu × 100%
+        const pelangganTahunIni = formulaInputs[indicatorId]?.pelangganTahunIni || 0;
+        const pelangganTahunLalu = formulaInputs[indicatorId]?.pelangganTahunLalu || 1;
+        calculatedValue = ((pelangganTahunIni - pelangganTahunLalu) / pelangganTahunLalu) * 100;
+        break;
+      
+      case "penyelesaian_aduan":
+        // Penyelesaian Aduan = Jumlah Aduan Selesai / Jumlah Aduan × 100%
+        const aduanSelesai = formulaInputs[indicatorId]?.aduanSelesai || 0;
+        const totalAduan = formulaInputs[indicatorId]?.totalAduan || 1;
+        calculatedValue = (aduanSelesai / totalAduan) * 100;
+        break;
+      
+      case "kualitas_air":
+        // Kualitas Air = Jumlah Uji Yang Memenuhi Syarat / Jumlah Yang Diuji × 100%
+        const ujiMemenuhi = formulaInputs[indicatorId]?.ujiMemenuhi || 0;
+        const totalUji = formulaInputs[indicatorId]?.totalUji || 1;
+        calculatedValue = (ujiMemenuhi / totalUji) * 100;
+        break;
+      
+      case "konsumsi_air":
+        // Konsumsi Air = Air Terjual Domestik / Jumlah Pelanggan Domestik
+        const airTerjualDomestik = formulaInputs[indicatorId]?.airTerjualDomestik || 0;
+        const pelangganDomestik = formulaInputs[indicatorId]?.pelangganDomestik || 1;
+        calculatedValue = airTerjualDomestik / pelangganDomestik;
+        break;
+      
+      case "efisiensi_produksi":
+        // Efisiensi Produksi = Volume Produksi Riil / Kapasitas Terpasang × 100%
+        const produksiRiil = formulaInputs[indicatorId]?.produksiRiil || 0;
+        const kapasitasTerpasang = formulaInputs[indicatorId]?.kapasitasTerpasang || 1;
+        calculatedValue = (produksiRiil / kapasitasTerpasang) * 100;
+        break;
+      
+      case "tingkat_kehilangan_air":
+        // Tingkat Kehilangan Air = (Distribusi Air - Air Terjual) / Distribusi Air × 100%
+        const distribusiAir = formulaInputs[indicatorId]?.distribusiAir || 0;
+        const airTerjual = formulaInputs[indicatorId]?.airTerjual || 0;
+        calculatedValue = distribusiAir > 0 ? ((distribusiAir - airTerjual) / distribusiAir) * 100 : 0;
+        break;
+      
+      case "jam_operasi":
+        // Jam Operasi = Total Jam Operasi Dalam Setahun / 365
+        const totalJamOperasi = formulaInputs[indicatorId]?.totalJamOperasi || 0;
+        calculatedValue = totalJamOperasi / 365;
+        break;
+      
+      case "tekanan_air":
+        // Tekanan Air = Jumlah Pelanggan Dengan Tekanan Baik / Jumlah Pelanggan × 100%
+        const pelangganTekananBaik = formulaInputs[indicatorId]?.pelangganTekananBaik || 0;
+        const totalPelanggan = formulaInputs[indicatorId]?.totalPelanggan || 1;
+        calculatedValue = (pelangganTekananBaik / totalPelanggan) * 100;
+        break;
+      
+      case "penggantian_meter":
+        // Penggantian Meter = Jumlah Meter Yang Diganti / Jumlah Pelanggan × 100%
+        const meterDiganti = formulaInputs[indicatorId]?.meterDiganti || 0;
+        const jumlahPelanggan = formulaInputs[indicatorId]?.jumlahPelanggan || 1;
+        calculatedValue = (meterDiganti / jumlahPelanggan) * 100;
+        break;
+      
+      case "rasio_pegawai":
+        // Rasio Pegawai = Jumlah Pegawai / Jumlah Pelanggan × 1000
+        const jumlahPegawai = formulaInputs[indicatorId]?.jumlahPegawai || 0;
+        const pelanggan = formulaInputs[indicatorId]?.pelanggan || 1;
+        calculatedValue = (jumlahPegawai / pelanggan) * 1000;
+        break;
+      
+      case "rasio_diklat":
+        // Rasio Diklat = Jumlah Pegawai Yang Ikut Diklat / Jumlah Pegawai × 100%
+        const pegawaiDiklat = formulaInputs[indicatorId]?.pegawaiDiklat || 0;
+        const totalPegawai = formulaInputs[indicatorId]?.totalPegawai || 1;
+        calculatedValue = (pegawaiDiklat / totalPegawai) * 100;
+        break;
+      
+      case "biaya_diklat":
+        // Biaya Diklat = Biaya Diklat / Biaya Pegawai × 100%
+        const biayaDiklat = formulaInputs[indicatorId]?.biayaDiklat || 0;
+        const biayaPegawai = formulaInputs[indicatorId]?.biayaPegawai || 1;
+        calculatedValue = (biayaDiklat / biayaPegawai) * 100;
+        break;
+      
+      default:
+        calculatedValue = 0;
     }
     
+    // Update with calculated value
     handleValueChange(indicator, calculatedValue);
   };
   
   const handleValueChange = (indicator: Indicator, value: number) => {
+    // Calculate score based on the input value
     const score = calculateScore(value, indicator.id);
     
+    // Update assessment values
     const updatedValues = {
       ...assessment.values,
       [indicator.id]: { value, score }
     };
     
+    // Calculate total score
     const totalScore = calculateTotalScore(updatedValues);
     
+    // Update assessment state
     setAssessment(prev => ({
       ...prev,
       values: updatedValues,
@@ -144,28 +251,22 @@ const AssessmentForm = () => {
     }));
   };
   
-  const handleSave = async () => {
-    try {
-      const isComplete = indicators.every(indicator => 
-        assessment.values[indicator.id] !== undefined
-      );
-      
-      const updatedAssessment = {
-        ...assessment,
-        status: isComplete ? "completed" : "draft"
-      };
-      
-      if (isNewAssessment) {
-        await createAssessment(updatedAssessment);
-      } else {
-        await updateAssessment(assessment.id, updatedAssessment);
-      }
-      
-      navigate("/assessments");
-    } catch (error) {
-      console.error("Error saving assessment:", error);
-      setError("Failed to save assessment. Please try again.");
-    }
+  const handleSave = () => {
+    // In a real app, this would save to a database
+    console.log("Saving assessment:", assessment);
+    
+    // Mark as completed if all indicators have values
+    const isComplete = indicators.every(indicator => 
+      assessment.values[indicator.id] !== undefined
+    );
+    
+    const updatedAssessment = {
+      ...assessment,
+      status: isComplete ? "completed" : "draft"
+    };
+    
+    // For this demo, we'll just navigate back to the list
+    navigate("/assessments");
   };
   
   const handleExport = (type: "csv" | "pdf") => {
@@ -201,43 +302,105 @@ const AssessmentForm = () => {
     </div>
   );
   
-  // Fix: Make sure getFormulaInputs always returns an array
-  const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
-    // Default empty array to return if no matching case
-    const defaultInputs: FormulaInput[] = [];
-    
+  // Get formula inputs configuration for each indicator
+  const getFormulaInputs = (indicatorId: string) => {
     switch (indicatorId) {
-      case "roc":
+      case "roe":
         return [
-          { name: "ebit", label: "EBIT" },
-          { name: "total_capital", label: "Total Modal" }
+          { name: "labaBersih", label: "Laba Bersih" },
+          { name: "ekuitas", label: "Jumlah Ekuitas" },
         ];
-      case "current_ratio":
+      case "rasio_operasi":
         return [
-          { name: "current_assets", label: "Aset Lancar" },
-          { name: "current_liabilities", label: "Kewajiban Lancar" }
+          { name: "biayaOperasi", label: "Biaya Operasi" },
+          { name: "pendapatanOperasi", label: "Pendapatan Operasi" },
         ];
-      case "debt_equity_ratio":
+      case "cash_ratio":
         return [
-          { name: "total_debt", label: "Total Utang" },
-          { name: "equity", label: "Ekuitas" }
+          { name: "kas", label: "Kas" },
+          { name: "setaraKas", label: "Setara Kas" },
+          { name: "utangLancar", label: "Utang Lancar" },
         ];
-      case "full_cost_recovery":
+      case "efektivitas_penagihan":
         return [
-          { name: "operating_income", label: "Pendapatan Operasional" },
-          { name: "operating_expense", label: "Beban Operasional" }
+          { name: "penerimaanRekAir", label: "Jumlah Penerimaan Rekening Air" },
+          { name: "jumlahRekeningAir", label: "Jumlah Rekening Air" },
         ];
-      case "efficiency_ratio":
+      case "solvabilitas":
         return [
-          { name: "operating_expense", label: "Beban Operasional" },
-          { name: "operating_income", label: "Pendapatan Operasional" }
+          { name: "totalAktiva", label: "Total Aktiva" },
+          { name: "totalUtang", label: "Total Utang" },
         ];
-      // Add cases for other indicators
+      case "cakupan_pelayanan":
+        return [
+          { name: "pendudukTerlayani", label: "Jumlah Penduduk Terlayani" },
+          { name: "totalPenduduk", label: "Jumlah Penduduk" },
+        ];
+      case "pertumbuhan_pelanggan":
+        return [
+          { name: "pelangganTahunIni", label: "Jumlah Pelanggan Tahun Ini" },
+          { name: "pelangganTahunLalu", label: "Jumlah Pelanggan Tahun Lalu" },
+        ];
+      case "penyelesaian_aduan":
+        return [
+          { name: "aduanSelesai", label: "Jumlah Aduan Selesai" },
+          { name: "totalAduan", label: "Jumlah Total Aduan" },
+        ];
+      case "kualitas_air":
+        return [
+          { name: "ujiMemenuhi", label: "Jumlah Uji Memenuhi Syarat" },
+          { name: "totalUji", label: "Jumlah Total Pengujian" },
+        ];
+      case "konsumsi_air":
+        return [
+          { name: "airTerjualDomestik", label: "Air Terjual Domestik (m³)" },
+          { name: "pelangganDomestik", label: "Jumlah Pelanggan Domestik" },
+        ];
+      case "efisiensi_produksi":
+        return [
+          { name: "produksiRiil", label: "Volume Produksi Riil (m³)" },
+          { name: "kapasitasTerpasang", label: "Kapasitas Terpasang (m³)" },
+        ];
+      case "tingkat_kehilangan_air":
+        return [
+          { name: "distribusiAir", label: "Jumlah Distribusi Air (m³)" },
+          { name: "airTerjual", label: "Jumlah Air Terjual (m³)" },
+        ];
+      case "jam_operasi":
+        return [
+          { name: "totalJamOperasi", label: "Total Jam Operasi Dalam Setahun" },
+        ];
+      case "tekanan_air":
+        return [
+          { name: "pelangganTekananBaik", label: "Jumlah Pelanggan dengan Tekanan > 0.7 Bar" },
+          { name: "totalPelanggan", label: "Jumlah Total Pelanggan" },
+        ];
+      case "penggantian_meter":
+        return [
+          { name: "meterDiganti", label: "Jumlah Meter Air yang Diganti" },
+          { name: "jumlahPelanggan", label: "Jumlah Total Pelanggan" },
+        ];
+      case "rasio_pegawai":
+        return [
+          { name: "jumlahPegawai", label: "Jumlah Pegawai" },
+          { name: "pelanggan", label: "Jumlah Pelanggan" },
+        ];
+      case "rasio_diklat":
+        return [
+          { name: "pegawaiDiklat", label: "Jumlah Pegawai yang Mengikuti Diklat" },
+          { name: "totalPegawai", label: "Jumlah Total Pegawai" },
+        ];
+      case "biaya_diklat":
+        return [
+          { name: "biayaDiklat", label: "Biaya Diklat" },
+          { name: "biayaPegawai", label: "Total Biaya Pegawai" },
+        ];
       default:
-        return defaultInputs;
+        return [];
     }
   };
   
+  // Group indicators by category
   const categories = indicators.reduce<Record<string, Indicator[]>>((acc, indicator) => {
     if (!acc[indicator.category]) {
       acc[indicator.category] = [];
@@ -247,29 +410,6 @@ const AssessmentForm = () => {
   }, {});
 
   const pageTitle = isNewAssessment ? "Penilaian Baru" : "Edit Penilaian";
-  
-  if (loading) {
-    return (
-      <DashboardLayout title={pageTitle}>
-        <div className="flex justify-center items-center h-64">
-          <p>Loading assessment data...</p>
-        </div>
-      </DashboardLayout>
-    );
-  }
-  
-  if (error) {
-    return (
-      <DashboardLayout title={pageTitle}>
-        <div className="text-center py-10 text-red-500">
-          <p>{error}</p>
-          <Button onClick={() => window.location.reload()} variant="outline" className="mt-4">
-            Try Again
-          </Button>
-        </div>
-      </DashboardLayout>
-    );
-  }
   
   return (
     <DashboardLayout title={pageTitle}>
@@ -363,6 +503,7 @@ const AssessmentForm = () => {
           </div>
         </div>
         
+        {/* Display indicators by category */}
         {Object.entries(categories).map(([category, categoryIndicators]) => (
           <div key={category} className="mt-8">
             <h2 className="text-lg font-semibold mb-4">Aspek {category}</h2>
@@ -380,6 +521,7 @@ const AssessmentForm = () => {
                       </div>
                     </div>
                     
+                    {/* Formula inputs */}
                     <div className="mt-4 border-t pt-4">
                       <h4 className="font-medium mb-2">Input Komponen Formula:</h4>
                       <div className="grid md:grid-cols-2 gap-4">
@@ -436,6 +578,7 @@ const AssessmentForm = () => {
           </div>
         ))}
         
+        {/* Total Score */}
         <div className="mt-8 border-t pt-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Total Skor:</h2>

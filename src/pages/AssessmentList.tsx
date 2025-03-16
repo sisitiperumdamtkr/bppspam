@@ -1,36 +1,52 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { getHealthCategory } from "@/models/health-categories";
-import { getAssessments } from "@/services/assessmentService";
+
+// Mock assessment data - in a real app this would come from an API
+// Updated to show only PERUMDAM TIRTA KERTA RAHARJA assessments over different years
+const mockAssessments = [
+  {
+    id: "1",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2023,
+    date: "2023-05-15",
+    totalScore: 3.75,
+    status: "completed",
+  },
+  {
+    id: "2",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2022,
+    date: "2022-06-22",
+    totalScore: 2.95,
+    status: "completed",
+  },
+  {
+    id: "3",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2021,
+    date: "2021-05-10",
+    totalScore: 3.45,
+    status: "completed",
+  },
+  {
+    id: "4",
+    name: "PERUMDAM TIRTA KERTA RAHARJA",
+    year: 2020,
+    date: "2020-06-18",
+    totalScore: 2.75,
+    status: "completed",
+  },
+];
 
 const AssessmentList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [assessments, setAssessments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    const fetchAssessments = async () => {
-      setLoading(true);
-      try {
-        const data = await getAssessments(user?.id);
-        setAssessments(data);
-      } catch (err) {
-        console.error("Error fetching assessments:", err);
-        setError("Failed to load assessments. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchAssessments();
-  }, [user?.id]);
   
   const handleCreateNew = () => {
     navigate("/assessment/new");
@@ -50,18 +66,7 @@ const AssessmentList = () => {
         </Button>
       </div>
       
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <p>Loading assessments...</p>
-        </div>
-      ) : error ? (
-        <div className="text-center py-10 text-red-500">
-          <p>{error}</p>
-          <Button onClick={() => window.location.reload()} variant="outline" className="mt-4">
-            Try Again
-          </Button>
-        </div>
-      ) : assessments.length === 0 ? (
+      {mockAssessments.length === 0 ? (
         <div className="text-center py-10">
           <p className="text-muted-foreground mb-4">Belum ada penilaian yang dibuat</p>
           <Button onClick={handleCreateNew} variant="outline">
@@ -70,7 +75,7 @@ const AssessmentList = () => {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {assessments.map((assessment: any) => {
+          {mockAssessments.map((assessment) => {
             const healthCategory = getHealthCategory(assessment.totalScore);
                   
             return (
