@@ -16,9 +16,15 @@ export const initializeDatabase = async (forceSync: boolean = false) => {
       return false;
     }
 
+    console.log('Starting database synchronization...');
+    
     // Sync all models with database
     await sequelize.sync({ force: forceSync });
     console.log('Database synchronized successfully');
+    
+    // List all tables in the database
+    const [results] = await sequelize.query('SHOW TABLES');
+    console.log('Tables in database:', results);
     
     // Seed initial data if tables were recreated
     if (forceSync) {

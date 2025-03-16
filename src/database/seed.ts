@@ -8,6 +8,8 @@ import { calculateScore } from '@/models/scoring';
 // Seed initial data for the application
 export const seedData = async () => {
   try {
+    console.log('Starting to seed data...');
+    
     // Create default admin user
     const admin = await User.create({
       name: 'Administrator',
@@ -15,6 +17,8 @@ export const seedData = async () => {
       password: 'password123', // In production, this should be hashed
       role: 'admin',
     });
+    
+    console.log('Admin user created with ID:', admin.id);
 
     // Create sample assessments
     const assessments = [
@@ -25,7 +29,7 @@ export const seedData = async () => {
         date: '2023-05-15',
         userId: admin.id,
         totalScore: 3.75,
-        status: 'completed' as 'draft' | 'completed',
+        status: 'completed' as const,
       },
       {
         id: '2',
@@ -34,7 +38,7 @@ export const seedData = async () => {
         date: '2022-06-22',
         userId: admin.id,
         totalScore: 2.95,
-        status: 'completed' as 'draft' | 'completed',
+        status: 'completed' as const,
       },
       {
         id: '3',
@@ -43,7 +47,7 @@ export const seedData = async () => {
         date: '2021-05-10',
         userId: admin.id,
         totalScore: 3.45,
-        status: 'completed' as 'draft' | 'completed',
+        status: 'completed' as const,
       },
       {
         id: '4',
@@ -52,11 +56,12 @@ export const seedData = async () => {
         date: '2020-06-18',
         userId: admin.id,
         totalScore: 2.75,
-        status: 'completed' as 'draft' | 'completed',
+        status: 'completed' as const,
       },
     ];
 
     await Assessment.bulkCreate(assessments);
+    console.log('Sample assessments created');
 
     // Create sample assessment values for each assessment
     for (const assessment of assessments) {
