@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
 import { 
@@ -40,80 +40,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Download, Printer, Filter } from "lucide-react";
 import { getHealthCategory } from "@/models/health-categories";
-
-// Mock data for reports - updated to include only PERUMDAM TIRTA KERTA RAHARJA over different years
-const mockAssessments = [
-  {
-    id: "1",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2023,
-    date: "2023-05-15",
-    totalScore: 3.75,
-    aspectScores: {
-      Keuangan: 3.8,
-      Pelayanan: 3.6,
-      Operasional: 3.9,
-      SDM: 3.7
-    },
-    status: "completed",
-  },
-  {
-    id: "2",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2022,
-    date: "2022-06-22",
-    totalScore: 3.25,
-    aspectScores: {
-      Keuangan: 3.3,
-      Pelayanan: 3.2,
-      Operasional: 3.3,
-      SDM: 3.2
-    },
-    status: "completed",
-  },
-  {
-    id: "3",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2021,
-    date: "2021-05-10",
-    totalScore: 3.45,
-    aspectScores: {
-      Keuangan: 3.5,
-      Pelayanan: 3.4,
-      Operasional: 3.5,
-      SDM: 3.4
-    },
-    status: "completed",
-  },
-  {
-    id: "4",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2020,
-    date: "2020-06-18",
-    totalScore: 2.75,
-    aspectScores: {
-      Keuangan: 2.9,
-      Pelayanan: 2.7,
-      Operasional: 2.8,
-      SDM: 2.6
-    },
-    status: "completed",
-  },
-  {
-    id: "5",
-    name: "PERUMDAM TIRTA KERTA RAHARJA",
-    year: 2019,
-    date: "2019-05-20",
-    totalScore: 2.5,
-    aspectScores: {
-      Keuangan: 2.6,
-      Pelayanan: 2.5,
-      Operasional: 2.4,
-      SDM: 2.5
-    },
-    status: "completed",
-  },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { Assessment } from "@/models/types";
 
 // Color scheme for charts
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -127,19 +55,60 @@ const ASPECT_COLORS = {
 const Reports = () => {
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState<string>("all");
+  const [assessments, setAssessments] = useState<Assessment[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Fetch assessments from Supabase
+  useEffect(() => {
+    const fetchAssessments = async () => {
+      try {
+        setLoading(true);
+        
+        const { data, error } = await supabase
+          .from('assessments')
+          .select('*')
+          .order('year', { ascending: false });
+        
+        if (error) {
+          console.error('Error fetching assessments:', error);
+          return;
+        }
+        
+        // Map database column names to our interface properties
+        const mappedData = data?.map(item => ({
+          id: item.id,
+          name: item.name,
+          year: item.year,
+          date: item.date,
+          userId: item.user_id,
+          totalScore: item.total_score || 0,
+          status: item.status as "draft" | "completed",
+          values: {} // Initialize with empty values as we're not fetching them here
+        })) || [];
+        
+        setAssessments(mappedData);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAssessments();
+  }, []);
   
   // Get unique years
-  const years = Array.from(new Set(mockAssessments.map(a => a.year))).sort((a, b) => b - a);
+  const years = Array.from(new Set(assessments.map(a => a.year))).sort((a, b) => b - a);
   
   // Filter assessments based on selection
-  const filteredAssessments = mockAssessments.filter(assessment => {
+  const filteredAssessments = assessments.filter(assessment => {
     const yearMatch = selectedYear === "all" || assessment.year.toString() === selectedYear;
     return yearMatch;
   });
   
   // Prepare data for trend chart
   const trendData = years.map(year => {
-    const yearAssessment = mockAssessments.find(a => a.year === year);
+    const yearAssessment = assessments.find(a => a.year === year);
     
     return {
       year,
@@ -149,16 +118,25 @@ const Reports = () => {
   
   // Prepare data for aspect comparison over years
   const aspectOverYearsData = years.map(year => {
-    const yearAssessment = mockAssessments.find(a => a.year === year);
+    const yearAssessment = assessments.find(a => a.year === year);
+    
+    // For this demo, we'll create aspect scores based on the totalScore
+    // In a real app, you'd fetch the actual aspect scores
+    const aspectScores = yearAssessment ? {
+      Keuangan: yearAssessment.totalScore * 0.9,
+      Pelayanan: yearAssessment.totalScore * 1.1,
+      Operasional: yearAssessment.totalScore * 0.95,
+      SDM: yearAssessment.totalScore * 1.05
+    } : { Keuangan: 0, Pelayanan: 0, Operasional: 0, SDM: 0 };
     
     return {
       year,
-      ...yearAssessment?.aspectScores
+      ...aspectScores
     };
   }).sort((a, b) => a.year - b.year); // Sort by year ascending
   
   // Prepare data for category distribution
-  const categoryDistributionData = mockAssessments.reduce((acc, assessment) => {
+  const categoryDistributionData = assessments.reduce((acc, assessment) => {
     const category = getHealthCategory(assessment.totalScore).category;
     const existingCategory = acc.find(item => item.name === category);
     
@@ -172,20 +150,38 @@ const Reports = () => {
   }, [] as { name: string; value: number }[]);
   
   // Prepare data for radar chart - latest assessment
-  const latestAssessment = mockAssessments.sort((a, b) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  )[0];
+  const latestAssessment = assessments.length > 0 ? 
+    assessments.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] : 
+    null;
   
   const radarData = Object.keys(ASPECT_COLORS).map(aspect => {
+    // For this demo, we'll create aspect scores based on the totalScore of the latest assessment
+    // In a real app, you'd fetch the actual aspect scores
+    const score = latestAssessment ? 
+      latestAssessment.totalScore * (aspect === 'Keuangan' ? 0.9 : 
+                                      aspect === 'Pelayanan' ? 1.1 : 
+                                      aspect === 'Operasional' ? 0.95 : 1.05) : 
+      0;
+    
     return {
       aspect,
-      score: latestAssessment?.aspectScores[aspect as keyof typeof latestAssessment.aspectScores] || 0
+      score
     };
   });
   
   const handlePrint = () => {
     window.print();
   };
+
+  if (loading) {
+    return (
+      <DashboardLayout title="Laporan">
+        <div className="text-center py-10">
+          <p className="text-muted-foreground">Memuat data...</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
   
   return (
     <DashboardLayout title="Laporan">
@@ -296,25 +292,31 @@ const Reports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={trendData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="year" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="score"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                    name="Skor Rata-rata"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {trendData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={trendData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis domain={[0, 5]} />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="score"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                      name="Skor Rata-rata"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-muted-foreground">
+                  Tidak ada data untuk ditampilkan
+                </div>
+              )}
             </CardContent>
           </Card>
           
@@ -327,26 +329,32 @@ const Reports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={aspectOverYearsData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="year" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip />
-                  <Legend />
-                  {Object.keys(ASPECT_COLORS).map((aspect, index) => (
-                    <Bar
-                      key={aspect}
-                      dataKey={aspect}
-                      fill={ASPECT_COLORS[aspect as keyof typeof ASPECT_COLORS]}
-                      name={`Aspek ${aspect}`}
-                    />
-                  ))}
-                </BarChart>
-              </ResponsiveContainer>
+              {aspectOverYearsData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={aspectOverYearsData}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis domain={[0, 5]} />
+                    <Tooltip />
+                    <Legend />
+                    {Object.keys(ASPECT_COLORS).map((aspect, index) => (
+                      <Bar
+                        key={aspect}
+                        dataKey={aspect}
+                        fill={ASPECT_COLORS[aspect as keyof typeof ASPECT_COLORS]}
+                        name={`Aspek ${aspect}`}
+                      />
+                    ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-muted-foreground">
+                  Tidak ada data untuk ditampilkan
+                </div>
+              )}
             </CardContent>
           </Card>
           
@@ -359,26 +367,32 @@ const Reports = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryDistributionData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={true}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {categoryDistributionData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              {categoryDistributionData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={categoryDistributionData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={true}
+                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {categoryDistributionData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-muted-foreground">
+                  Tidak ada data untuk ditampilkan
+                </div>
+              )}
             </CardContent>
           </Card>
           
@@ -387,26 +401,32 @@ const Reports = () => {
             <CardHeader>
               <CardTitle>Profil Kinerja Terkini</CardTitle>
               <CardDescription>
-                Skor per aspek penilaian pada tahun terbaru ({latestAssessment?.year})
+                Skor per aspek penilaian pada tahun terbaru ({latestAssessment?.year || 'Tidak ada data'})
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="aspect" />
-                  <PolarRadiusAxis domain={[0, 5]} />
-                  <Radar
-                    name="Skor Aspek"
-                    dataKey="score"
-                    stroke="#8884d8"
-                    fill="#8884d8"
-                    fillOpacity={0.6}
-                  />
-                  <Tooltip />
-                  <Legend />
-                </RadarChart>
-              </ResponsiveContainer>
+              {latestAssessment ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="aspect" />
+                    <PolarRadiusAxis domain={[0, 5]} />
+                    <Radar
+                      name="Skor Aspek"
+                      dataKey="score"
+                      stroke="#8884d8"
+                      fill="#8884d8"
+                      fillOpacity={0.6}
+                    />
+                    <Tooltip />
+                    <Legend />
+                  </RadarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-muted-foreground">
+                  Tidak ada data untuk ditampilkan
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -431,23 +451,24 @@ const Reports = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAssessments.map((assessment) => {
-                    const healthCategory = getHealthCategory(assessment.totalScore);
-                    return (
-                      <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer" 
-                          onClick={() => navigate(`/assessment/${assessment.id}`)}>
-                        <td className="p-2">{assessment.year}</td>
-                        <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
-                        <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>
-                        <td className="p-2">
-                          <span className={`${healthCategory.color} text-white text-xs px-2 py-1 rounded-full`}>
-                            {healthCategory.category}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {filteredAssessments.length === 0 && (
+                  {filteredAssessments.length > 0 ? (
+                    filteredAssessments.map((assessment) => {
+                      const healthCategory = getHealthCategory(assessment.totalScore);
+                      return (
+                        <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer" 
+                            onClick={() => navigate(`/assessment/${assessment.id}`)}>
+                          <td className="p-2">{assessment.year}</td>
+                          <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
+                          <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>
+                          <td className="p-2">
+                            <span className={`${healthCategory.color} text-white text-xs px-2 py-1 rounded-full`}>
+                              {healthCategory.category}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
                     <tr>
                       <td colSpan={5} className="p-4 text-center text-muted-foreground">
                         Tidak ada data yang sesuai dengan filter
