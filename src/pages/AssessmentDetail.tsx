@@ -17,7 +17,7 @@ import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Edit, Download, FileSpreadsheet, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { Assessment } from "@/models/types";
+import { Assessment, Value } from "@/models/types";
 
 const AssessmentDetail = () => {
   const { id } = useParams();
@@ -61,18 +61,25 @@ const AssessmentDetail = () => {
         }
         
         // Create values object from the fetched values
-        const values = valuesData.reduce((acc, curr) => {
-          acc[curr.indicator_id] = { 
-            value: curr.value, 
-            score: curr.score
-          };
-          return acc;
-        }, {});
+        const valuesMap: Record<string, Value> = {};
         
-        // Set the assessment with the values
+        valuesData?.forEach(item => {
+          valuesMap[item.indicator_id] = {
+            value: Number(item.value),
+            score: Number(item.score)
+          };
+        });
+        
+        // Set the assessment with the values mapped to our interface
         setAssessment({
-          ...assessmentData,
-          values: values
+          id: assessmentData.id,
+          name: assessmentData.name,
+          year: assessmentData.year,
+          date: assessmentData.date,
+          userId: assessmentData.user_id,
+          totalScore: assessmentData.total_score || 0,
+          status: assessmentData.status as "draft" | "completed",
+          values: valuesMap
         });
       } catch (error) {
         console.error('Error:', error);

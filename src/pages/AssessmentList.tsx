@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,7 +31,19 @@ const AssessmentList = () => {
           return;
         }
         
-        setAssessments(data || []);
+        // Map database column names to our interface properties
+        const mappedData = data?.map(item => ({
+          id: item.id,
+          name: item.name,
+          year: item.year,
+          date: item.date,
+          userId: item.user_id,
+          totalScore: item.total_score || 0,
+          status: item.status as "draft" | "completed",
+          values: {} // Initialize with empty values as we're not fetching them here
+        })) || [];
+        
+        setAssessments(mappedData);
       } catch (error) {
         console.error('Error:', error);
       } finally {
