@@ -166,6 +166,9 @@ const AssessmentForm = () => {
         const labaBersih = formulaInputs[indicatorId]?.labaBersih || 0;
         const ekuitas = formulaInputs[indicatorId]?.ekuitas || 1; // Prevent division by zero
         calculatedValue = (labaBersih / ekuitas) * 100;
+        
+        // Contoh nilai = (87.181.566.495 / 1.007.466.398.895) * 100% = 8.65%
+        // Ini akan menghasilkan penilaian (nilai) 4 karena berada di rentang 7-10
         break;
       
       case "rasio_operasi":
@@ -419,8 +422,8 @@ const AssessmentForm = () => {
     switch (indicatorId) {
       case "roe":
         return [
-          { name: "labaBersih", label: "Laba Bersih" },
-          { name: "ekuitas", label: "Jumlah Ekuitas" },
+          { name: "labaBersih", label: "Laba Bersih (contoh: 87.181.566.495)" },
+          { name: "ekuitas", label: "Jumlah Ekuitas (contoh: 1.007.466.398.895)" },
         ];
       case "rasio_operasi":
         return [
