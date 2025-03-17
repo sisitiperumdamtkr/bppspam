@@ -17,6 +17,8 @@ export interface Value {
   score: number;
 }
 
+export type AssessmentStatus = "draft" | "completed";
+
 // Hasil penilaian
 export interface Assessment {
   id: string;
@@ -26,5 +28,5 @@ export interface Assessment {
   userId: string;
   values: Record<string, Value>;
   totalScore: number;
-  status: "draft" | "completed";
+  status: AssessmentStatus;
 }

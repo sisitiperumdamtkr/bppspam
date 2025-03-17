@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -104,7 +103,7 @@ const AssessmentForm = () => {
             };
           });
           
-          // Set assessment state
+          // Set assessment state with type checking for status
           setAssessment({
             id: assessmentData.id,
             name: assessmentData.name,
@@ -113,7 +112,7 @@ const AssessmentForm = () => {
             userId: assessmentData.user_id,
             values: values,
             totalScore: assessmentData.total_score || 0,
-            status: assessmentData.status
+            status: assessmentData.status === "completed" ? "completed" : "draft"
           });
         } catch (error) {
           console.error("Error fetching assessment:", error);
@@ -324,7 +323,7 @@ const AssessmentForm = () => {
         assessment.values[indicator.id] !== undefined
       );
       
-      const status = isComplete ? "completed" : "draft";
+      const status: "draft" | "completed" = isComplete ? "completed" : "draft";
       
       // Prepare assessment data for Supabase
       const assessmentData = {
