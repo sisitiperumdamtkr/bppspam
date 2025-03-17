@@ -671,7 +671,7 @@ const AssessmentForm = () => {
                     
                     <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
                       <div>
-                        <Label>Nilai {indicator.unit}</Label>
+                        <Label>Penilaian {indicator.unit}</Label>
                         <div className="h-10 flex items-center mt-1 text-base font-medium">
                           {valueObj ? valueObj.value.toFixed(2) : "-"}
                         </div>
@@ -683,13 +683,13 @@ const AssessmentForm = () => {
                         </div>
                       </div>
                       <div>
-                        <Label>Skor (1-5)</Label>
+                        <Label>Nilai</Label>
                         <div className="h-10 flex items-center mt-1 text-base">
                           {valueObj ? valueObj.score : "-"}
                         </div>
                       </div>
                       <div>
-                        <Label>Nilai Tertimbang</Label>
+                        <Label>Hasil</Label>
                         <div className="h-10 flex items-center mt-1 text-base">
                           {valueObj 
                             ? (valueObj.score * indicator.weight).toFixed(3)
