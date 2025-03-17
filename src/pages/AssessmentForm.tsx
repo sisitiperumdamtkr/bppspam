@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,10 +23,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   Assessment, 
-  Indicator
+  Indicator,
+  Value
 } from "@/models/types";
 import { 
   indicators 
@@ -41,12 +44,14 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
+import { supabase } from "@/integrations/supabase/client";
 
 const AssessmentForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user } = useAuth();
+  const { toast } = useToast();
   const isNewAssessment = id === "new";
   
   // Initialize with PERUMDAM TIRTA KERTA RAHARJA as the company name
@@ -65,6 +70,66 @@ const AssessmentForm = () => {
   const [formulaInputs, setFormulaInputs] = useState<Record<string, Record<string, number>>>({});
   
   const [showExportOptions, setShowExportOptions] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Fetch existing assessment if editing
+  useEffect(() => {
+    if (!isNewAssessment && id) {
+      const fetchAssessment = async () => {
+        setIsLoading(true);
+        try {
+          // Fetch assessment data
+          const { data: assessmentData, error: assessmentError } = await supabase
+            .from('assessments')
+            .select('*')
+            .eq('id', id)
+            .single();
+            
+          if (assessmentError) throw assessmentError;
+          
+          // Fetch assessment values
+          const { data: valuesData, error: valuesError } = await supabase
+            .from('assessment_values')
+            .select('*')
+            .eq('assessment_id', id);
+            
+          if (valuesError) throw valuesError;
+          
+          // Map values data to the expected format
+          const values: Record<string, Value> = {};
+          valuesData.forEach((item) => {
+            values[item.indicator_id] = {
+              value: item.value,
+              score: item.score
+            };
+          });
+          
+          // Set assessment state
+          setAssessment({
+            id: assessmentData.id,
+            name: assessmentData.name,
+            year: assessmentData.year,
+            date: assessmentData.date,
+            userId: assessmentData.user_id,
+            values: values,
+            totalScore: assessmentData.total_score || 0,
+            status: assessmentData.status
+          });
+        } catch (error) {
+          console.error("Error fetching assessment:", error);
+          toast({
+            title: "Error",
+            description: "Gagal mengambil data penilaian",
+            variant: "destructive"
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchAssessment();
+    }
+  }, [id, isNewAssessment, toast]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -111,11 +176,11 @@ const AssessmentForm = () => {
         break;
       
       case "cash_ratio":
-        // Cash Ratio = (Kas + Setara Kas) / Utang Lancar
+        // Cash Ratio = (Kas + Setara Kas) / Utang Lancar * 100%
         const kas = formulaInputs[indicatorId]?.kas || 0;
         const setaraKas = formulaInputs[indicatorId]?.setaraKas || 0;
         const utangLancar = formulaInputs[indicatorId]?.utangLancar || 1;
-        calculatedValue = (kas + setaraKas) / utangLancar;
+        calculatedValue = ((kas + setaraKas) / utangLancar) * 100;
         break;
       
       case "efektivitas_penagihan":
@@ -161,10 +226,10 @@ const AssessmentForm = () => {
         break;
       
       case "konsumsi_air":
-        // Konsumsi Air = Air Terjual Domestik / Jumlah Pelanggan Domestik
+        // Konsumsi Air = Air Terjual Domestik / (Jumlah Pelanggan Domestik * 12)
         const airTerjualDomestik = formulaInputs[indicatorId]?.airTerjualDomestik || 0;
         const pelangganDomestik = formulaInputs[indicatorId]?.pelangganDomestik || 1;
-        calculatedValue = airTerjualDomestik / pelangganDomestik;
+        calculatedValue = airTerjualDomestik / (pelangganDomestik * 12);
         break;
       
       case "efisiensi_produksi":
@@ -251,22 +316,69 @@ const AssessmentForm = () => {
     }));
   };
   
-  const handleSave = () => {
-    // In a real app, this would save to a database
-    console.log("Saving assessment:", assessment);
-    
-    // Mark as completed if all indicators have values
-    const isComplete = indicators.every(indicator => 
-      assessment.values[indicator.id] !== undefined
-    );
-    
-    const updatedAssessment = {
-      ...assessment,
-      status: isComplete ? "completed" : "draft"
-    };
-    
-    // For this demo, we'll just navigate back to the list
-    navigate("/assessments");
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      // Mark as completed if all indicators have values
+      const isComplete = indicators.every(indicator => 
+        assessment.values[indicator.id] !== undefined
+      );
+      
+      const status = isComplete ? "completed" : "draft";
+      
+      // Prepare assessment data for Supabase
+      const assessmentData = {
+        id: assessment.id,
+        name: assessment.name,
+        year: assessment.year,
+        date: assessment.date,
+        user_id: user?.id || assessment.userId,
+        total_score: assessment.totalScore,
+        status: status
+      };
+      
+      // Save or update assessment
+      const { error: assessmentError } = await supabase
+        .from('assessments')
+        .upsert(assessmentData, { onConflict: 'id' });
+      
+      if (assessmentError) throw assessmentError;
+      
+      // Prepare values data for Supabase
+      const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
+        id: `${assessment.id}-${indicatorId}`,
+        assessment_id: assessment.id,
+        indicator_id: indicatorId,
+        value: value.value,
+        score: value.score
+      }));
+      
+      // Save assessment values
+      if (valuesData.length > 0) {
+        const { error: valuesError } = await supabase
+          .from('assessment_values')
+          .upsert(valuesData, { onConflict: 'id' });
+          
+        if (valuesError) throw valuesError;
+      }
+      
+      toast({
+        title: "Sukses",
+        description: "Data penilaian berhasil disimpan",
+      });
+      
+      // Navigate back to assessment list
+      navigate("/assessments");
+    } catch (error) {
+      console.error("Error saving assessment:", error);
+      toast({
+        title: "Error",
+        description: "Gagal menyimpan data penilaian",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   const handleExport = (type: "csv" | "pdf") => {
@@ -470,9 +582,18 @@ const AssessmentForm = () => {
                 )}
               </>
             )}
-            <Button onClick={handleSave}>
-              <Save className="h-4 w-4 mr-2" />
-              Simpan
+            <Button onClick={handleSave} disabled={isLoading}>
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full border-2 border-t-transparent border-white animate-spin"></div>
+                  <span>Menyimpan...</span>
+                </div>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Simpan
+                </>
+              )}
             </Button>
           </div>
         </div>
@@ -485,8 +606,7 @@ const AssessmentForm = () => {
               name="name"
               value={assessment.name}
               onChange={handleInputChange}
-              readOnly
-              className="mt-1 bg-gray-50"
+              className="mt-1"
             />
           </div>
           <div>

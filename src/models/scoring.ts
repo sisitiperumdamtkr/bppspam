@@ -49,6 +49,20 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       if (value < 80) return 4;
       return 5;
       
+    case "pertumbuhan_pelanggan":
+      if (value < 2) return 1;
+      if (value < 4) return 2;
+      if (value < 6) return 3;
+      if (value < 10) return 4;
+      return 5;
+      
+    case "penyelesaian_aduan":
+      if (value < 60) return 1;
+      if (value < 75) return 2;
+      if (value < 85) return 3;
+      if (value < 95) return 4;
+      return 5;
+      
     case "kualitas_air":
       if (value < 80) return 1;
       if (value < 90) return 2;
@@ -56,18 +70,11 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       if (value < 99) return 4;
       return 5;
       
-    case "kontinuitas_air":
-      if (value < 12) return 1;
-      if (value < 16) return 2;
+    case "konsumsi_air":
+      if (value < 10) return 1;
+      if (value < 15) return 2;
       if (value < 20) return 3;
-      if (value < 23) return 4;
-      return 5;
-      
-    case "penanganan_pengaduan":
-      if (value < 60) return 1;
-      if (value < 75) return 2;
-      if (value < 85) return 3;
-      if (value < 95) return 4;
+      if (value < 30) return 4;
       return 5;
       
     // Aspek Operasional
@@ -94,10 +101,10 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 5;
       
     case "tekanan_air":
-      if (value < 0.5) return 1;
-      if (value < 0.7) return 2;
-      if (value < 0.9) return 3;
-      if (value < 1) return 4;
+      if (value < 20) return 1;
+      if (value < 40) return 2;
+      if (value < 60) return 3;
+      if (value < 80) return 4;
       return 5;
       
     case "penggantian_meter":

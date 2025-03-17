@@ -9,7 +9,7 @@ export const indicators: Indicator[] = [
     name: "Return on Equity (ROE)",
     category: "Keuangan",
     formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas × 100%",
-    weight: 0.05,
+    weight: 0.055,
     unit: "%"
   },
   {
@@ -17,7 +17,7 @@ export const indicators: Indicator[] = [
     name: "Rasio Operasi",
     category: "Keuangan",
     formula: "Biaya Operasi / Pendapatan Operasi",
-    weight: 0.05,
+    weight: 0.055,
     unit: "ratio"
   },
   {
@@ -25,7 +25,7 @@ export const indicators: Indicator[] = [
     name: "Cash Ratio",
     category: "Keuangan",
     formula: "Kas + Setara Kas / Utang Lancar × 100%",
-    weight: 0.05,
+    weight: 0.055,
     unit: "%"
   },
   {
@@ -33,7 +33,7 @@ export const indicators: Indicator[] = [
     name: "Efektivitas Penagihan",
     category: "Keuangan",
     formula: "Jumlah Penerimaan Rek Air / Jumah Rekening Air × 100%",
-    weight: 0.05,
+    weight: 0.055,
     unit: "%"
   },
   {
@@ -41,7 +41,7 @@ export const indicators: Indicator[] = [
     name: "Solvabilitas",
     category: "Keuangan",
     formula: "Total Aktiva / Total Utang × 100%",
-    weight: 0.05,
+    weight: 0.030,
     unit: "%"
   },
   
@@ -51,7 +51,7 @@ export const indicators: Indicator[] = [
     name: "Cakupan Pelayanan Teknis",
     category: "Pelayanan",
     formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk wilayah pelayanan × 100%",
-    weight: 0.05,
+    weight: 0.050,
     unit: "%"
   },
   {
@@ -59,7 +59,7 @@ export const indicators: Indicator[] = [
     name: "Pertumbuhan Pelanggan",
     category: "Pelayanan",
     formula: "(Jml Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu × 100%",
-    weight: 0.05,
+    weight: 0.050,
     unit: "%"
   },
   {
@@ -82,8 +82,8 @@ export const indicators: Indicator[] = [
     id: "konsumsi_air",
     name: "Konsumsi Air Domestik",
     category: "Pelayanan",
-    formula: "Jmh Air Yang Terjual Domestik Setahun/12 / Jumlah Pelanggan Domestik",
-    weight: 0.05,
+    formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
+    weight: 0.050,
     unit: "m³/bln"
   },
   
@@ -93,7 +93,7 @@ export const indicators: Indicator[] = [
     name: "Efisiensi Produksi",
     category: "Operasional",
     formula: "Volume Produksi Riil (m³) / Kapasitas terpasang (m³) × 100%",
-    weight: 0.07,
+    weight: 0.070,
     unit: "%"
   },
   {
@@ -101,7 +101,7 @@ export const indicators: Indicator[] = [
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
     formula: "(Distribusi Air - Air Terjual) / Distribusi Air × 100%",
-    weight: 0.07,
+    weight: 0.070,
     unit: "%"
   },
   {
@@ -109,7 +109,7 @@ export const indicators: Indicator[] = [
     name: "Jam Operasi Layanan",
     category: "Operasional",
     formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365 hari",
-    weight: 0.08,
+    weight: 0.080,
     unit: "jam"
   },
   {
@@ -117,7 +117,7 @@ export const indicators: Indicator[] = [
     name: "Tekanan Air Samb Pelanggan",
     category: "Operasional",
     formula: "Jmh Pelanggan dilayani dgn tekanan> 0,7Bar / Jumlah Pelanggan × 100%",
-    weight: 0.05,
+    weight: 0.065,
     unit: "%"
   },
   {
@@ -125,7 +125,7 @@ export const indicators: Indicator[] = [
     name: "Penggantian Meter Air",
     category: "Operasional",
     formula: "Jumlah Meter Yg diganti/dikalibrasi tahun ybs / Jumlah Pelanggan × 100%",
-    weight: 0.03,
+    weight: 0.065,
     unit: "%"
   },
   
@@ -135,7 +135,7 @@ export const indicators: Indicator[] = [
     name: "Rasio Jmh Pegawai / 1000 pelanggan",
     category: "SDM",
     formula: "Jumlah Pegawai / Jumlah Pelanggan × 1000",
-    weight: 0.07,
+    weight: 0.070,
     unit: "rasio"
   },
   {
@@ -143,7 +143,7 @@ export const indicators: Indicator[] = [
     name: "Ratio Diklat Pegawai / Peningkatan Kompetensi",
     category: "SDM",
     formula: "Jumlah Pegawai Yg Ikut Diklat / Jumlah Pegawai × 100%",
-    weight: 0.04,
+    weight: 0.040,
     unit: "%"
   },
   {
@@ -151,7 +151,7 @@ export const indicators: Indicator[] = [
     name: "Biaya Diklat Terhadap Biaya Pegawai",
     category: "SDM",
     formula: "Biaya Diklat / Biaya Pegawai × 100%",
-    weight: 0.04,
+    weight: 0.040,
     unit: "%"
   }
 ];
