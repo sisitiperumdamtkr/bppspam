@@ -8,7 +8,7 @@ export const indicators: Indicator[] = [
     id: "roe",
     name: "Return on Equity (ROE)",
     category: "Keuangan",
-    formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas × 100%",
+    formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas × 1",
     weight: 0.055,
     unit: ""
   },
