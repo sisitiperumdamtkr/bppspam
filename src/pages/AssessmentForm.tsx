@@ -27,7 +27,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { 
   Assessment, 
   Indicator,
-  Value
+  Value,
+  AssessmentStatus
 } from "@/models/types";
 import { 
   indicators 
@@ -668,11 +669,17 @@ const AssessmentForm = () => {
                       </div>
                     </div>
                     
-                    <div className="grid md:grid-cols-3 gap-4 mt-4 border-t pt-4">
+                    <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
                       <div>
                         <Label>Nilai {indicator.unit}</Label>
                         <div className="h-10 flex items-center mt-1 text-base font-medium">
                           {valueObj ? valueObj.value.toFixed(2) : "-"}
+                        </div>
+                      </div>
+                      <div>
+                        <Label>Bobot</Label>
+                        <div className="h-10 flex items-center mt-1 text-base">
+                          {indicator.weight.toFixed(3)}
                         </div>
                       </div>
                       <div>
@@ -685,7 +692,7 @@ const AssessmentForm = () => {
                         <Label>Nilai Tertimbang</Label>
                         <div className="h-10 flex items-center mt-1 text-base">
                           {valueObj 
-                            ? (valueObj.score * indicator.weight).toFixed(2)
+                            ? (valueObj.score * indicator.weight).toFixed(3)
                             : "-"}
                         </div>
                       </div>
@@ -701,7 +708,7 @@ const AssessmentForm = () => {
         <div className="mt-8 border-t pt-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Total Skor:</h2>
-            <div className="text-2xl font-bold">{assessment.totalScore.toFixed(2)}</div>
+            <div className="text-2xl font-bold">{assessment.totalScore.toFixed(3)}</div>
           </div>
           {assessment.totalScore > 0 && (
             <div className="mt-4">
