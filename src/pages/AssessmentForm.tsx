@@ -163,130 +163,128 @@ const AssessmentForm = () => {
     switch (indicatorId) {
       case "roe":
         // ROE = Laba Bersih / Jumlah Ekuitas × 100%
-        const labaBersih = formulaInputs[indicatorId]?.labaBersih || 0;
-        const ekuitas = formulaInputs[indicatorId]?.ekuitas || 1; // Prevent division by zero
+        const labaBersih = parseFloat(String(formulaInputs[indicatorId]?.labaBersih || 0));
+        const ekuitas = parseFloat(String(formulaInputs[indicatorId]?.ekuitas || 1)); // Prevent division by zero
         calculatedValue = (labaBersih / ekuitas) * 100;
-        
-        // Contoh nilai = (87.181.566.495 / 1.007.466.398.895) * 100% = 8.65%
-        // Ini akan menghasilkan penilaian (nilai) 4 karena berada di rentang 7-10
+        console.log(`ROE Calculation: ${labaBersih} / ${ekuitas} * 100 = ${calculatedValue}%`);
         break;
       
       case "rasio_operasi":
         // Rasio Operasi = Biaya Operasi / Pendapatan Operasi
-        const biayaOperasi = formulaInputs[indicatorId]?.biayaOperasi || 0;
-        const pendapatanOperasi = formulaInputs[indicatorId]?.pendapatanOperasi || 1;
+        const biayaOperasi = parseFloat(String(formulaInputs[indicatorId]?.biayaOperasi || 0));
+        const pendapatanOperasi = parseFloat(String(formulaInputs[indicatorId]?.pendapatanOperasi || 1));
         calculatedValue = biayaOperasi / pendapatanOperasi;
         break;
       
       case "cash_ratio":
         // Cash Ratio = (Kas + Setara Kas) / Utang Lancar * 100%
-        const kas = formulaInputs[indicatorId]?.kas || 0;
-        const setaraKas = formulaInputs[indicatorId]?.setaraKas || 0;
-        const utangLancar = formulaInputs[indicatorId]?.utangLancar || 1;
+        const kas = parseFloat(String(formulaInputs[indicatorId]?.kas || 0));
+        const setaraKas = parseFloat(String(formulaInputs[indicatorId]?.setaraKas || 0));
+        const utangLancar = parseFloat(String(formulaInputs[indicatorId]?.utangLancar || 1));
         calculatedValue = ((kas + setaraKas) / utangLancar) * 100;
         break;
       
       case "efektivitas_penagihan":
         // Efektivitas Penagihan = Jumlah Penerimaan Rek Air / Jumah Rekening Air × 100%
-        const penerimaanRekAir = formulaInputs[indicatorId]?.penerimaanRekAir || 0;
-        const jumlahRekeningAir = formulaInputs[indicatorId]?.jumlahRekeningAir || 1;
+        const penerimaanRekAir = parseFloat(String(formulaInputs[indicatorId]?.penerimaanRekAir || 0));
+        const jumlahRekeningAir = parseFloat(String(formulaInputs[indicatorId]?.jumlahRekeningAir || 1));
         calculatedValue = (penerimaanRekAir / jumlahRekeningAir) * 100;
         break;
       
       case "solvabilitas":
         // Solvabilitas = Total Aktiva / Total Utang × 100%
-        const totalAktiva = formulaInputs[indicatorId]?.totalAktiva || 0;
-        const totalUtang = formulaInputs[indicatorId]?.totalUtang || 1;
+        const totalAktiva = parseFloat(String(formulaInputs[indicatorId]?.totalAktiva || 0));
+        const totalUtang = parseFloat(String(formulaInputs[indicatorId]?.totalUtang || 1));
         calculatedValue = (totalAktiva / totalUtang) * 100;
         break;
       
       case "cakupan_pelayanan":
         // Cakupan Pelayanan = Jumlah Penduduk Terlayani / Jumlah Penduduk × 100%
-        const pendudukTerlayani = formulaInputs[indicatorId]?.pendudukTerlayani || 0;
-        const totalPenduduk = formulaInputs[indicatorId]?.totalPenduduk || 1;
+        const pendudukTerlayani = parseFloat(String(formulaInputs[indicatorId]?.pendudukTerlayani || 0));
+        const totalPenduduk = parseFloat(String(formulaInputs[indicatorId]?.totalPenduduk || 1));
         calculatedValue = (pendudukTerlayani / totalPenduduk) * 100;
         break;
       
       case "pertumbuhan_pelanggan":
         // Pertumbuhan Pelanggan = (Pelanggan tahun ini - tahun lalu) / tahun lalu × 100%
-        const pelangganTahunIni = formulaInputs[indicatorId]?.pelangganTahunIni || 0;
-        const pelangganTahunLalu = formulaInputs[indicatorId]?.pelangganTahunLalu || 1;
+        const pelangganTahunIni = parseFloat(String(formulaInputs[indicatorId]?.pelangganTahunIni || 0));
+        const pelangganTahunLalu = parseFloat(String(formulaInputs[indicatorId]?.pelangganTahunLalu || 1));
         calculatedValue = ((pelangganTahunIni - pelangganTahunLalu) / pelangganTahunLalu) * 100;
         break;
       
       case "penyelesaian_aduan":
         // Penyelesaian Aduan = Jumlah Aduan Selesai / Jumlah Aduan × 100%
-        const aduanSelesai = formulaInputs[indicatorId]?.aduanSelesai || 0;
-        const totalAduan = formulaInputs[indicatorId]?.totalAduan || 1;
+        const aduanSelesai = parseFloat(String(formulaInputs[indicatorId]?.aduanSelesai || 0));
+        const totalAduan = parseFloat(String(formulaInputs[indicatorId]?.totalAduan || 1));
         calculatedValue = (aduanSelesai / totalAduan) * 100;
         break;
       
       case "kualitas_air":
         // Kualitas Air = Jumlah Uji Yang Memenuhi Syarat / Jumlah Yang Diuji × 100%
-        const ujiMemenuhi = formulaInputs[indicatorId]?.ujiMemenuhi || 0;
-        const totalUji = formulaInputs[indicatorId]?.totalUji || 1;
+        const ujiMemenuhi = parseFloat(String(formulaInputs[indicatorId]?.ujiMemenuhi || 0));
+        const totalUji = parseFloat(String(formulaInputs[indicatorId]?.totalUji || 1));
         calculatedValue = (ujiMemenuhi / totalUji) * 100;
         break;
       
       case "konsumsi_air":
         // Konsumsi Air = Air Terjual Domestik / (Jumlah Pelanggan Domestik * 12)
-        const airTerjualDomestik = formulaInputs[indicatorId]?.airTerjualDomestik || 0;
-        const pelangganDomestik = formulaInputs[indicatorId]?.pelangganDomestik || 1;
+        const airTerjualDomestik = parseFloat(String(formulaInputs[indicatorId]?.airTerjualDomestik || 0));
+        const pelangganDomestik = parseFloat(String(formulaInputs[indicatorId]?.pelangganDomestik || 1));
         calculatedValue = airTerjualDomestik / (pelangganDomestik * 12);
         break;
       
       case "efisiensi_produksi":
         // Efisiensi Produksi = Volume Produksi Riil / Kapasitas Terpasang × 100%
-        const produksiRiil = formulaInputs[indicatorId]?.produksiRiil || 0;
-        const kapasitasTerpasang = formulaInputs[indicatorId]?.kapasitasTerpasang || 1;
+        const produksiRiil = parseFloat(String(formulaInputs[indicatorId]?.produksiRiil || 0));
+        const kapasitasTerpasang = parseFloat(String(formulaInputs[indicatorId]?.kapasitasTerpasang || 1));
         calculatedValue = (produksiRiil / kapasitasTerpasang) * 100;
         break;
       
       case "tingkat_kehilangan_air":
         // Tingkat Kehilangan Air = (Distribusi Air - Air Terjual) / Distribusi Air × 100%
-        const distribusiAir = formulaInputs[indicatorId]?.distribusiAir || 0;
-        const airTerjual = formulaInputs[indicatorId]?.airTerjual || 0;
+        const distribusiAir = parseFloat(String(formulaInputs[indicatorId]?.distribusiAir || 0));
+        const airTerjual = parseFloat(String(formulaInputs[indicatorId]?.airTerjual || 0));
         calculatedValue = distribusiAir > 0 ? ((distribusiAir - airTerjual) / distribusiAir) * 100 : 0;
         break;
       
       case "jam_operasi":
         // Jam Operasi = Total Jam Operasi Dalam Setahun / 365
-        const totalJamOperasi = formulaInputs[indicatorId]?.totalJamOperasi || 0;
+        const totalJamOperasi = parseFloat(String(formulaInputs[indicatorId]?.totalJamOperasi || 0));
         calculatedValue = totalJamOperasi / 365;
         break;
       
       case "tekanan_air":
         // Tekanan Air = Jumlah Pelanggan Dengan Tekanan Baik / Jumlah Pelanggan × 100%
-        const pelangganTekananBaik = formulaInputs[indicatorId]?.pelangganTekananBaik || 0;
-        const totalPelanggan = formulaInputs[indicatorId]?.totalPelanggan || 1;
+        const pelangganTekananBaik = parseFloat(String(formulaInputs[indicatorId]?.pelangganTekananBaik || 0));
+        const totalPelanggan = parseFloat(String(formulaInputs[indicatorId]?.totalPelanggan || 1));
         calculatedValue = (pelangganTekananBaik / totalPelanggan) * 100;
         break;
       
       case "penggantian_meter":
         // Penggantian Meter = Jumlah Meter Yang Diganti / Jumlah Pelanggan × 100%
-        const meterDiganti = formulaInputs[indicatorId]?.meterDiganti || 0;
-        const jumlahPelanggan = formulaInputs[indicatorId]?.jumlahPelanggan || 1;
+        const meterDiganti = parseFloat(String(formulaInputs[indicatorId]?.meterDiganti || 0));
+        const jumlahPelanggan = parseFloat(String(formulaInputs[indicatorId]?.jumlahPelanggan || 1));
         calculatedValue = (meterDiganti / jumlahPelanggan) * 100;
         break;
       
       case "rasio_pegawai":
         // Rasio Pegawai = Jumlah Pegawai / Jumlah Pelanggan × 1000
-        const jumlahPegawai = formulaInputs[indicatorId]?.jumlahPegawai || 0;
-        const pelanggan = formulaInputs[indicatorId]?.pelanggan || 1;
+        const jumlahPegawai = parseFloat(String(formulaInputs[indicatorId]?.jumlahPegawai || 0));
+        const pelanggan = parseFloat(String(formulaInputs[indicatorId]?.pelanggan || 1));
         calculatedValue = (jumlahPegawai / pelanggan) * 1000;
         break;
       
       case "rasio_diklat":
         // Rasio Diklat = Jumlah Pegawai Yang Ikut Diklat / Jumlah Pegawai × 100%
-        const pegawaiDiklat = formulaInputs[indicatorId]?.pegawaiDiklat || 0;
-        const totalPegawai = formulaInputs[indicatorId]?.totalPegawai || 1;
+        const pegawaiDiklat = parseFloat(String(formulaInputs[indicatorId]?.pegawaiDiklat || 0));
+        const totalPegawai = parseFloat(String(formulaInputs[indicatorId]?.totalPegawai || 1));
         calculatedValue = (pegawaiDiklat / totalPegawai) * 100;
         break;
       
       case "biaya_diklat":
         // Biaya Diklat = Biaya Diklat / Biaya Pegawai × 100%
-        const biayaDiklat = formulaInputs[indicatorId]?.biayaDiklat || 0;
-        const biayaPegawai = formulaInputs[indicatorId]?.biayaPegawai || 1;
+        const biayaDiklat = parseFloat(String(formulaInputs[indicatorId]?.biayaDiklat || 0));
+        const biayaPegawai = parseFloat(String(formulaInputs[indicatorId]?.biayaPegawai || 1));
         calculatedValue = (biayaDiklat / biayaPegawai) * 100;
         break;
       
