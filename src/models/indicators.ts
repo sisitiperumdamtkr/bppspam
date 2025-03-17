@@ -10,7 +10,7 @@ export const indicators: Indicator[] = [
     category: "Keuangan",
     formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas × 100%",
     weight: 0.055,
-    unit: "%"
+    unit: ""
   },
   {
     id: "rasio_operasi",
@@ -18,7 +18,7 @@ export const indicators: Indicator[] = [
     category: "Keuangan",
     formula: "Biaya Operasi / Pendapatan Operasi",
     weight: 0.055,
-    unit: "ratio"
+    unit: ""
   },
   {
     id: "cash_ratio",
