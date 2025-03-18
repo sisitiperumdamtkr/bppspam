@@ -58,7 +58,7 @@ export const indicators: Indicator[] = [
     id: "pertumbuhan_pelanggan",
     name: "Pertumbuhan Pelanggan",
     category: "Pelayanan",
-    formula: "(Jml Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu × 100%",
+    formula: "(Jml Pelanggan) / pelanggan tahun lalu × 100%",
     weight: 0.050,
     unit: "%"
   },
@@ -74,15 +74,15 @@ export const indicators: Indicator[] = [
     id: "kualitas_air",
     name: "Kualitas Air Pelanggan",
     category: "Pelayanan",
-    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji",
+    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji × 100",
     weight: 0.075,
-    unit: ""
+    unit: "%"
   },
   {
     id: "konsumsi_air",
     name: "Konsumsi Air Domestik",
     category: "Pelayanan",
-    formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
+    formula: "(Jmh Air Yang Terjual Domestik Setahun) / Jumlah Pelanggan Domestik",
     weight: 0.050,
     unit: "m³/bulan"
   },
@@ -100,7 +100,7 @@ export const indicators: Indicator[] = [
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "(Distribusi Air - Air Terjual) / Distribusi Air × 100%",
+    formula: "(Air Terjual) / Distribusi Air × 100%",
     weight: 0.070,
     unit: "%"
   },

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -232,7 +231,7 @@ const AssessmentForm = () => {
         if (pelangganTahunLalu === 0) {
           calculatedValue = 0;
         } else {
-          calculatedValue = ((pelangganTahunIni - pelangganTahunLalu) / pelangganTahunLalu) * 100;
+          calculatedValue = (pelangganTahunIni / pelangganTahunLalu) * 100;
         }
         break;
       
@@ -254,7 +253,7 @@ const AssessmentForm = () => {
         if (totalUji === 0) {
           calculatedValue = 0;
         } else {
-          calculatedValue = (ujiMemenuhi / totalUji);
+          calculatedValue = (ujiMemenuhi / totalUji) * 100;
         }
         break;
       
@@ -265,7 +264,7 @@ const AssessmentForm = () => {
         if (pelangganDomestik === 0) {
           calculatedValue = 0;
         } else {
-          calculatedValue = (airTerjualDomestik / 12) / pelangganDomestik;
+          calculatedValue = airTerjualDomestik / pelangganDomestik;
         }
         break;
       
@@ -287,7 +286,7 @@ const AssessmentForm = () => {
         if (distribusiAir === 0) {
           calculatedValue = 0;
         } else {
-          calculatedValue = ((distribusiAir - airTerjual) / distribusiAir) * 100;
+          calculatedValue = (airTerjual / distribusiAir) * 100;
         }
         break;
       
@@ -394,6 +393,10 @@ const AssessmentForm = () => {
         total_score: assessment.totalScore,
         status: status
       };
+      
+      if (!assessmentData.id) {
+        throw new Error("ID penilaian tidak valid");
+      }
       
       const { error: assessmentError } = await supabase
         .from('assessments')
