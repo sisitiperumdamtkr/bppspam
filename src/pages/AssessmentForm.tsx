@@ -724,7 +724,6 @@ const AssessmentForm = () => {
                         <Label>Penilaian</Label>
                         <div className="h-10 flex items-center mt-1 text-base font-medium">
                           {valueObj ? valueObj.value.toFixed(2) : "-"}
-                          {indicator.unit ? ` ${indicator.unit}` : ""}
                         </div>
                       </div>
                       <div>

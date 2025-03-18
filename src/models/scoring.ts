@@ -4,7 +4,6 @@ import { indicators } from './indicators';
 
 // Fungsi untuk menghitung skor berdasarkan nilai dan indikator
 export const calculateScore = (value: number, indicatorId: string): number => {
-  // Implementasi rumus-rumus penilaian berdasarkan kriteria yang benar:
   switch (indicatorId) {
     // Aspek Keuangan
     case "roe":

@@ -265,10 +265,10 @@ const AssessmentDetail = () => {
                 {indicators.map((indicator) => (
                   <tr key={indicator.id} className="border-b last:border-0">
                     <td className="py-2 px-4">{indicator.name}</td>
-                    <td className="py-2 px-4">{indicator.value} {indicator.unit}</td>
+                    <td className="py-2 px-4">{indicator.value.toFixed(2)}</td>
                     <td className="py-2 px-4">{indicator.score}</td>
                     <td className="py-2 px-4">{indicator.weight.toFixed(3)}</td>
-                    <td className="py-2 px-4">{indicator.weightedScore.toFixed(2)}</td>
+                    <td className="py-2 px-4">{indicator.weightedScore.toFixed(3)}</td>
                   </tr>
                 ))}
               </tbody>
