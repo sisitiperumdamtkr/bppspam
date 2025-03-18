@@ -54,7 +54,6 @@ const AssessmentForm = () => {
   const { toast } = useToast();
   const isNewAssessment = id === "new";
   
-  // Initialize with PERUMDAM TIRTA KERTA RAHARJA as the company name
   const [assessment, setAssessment] = useState<Assessment>({
     id: isNewAssessment ? crypto.randomUUID() : id || "",
     name: "PERUMDAM TIRTA KERTA RAHARJA",
@@ -66,19 +65,16 @@ const AssessmentForm = () => {
     status: "draft"
   });
   
-  // State for formula inputs
   const [formulaInputs, setFormulaInputs] = useState<Record<string, Record<string, number>>>({});
   
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Fetch existing assessment if editing
   useEffect(() => {
     if (!isNewAssessment && id) {
       const fetchAssessment = async () => {
         setIsLoading(true);
         try {
-          // Fetch assessment data
           const { data: assessmentData, error: assessmentError } = await supabase
             .from('assessments')
             .select('*')
@@ -87,7 +83,6 @@ const AssessmentForm = () => {
             
           if (assessmentError) throw assessmentError;
           
-          // Fetch assessment values
           const { data: valuesData, error: valuesError } = await supabase
             .from('assessment_values')
             .select('*')
@@ -95,7 +90,6 @@ const AssessmentForm = () => {
             
           if (valuesError) throw valuesError;
           
-          // Map values data to the expected format
           const values: Record<string, Value> = {};
           valuesData.forEach((item) => {
             values[item.indicator_id] = {
@@ -104,7 +98,6 @@ const AssessmentForm = () => {
             };
           });
           
-          // Set assessment state with type checking for status
           setAssessment({
             id: assessmentData.id,
             name: assessmentData.name,
@@ -144,7 +137,6 @@ const AssessmentForm = () => {
     inputName: string, 
     value: number
   ) => {
-    // Update formula inputs
     setFormulaInputs(prev => ({
       ...prev,
       [indicatorId]: {
@@ -153,163 +145,278 @@ const AssessmentForm = () => {
       }
     }));
     
-    // Calculate formula value based on inputs
     const indicator = indicators.find(ind => ind.id === indicatorId);
     if (!indicator) return;
     
     let calculatedValue: number = 0;
     
-    // Calculate value based on the indicator
     switch (indicatorId) {
       case "roe":
-        // ROE = Laba Bersih / Jumlah Ekuitas × 100%
         const labaBersih = parseFloat(String(formulaInputs[indicatorId]?.labaBersih || 0));
-        const ekuitas = parseFloat(String(formulaInputs[indicatorId]?.ekuitas || 1)); // Prevent division by zero
-        calculatedValue = (labaBersih / ekuitas) * 100;
-        console.log(`ROE Calculation: ${labaBersih} / ${ekuitas} * 100 = ${calculatedValue}%`);
+        const ekuitas = parseFloat(String(formulaInputs[indicatorId]?.ekuitas || 1));
+        
+        const labaBersihValue = inputName === 'labaBersih' ? value : labaBersih;
+        const ekuitasValue = inputName === 'ekuitas' ? value : ekuitas;
+        
+        if (ekuitasValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (labaBersihValue / ekuitasValue) * 100;
+        }
+        console.log(`ROE Calculation: ${labaBersihValue} / ${ekuitasValue} * 100 = ${calculatedValue}%`);
         break;
       
       case "rasio_operasi":
-        // Rasio Operasi = Biaya Operasi / Pendapatan Operasi
         const biayaOperasi = parseFloat(String(formulaInputs[indicatorId]?.biayaOperasi || 0));
         const pendapatanOperasi = parseFloat(String(formulaInputs[indicatorId]?.pendapatanOperasi || 1));
-        calculatedValue = biayaOperasi / pendapatanOperasi;
+        
+        const biayaOperasiValue = inputName === 'biayaOperasi' ? value : biayaOperasi;
+        const pendapatanOperasiValue = inputName === 'pendapatanOperasi' ? value : pendapatanOperasi;
+        
+        if (pendapatanOperasiValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = biayaOperasiValue / pendapatanOperasiValue;
+        }
         break;
       
       case "cash_ratio":
-        // Cash Ratio = (Kas + Setara Kas) / Utang Lancar * 100%
         const kas = parseFloat(String(formulaInputs[indicatorId]?.kas || 0));
         const setaraKas = parseFloat(String(formulaInputs[indicatorId]?.setaraKas || 0));
         const utangLancar = parseFloat(String(formulaInputs[indicatorId]?.utangLancar || 1));
-        calculatedValue = ((kas + setaraKas) / utangLancar) * 100;
+        
+        const kasValue = inputName === 'kas' ? value : kas;
+        const setaraKasValue = inputName === 'setaraKas' ? value : setaraKas;
+        const utangLancarValue = inputName === 'utangLancar' ? value : utangLancar;
+        
+        if (utangLancarValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = ((kasValue + setaraKasValue) / utangLancarValue) * 100;
+        }
         break;
       
       case "efektivitas_penagihan":
-        // Efektivitas Penagihan = Jumlah Penerimaan Rek Air / Jumah Rekening Air × 100%
         const penerimaanRekAir = parseFloat(String(formulaInputs[indicatorId]?.penerimaanRekAir || 0));
         const jumlahRekeningAir = parseFloat(String(formulaInputs[indicatorId]?.jumlahRekeningAir || 1));
-        calculatedValue = (penerimaanRekAir / jumlahRekeningAir) * 100;
+        
+        const penerimaanRekAirValue = inputName === 'penerimaanRekAir' ? value : penerimaanRekAir;
+        const jumlahRekeningAirValue = inputName === 'jumlahRekeningAir' ? value : jumlahRekeningAir;
+        
+        if (jumlahRekeningAirValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (penerimaanRekAirValue / jumlahRekeningAirValue) * 100;
+        }
         break;
       
       case "solvabilitas":
-        // Solvabilitas = Total Aktiva / Total Utang × 100%
         const totalAktiva = parseFloat(String(formulaInputs[indicatorId]?.totalAktiva || 0));
         const totalUtang = parseFloat(String(formulaInputs[indicatorId]?.totalUtang || 1));
-        calculatedValue = (totalAktiva / totalUtang) * 100;
+        
+        const totalAktivaValue = inputName === 'totalAktiva' ? value : totalAktiva;
+        const totalUtangValue = inputName === 'totalUtang' ? value : totalUtang;
+        
+        if (totalUtangValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (totalAktivaValue / totalUtangValue) * 100;
+        }
         break;
       
       case "cakupan_pelayanan":
-        // Cakupan Pelayanan = Jumlah Penduduk Terlayani / Jumlah Penduduk × 100%
         const pendudukTerlayani = parseFloat(String(formulaInputs[indicatorId]?.pendudukTerlayani || 0));
         const totalPenduduk = parseFloat(String(formulaInputs[indicatorId]?.totalPenduduk || 1));
-        calculatedValue = (pendudukTerlayani / totalPenduduk) * 100;
+        
+        const pendudukTerlayaniValue = inputName === 'pendudukTerlayani' ? value : pendudukTerlayani;
+        const totalPendudukValue = inputName === 'totalPenduduk' ? value : totalPenduduk;
+        
+        if (totalPendudukValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (pendudukTerlayaniValue / totalPendudukValue) * 100;
+        }
         break;
       
       case "pertumbuhan_pelanggan":
-        // Pertumbuhan Pelanggan = (Pelanggan tahun ini - tahun lalu) / tahun lalu × 100%
         const pelangganTahunIni = parseFloat(String(formulaInputs[indicatorId]?.pelangganTahunIni || 0));
         const pelangganTahunLalu = parseFloat(String(formulaInputs[indicatorId]?.pelangganTahunLalu || 1));
-        calculatedValue = ((pelangganTahunIni - pelangganTahunLalu) / pelangganTahunLalu) * 100;
+        
+        const pelangganTahunIniValue = inputName === 'pelangganTahunIni' ? value : pelangganTahunIni;
+        const pelangganTahunLaluValue = inputName === 'pelangganTahunLalu' ? value : pelangganTahunLalu;
+        
+        if (pelangganTahunLaluValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = ((pelangganTahunIniValue - pelangganTahunLaluValue) / pelangganTahunLaluValue) * 100;
+        }
         break;
       
       case "penyelesaian_aduan":
-        // Penyelesaian Aduan = Jumlah Aduan Selesai / Jumlah Aduan × 100%
         const aduanSelesai = parseFloat(String(formulaInputs[indicatorId]?.aduanSelesai || 0));
         const totalAduan = parseFloat(String(formulaInputs[indicatorId]?.totalAduan || 1));
-        calculatedValue = (aduanSelesai / totalAduan) * 100;
+        
+        const aduanSelesaiValue = inputName === 'aduanSelesai' ? value : aduanSelesai;
+        const totalAduanValue = inputName === 'totalAduan' ? value : totalAduan;
+        
+        if (totalAduanValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (aduanSelesaiValue / totalAduanValue) * 100;
+        }
         break;
       
       case "kualitas_air":
-        // Kualitas Air = Jumlah Uji Yang Memenuhi Syarat / Jumlah Yang Diuji × 100%
         const ujiMemenuhi = parseFloat(String(formulaInputs[indicatorId]?.ujiMemenuhi || 0));
         const totalUji = parseFloat(String(formulaInputs[indicatorId]?.totalUji || 1));
-        calculatedValue = (ujiMemenuhi / totalUji) * 100;
+        
+        const ujiMemenuhiValue = inputName === 'ujiMemenuhi' ? value : ujiMemenuhi;
+        const totalUjiValue = inputName === 'totalUji' ? value : totalUji;
+        
+        if (totalUjiValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (ujiMemenuhiValue / totalUjiValue);
+        }
         break;
       
       case "konsumsi_air":
-        // Konsumsi Air = Air Terjual Domestik / (Jumlah Pelanggan Domestik * 12)
         const airTerjualDomestik = parseFloat(String(formulaInputs[indicatorId]?.airTerjualDomestik || 0));
         const pelangganDomestik = parseFloat(String(formulaInputs[indicatorId]?.pelangganDomestik || 1));
-        calculatedValue = airTerjualDomestik / (pelangganDomestik * 12);
+        
+        const airTerjualDomestikValue = inputName === 'airTerjualDomestik' ? value : airTerjualDomestik;
+        const pelangganDomestikValue = inputName === 'pelangganDomestik' ? value : pelangganDomestik;
+        
+        if (pelangganDomestikValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = airTerjualDomestikValue / (pelangganDomestikValue * 12);
+        }
         break;
       
       case "efisiensi_produksi":
-        // Efisiensi Produksi = Volume Produksi Riil / Kapasitas Terpasang × 100%
         const produksiRiil = parseFloat(String(formulaInputs[indicatorId]?.produksiRiil || 0));
         const kapasitasTerpasang = parseFloat(String(formulaInputs[indicatorId]?.kapasitasTerpasang || 1));
-        calculatedValue = (produksiRiil / kapasitasTerpasang) * 100;
+        
+        const produksiRiilValue = inputName === 'produksiRiil' ? value : produksiRiil;
+        const kapasitasTerpasangValue = inputName === 'kapasitasTerpasang' ? value : kapasitasTerpasang;
+        
+        if (kapasitasTerpasangValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (produksiRiilValue / kapasitasTerpasangValue) * 100;
+        }
         break;
       
       case "tingkat_kehilangan_air":
-        // Tingkat Kehilangan Air = (Distribusi Air - Air Terjual) / Distribusi Air × 100%
         const distribusiAir = parseFloat(String(formulaInputs[indicatorId]?.distribusiAir || 0));
         const airTerjual = parseFloat(String(formulaInputs[indicatorId]?.airTerjual || 0));
-        calculatedValue = distribusiAir > 0 ? ((distribusiAir - airTerjual) / distribusiAir) * 100 : 0;
+        
+        const distribusiAirValue = inputName === 'distribusiAir' ? value : distribusiAir;
+        const airTerjualValue = inputName === 'airTerjual' ? value : airTerjual;
+        
+        if (distribusiAirValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = ((distribusiAirValue - airTerjualValue) / distribusiAirValue) * 100;
+        }
         break;
       
       case "jam_operasi":
-        // Jam Operasi = Total Jam Operasi Dalam Setahun / 365
         const totalJamOperasi = parseFloat(String(formulaInputs[indicatorId]?.totalJamOperasi || 0));
-        calculatedValue = totalJamOperasi / 365;
+        
+        const totalJamOperasiValue = inputName === 'totalJamOperasi' ? value : totalJamOperasi;
+        
+        calculatedValue = totalJamOperasiValue / 365;
         break;
       
       case "tekanan_air":
-        // Tekanan Air = Jumlah Pelanggan Dengan Tekanan Baik / Jumlah Pelanggan × 100%
         const pelangganTekananBaik = parseFloat(String(formulaInputs[indicatorId]?.pelangganTekananBaik || 0));
         const totalPelanggan = parseFloat(String(formulaInputs[indicatorId]?.totalPelanggan || 1));
-        calculatedValue = (pelangganTekananBaik / totalPelanggan) * 100;
+        
+        const pelangganTekananBaikValue = inputName === 'pelangganTekananBaik' ? value : pelangganTekananBaik;
+        const totalPelangganValue = inputName === 'totalPelanggan' ? value : totalPelanggan;
+        
+        if (totalPelangganValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (pelangganTekananBaikValue / totalPelangganValue) * 100;
+        }
         break;
       
       case "penggantian_meter":
-        // Penggantian Meter = Jumlah Meter Yang Diganti / Jumlah Pelanggan × 100%
         const meterDiganti = parseFloat(String(formulaInputs[indicatorId]?.meterDiganti || 0));
         const jumlahPelanggan = parseFloat(String(formulaInputs[indicatorId]?.jumlahPelanggan || 1));
-        calculatedValue = (meterDiganti / jumlahPelanggan) * 100;
+        
+        const meterDigantiValue = inputName === 'meterDiganti' ? value : meterDiganti;
+        const jumlahPelangganValue = inputName === 'jumlahPelanggan' ? value : jumlahPelanggan;
+        
+        if (jumlahPelangganValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (meterDigantiValue / jumlahPelangganValue) * 100;
+        }
         break;
       
       case "rasio_pegawai":
-        // Rasio Pegawai = Jumlah Pegawai / Jumlah Pelanggan × 1000
         const jumlahPegawai = parseFloat(String(formulaInputs[indicatorId]?.jumlahPegawai || 0));
         const pelanggan = parseFloat(String(formulaInputs[indicatorId]?.pelanggan || 1));
-        calculatedValue = (jumlahPegawai / pelanggan) * 1000;
+        
+        const jumlahPegawaiValue = inputName === 'jumlahPegawai' ? value : jumlahPegawai;
+        const pelangganValue = inputName === 'pelanggan' ? value : pelanggan;
+        
+        if (pelangganValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (jumlahPegawaiValue / pelangganValue) * 1000;
+        }
         break;
       
       case "rasio_diklat":
-        // Rasio Diklat = Jumlah Pegawai Yang Ikut Diklat / Jumlah Pegawai × 100%
         const pegawaiDiklat = parseFloat(String(formulaInputs[indicatorId]?.pegawaiDiklat || 0));
         const totalPegawai = parseFloat(String(formulaInputs[indicatorId]?.totalPegawai || 1));
-        calculatedValue = (pegawaiDiklat / totalPegawai) * 100;
+        
+        const pegawaiDiklatValue = inputName === 'pegawaiDiklat' ? value : pegawaiDiklat;
+        const totalPegawaiValue = inputName === 'totalPegawai' ? value : totalPegawai;
+        
+        if (totalPegawaiValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (pegawaiDiklatValue / totalPegawaiValue) * 100;
+        }
         break;
       
       case "biaya_diklat":
-        // Biaya Diklat = Biaya Diklat / Biaya Pegawai × 100%
         const biayaDiklat = parseFloat(String(formulaInputs[indicatorId]?.biayaDiklat || 0));
         const biayaPegawai = parseFloat(String(formulaInputs[indicatorId]?.biayaPegawai || 1));
-        calculatedValue = (biayaDiklat / biayaPegawai) * 100;
+        
+        const biayaDiklatValue = inputName === 'biayaDiklat' ? value : biayaDiklat;
+        const biayaPegawaiValue = inputName === 'biayaPegawai' ? value : biayaPegawai;
+        
+        if (biayaPegawaiValue === 0) {
+          calculatedValue = 0;
+        } else {
+          calculatedValue = (biayaDiklatValue / biayaPegawaiValue) * 100;
+        }
         break;
       
       default:
         calculatedValue = 0;
     }
     
-    // Update with calculated value
     handleValueChange(indicator, calculatedValue);
   };
   
   const handleValueChange = (indicator: Indicator, value: number) => {
-    // Calculate score based on the input value
     const score = calculateScore(value, indicator.id);
     
-    // Update assessment values
     const updatedValues = {
       ...assessment.values,
       [indicator.id]: { value, score }
     };
     
-    // Calculate total score
     const totalScore = calculateTotalScore(updatedValues);
     
-    // Update assessment state
     setAssessment(prev => ({
       ...prev,
       values: updatedValues,
@@ -320,14 +427,12 @@ const AssessmentForm = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // Mark as completed if all indicators have values
       const isComplete = indicators.every(indicator => 
         assessment.values[indicator.id] !== undefined
       );
       
       const status: "draft" | "completed" = isComplete ? "completed" : "draft";
       
-      // Prepare assessment data for Supabase
       const assessmentData = {
         id: assessment.id,
         name: assessment.name,
@@ -338,14 +443,12 @@ const AssessmentForm = () => {
         status: status
       };
       
-      // Save or update assessment
       const { error: assessmentError } = await supabase
         .from('assessments')
         .upsert(assessmentData, { onConflict: 'id' });
       
       if (assessmentError) throw assessmentError;
       
-      // Prepare values data for Supabase
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
         id: `${assessment.id}-${indicatorId}`,
         assessment_id: assessment.id,
@@ -354,7 +457,6 @@ const AssessmentForm = () => {
         score: value.score
       }));
       
-      // Save assessment values
       if (valuesData.length > 0) {
         const { error: valuesError } = await supabase
           .from('assessment_values')
@@ -368,7 +470,6 @@ const AssessmentForm = () => {
         description: "Data penilaian berhasil disimpan",
       });
       
-      // Navigate back to assessment list
       navigate("/assessments");
     } catch (error) {
       console.error("Error saving assessment:", error);
@@ -415,7 +516,6 @@ const AssessmentForm = () => {
     </div>
   );
   
-  // Get formula inputs configuration for each indicator
   const getFormulaInputs = (indicatorId: string) => {
     switch (indicatorId) {
       case "roe":
@@ -461,7 +561,7 @@ const AssessmentForm = () => {
         ];
       case "kualitas_air":
         return [
-          { name: "ujiMemenuhi", label: "Jumlah Uji Memenuhi Syarat" },
+          { name: "ujiMemenuhi", label: "Jumlah Uji Yang Memenuhi Syarat" },
           { name: "totalUji", label: "Jumlah Total Pengujian" },
         ];
       case "konsumsi_air":
@@ -513,7 +613,6 @@ const AssessmentForm = () => {
     }
   };
   
-  // Group indicators by category
   const categories = indicators.reduce<Record<string, Indicator[]>>((acc, indicator) => {
     if (!acc[indicator.category]) {
       acc[indicator.category] = [];
@@ -624,7 +723,6 @@ const AssessmentForm = () => {
           </div>
         </div>
         
-        {/* Display indicators by category */}
         {Object.entries(categories).map(([category, categoryIndicators]) => (
           <div key={category} className="mt-8">
             <h2 className="text-lg font-semibold mb-4">Aspek {category}</h2>
@@ -642,7 +740,6 @@ const AssessmentForm = () => {
                       </div>
                     </div>
                     
-                    {/* Formula inputs */}
                     <div className="mt-4 border-t pt-4">
                       <h4 className="font-medium mb-2">Input Komponen Formula:</h4>
                       <div className="grid md:grid-cols-2 gap-4">
@@ -705,7 +802,6 @@ const AssessmentForm = () => {
           </div>
         ))}
         
-        {/* Total Score */}
         <div className="mt-8 border-t pt-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Total Skor:</h2>
