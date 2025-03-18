@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -720,9 +721,10 @@ const AssessmentForm = () => {
                     
                     <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
                       <div>
-                        <Label>Penilaian {indicator.unit}</Label>
+                        <Label>Penilaian</Label>
                         <div className="h-10 flex items-center mt-1 text-base font-medium">
                           {valueObj ? valueObj.value.toFixed(2) : "-"}
+                          {indicator.unit ? ` ${indicator.unit}` : ""}
                         </div>
                       </div>
                       <div>
