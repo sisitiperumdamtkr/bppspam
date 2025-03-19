@@ -140,16 +140,49 @@ export const calculateScore = (value: number, indicatorId: string): number => {
   }
 };
 
-// Fungsi untuk menghitung total skor
+// Fungsi untuk menghitung total skor berdasarkan rumus yang diminta
 export const calculateTotalScore = (values: Record<string, Value>): number => {
-  let totalScore = 0;
+  // Membagi indikator berdasarkan kategori
+  const keuanganIndicators = indicators.filter(ind => ind.category === "Keuangan");
+  const pelayananIndicators = indicators.filter(ind => ind.category === "Pelayanan");
+  const operasionalIndicators = indicators.filter(ind => ind.category === "Operasional");
+  const sdmIndicators = indicators.filter(ind => ind.category === "SDM");
   
-  indicators.forEach((indicator) => {
+  // Menghitung jumlah hasil per kategori
+  const keuanganTotal = keuanganIndicators.reduce((total, indicator) => {
     const valueObj = values[indicator.id];
     if (valueObj) {
-      totalScore += valueObj.score * indicator.weight;
+      return total + (valueObj.score * indicator.weight);
     }
-  });
+    return total;
+  }, 0);
+  
+  const pelayananTotal = pelayananIndicators.reduce((total, indicator) => {
+    const valueObj = values[indicator.id];
+    if (valueObj) {
+      return total + (valueObj.score * indicator.weight);
+    }
+    return total;
+  }, 0);
+  
+  const operasionalTotal = operasionalIndicators.reduce((total, indicator) => {
+    const valueObj = values[indicator.id];
+    if (valueObj) {
+      return total + (valueObj.score * indicator.weight);
+    }
+    return total;
+  }, 0);
+  
+  const sdmTotal = sdmIndicators.reduce((total, indicator) => {
+    const valueObj = values[indicator.id];
+    if (valueObj) {
+      return total + (valueObj.score * indicator.weight);
+    }
+    return total;
+  }, 0);
+  
+  // Total skor adalah jumlah dari semua kategori
+  const totalScore = keuanganTotal + pelayananTotal + operasionalTotal + sdmTotal;
   
   return totalScore;
 };

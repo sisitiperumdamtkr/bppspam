@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -30,22 +31,196 @@ import {
   Value,
   AssessmentStatus
 } from "@/models/types";
-import { 
-  indicators 
-} from "@/models/indicators";
-import { 
-  calculateScore, 
-  calculateTotalScore 
-} from "@/models/scoring";
-import {
-  getHealthCategory 
-} from "@/models/health-categories";
+import { indicators } from "@/models/indicators";
+import { calculateScore, calculateTotalScore } from "@/models/scoring";
+import { getHealthCategory } from "@/models/health-categories";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 import { Save, Download, FileSpreadsheet, FileText } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 
+// Component untuk menampilkan form input formula
+const FormulaInputs = ({ 
+  indicatorId, 
+  formulaInputs,
+  onInputChange 
+}: { 
+  indicatorId: string, 
+  formulaInputs: Record<string, Record<string, number>>,
+  onInputChange: (indicatorId: string, inputName: string, value: number) => void
+}) => {
+  const inputs = getFormulaInputs(indicatorId);
+  
+  return (
+    <div className="mt-4 border-t pt-4">
+      <h4 className="font-medium mb-2">Input Komponen Formula:</h4>
+      <div className="grid md:grid-cols-2 gap-4">
+        {inputs.map((input) => (
+          <div key={input.name}>
+            <Label htmlFor={`${indicatorId}-${input.name}`}>
+              {input.label}
+            </Label>
+            <Input
+              id={`${indicatorId}-${input.name}`}
+              type="number"
+              value={formulaInputs[indicatorId]?.[input.name] || ""}
+              onChange={(e) => 
+                onInputChange(
+                  indicatorId, 
+                  input.name, 
+                  parseFloat(e.target.value) || 0
+                )
+              }
+              placeholder={`Masukkan ${input.label.toLowerCase()}`}
+              className="mt-1"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Component untuk menampilkan hasil penilaian
+const IndicatorResults = ({ 
+  indicator, 
+  valueObj 
+}: { 
+  indicator: Indicator, 
+  valueObj?: Value 
+}) => {
+  return (
+    <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
+      <div>
+        <Label>Penilaian</Label>
+        <div className="h-10 flex items-center mt-1 text-base font-medium">
+          {valueObj ? valueObj.value.toFixed(2) : "-"}
+        </div>
+      </div>
+      <div>
+        <Label>Bobot</Label>
+        <div className="h-10 flex items-center mt-1 text-base">
+          {indicator.weight.toFixed(3)}
+        </div>
+      </div>
+      <div>
+        <Label>Nilai</Label>
+        <div className="h-10 flex items-center mt-1 text-base">
+          {valueObj ? valueObj.score : "-"}
+        </div>
+      </div>
+      <div>
+        <Label>Hasil</Label>
+        <div className="h-10 flex items-center mt-1 text-base">
+          {valueObj 
+            ? (valueObj.score * indicator.weight).toFixed(3)
+            : "-"}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Fungsi helper untuk mendapatkan input formula
+const getFormulaInputs = (indicatorId: string) => {
+  switch (indicatorId) {
+    case "roe":
+      return [
+        { name: "labaBersih", label: "Laba Bersih" },
+        { name: "ekuitas", label: "Jumlah Ekuitas" },
+      ];
+    case "rasio_operasi":
+      return [
+        { name: "biayaOperasi", label: "Biaya Operasi" },
+        { name: "pendapatanOperasi", label: "Pendapatan Operasi" },
+      ];
+    case "cash_ratio":
+      return [
+        { name: "kas", label: "Kas" },
+        { name: "setaraKas", label: "Setara Kas" },
+        { name: "utangLancar", label: "Utang Lancar" },
+      ];
+    case "efektivitas_penagihan":
+      return [
+        { name: "penerimaanRekAir", label: "Jumlah Penerimaan Rekening Air" },
+        { name: "jumlahRekeningAir", label: "Jumlah Rekening Air" },
+      ];
+    case "solvabilitas":
+      return [
+        { name: "totalAktiva", label: "Total Aktiva" },
+        { name: "totalUtang", label: "Total Utang" },
+      ];
+    case "cakupan_pelayanan":
+      return [
+        { name: "pendudukTerlayani", label: "Jumlah Penduduk Terlayani" },
+        { name: "totalPenduduk", label: "Jumlah Penduduk" },
+      ];
+    case "pertumbuhan_pelanggan":
+      return [
+        { name: "pelangganTahunIni", label: "Jumlah Pelanggan Tahun Ini" },
+        { name: "pelangganTahunLalu", label: "Jumlah Pelanggan Tahun Lalu" },
+      ];
+    case "penyelesaian_aduan":
+      return [
+        { name: "aduanSelesai", label: "Jumlah Aduan Selesai" },
+        { name: "totalAduan", label: "Jumlah Total Aduan" },
+      ];
+    case "kualitas_air":
+      return [
+        { name: "ujiMemenuhi", label: "Jumlah Uji Yang Memenuhi Syarat" },
+        { name: "totalUji", label: "Jumlah Total Pengujian" },
+      ];
+    case "konsumsi_air":
+      return [
+        { name: "airTerjualDomestik", label: "Air Terjual Domestik (m³/tahun)" },
+        { name: "pelangganDomestik", label: "Jumlah Pelanggan Domestik" },
+      ];
+    case "efisiensi_produksi":
+      return [
+        { name: "produksiRiil", label: "Volume Produksi Riil (m³)" },
+        { name: "kapasitasTerpasang", label: "Kapasitas Terpasang (m³)" },
+      ];
+    case "tingkat_kehilangan_air":
+      return [
+        { name: "airTerjual", label: "Jumlah Air Terjual (m³)" },
+        { name: "distribusiAir", label: "Jumlah Distribusi Air (m³)" },
+      ];
+    case "jam_operasi":
+      return [
+        { name: "totalJamOperasi", label: "Total Jam Operasi Dalam Setahun" },
+      ];
+    case "tekanan_air":
+      return [
+        { name: "pelangganTekananBaik", label: "Jumlah Pelanggan dengan Tekanan > 0.7 Bar" },
+        { name: "totalPelanggan", label: "Jumlah Total Pelanggan" },
+      ];
+    case "penggantian_meter":
+      return [
+        { name: "meterDiganti", label: "Jumlah Meter Air yang Diganti" },
+        { name: "jumlahPelanggan", label: "Jumlah Total Pelanggan" },
+      ];
+    case "rasio_pegawai":
+      return [
+        { name: "jumlahPegawai", label: "Jumlah Pegawai" },
+        { name: "pelanggan", label: "Jumlah Pelanggan" },
+      ];
+    case "rasio_diklat":
+      return [
+        { name: "pegawaiDiklat", label: "Jumlah Pegawai yang Mengikuti Diklat" },
+        { name: "totalPegawai", label: "Jumlah Total Pegawai" },
+      ];
+    case "biaya_diklat":
+      return [
+        { name: "biayaDiklat", label: "Biaya Diklat" },
+        { name: "biayaPegawai", label: "Total Biaya Pegawai" },
+      ];
+    default:
+      return [];
+  }
+};
+
+// Komponen utama untuk form penilaian
 const AssessmentForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -54,22 +229,24 @@ const AssessmentForm = () => {
   const { toast } = useToast();
   const isNewAssessment = id === "new";
   
+  // State untuk menyimpan data penilaian
   const [assessment, setAssessment] = useState<Assessment>({
     id: isNewAssessment ? crypto.randomUUID() : id || "",
     name: "PERUMDAM TIRTA KERTA RAHARJA",
     year: new Date().getFullYear(),
     date: new Date().toISOString().split("T")[0],
-    userId: user?.id || "",
+    userId: user?.id || crypto.randomUUID(), // Pastikan selalu ada userId yang valid
     values: {},
     totalScore: 0,
     status: "draft"
   });
   
+  // State untuk menyimpan input formula
   const [formulaInputs, setFormulaInputs] = useState<Record<string, Record<string, number>>>({});
-  
   const [showExportOptions, setShowExportOptions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Mengambil data penilaian dari Supabase jika edit mode
   useEffect(() => {
     if (!isNewAssessment && id) {
       const fetchAssessment = async () => {
@@ -79,9 +256,10 @@ const AssessmentForm = () => {
             .from('assessments')
             .select('*')
             .eq('id', id)
-            .single();
+            .maybeSingle(); // Gunakan maybeSingle daripada single untuk mencegah error
             
           if (assessmentError) throw assessmentError;
+          if (!assessmentData) throw new Error("Data penilaian tidak ditemukan");
           
           const { data: valuesData, error: valuesError } = await supabase
             .from('assessment_values')
@@ -124,6 +302,7 @@ const AssessmentForm = () => {
     }
   }, [id, isNewAssessment, toast]);
   
+  // Handler untuk perubahan input form
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAssessment(prev => ({
@@ -132,6 +311,7 @@ const AssessmentForm = () => {
     }));
   };
   
+  // Handler untuk perubahan input formula
   const handleFormulaInputChange = (
     indicatorId: string, 
     inputName: string, 
@@ -280,8 +460,8 @@ const AssessmentForm = () => {
         break;
       
       case "tingkat_kehilangan_air":
-        const distribusiAir = parseFloat(String(updatedInputs.distribusiAir || 0));
         const airTerjual = parseFloat(String(updatedInputs.airTerjual || 0));
+        const distribusiAir = parseFloat(String(updatedInputs.distribusiAir || 1));
         
         if (distribusiAir === 0) {
           calculatedValue = 0;
@@ -358,6 +538,7 @@ const AssessmentForm = () => {
     handleValueChange(indicator, calculatedValue);
   };
   
+  // Handler untuk mengubah nilai indikator
   const handleValueChange = (indicator: Indicator, value: number) => {
     const score = calculateScore(value, indicator.id);
     
@@ -375,17 +556,21 @@ const AssessmentForm = () => {
     }));
   };
   
+  // Handler untuk menyimpan data penilaian
   const handleSave = async () => {
     setIsLoading(true);
     try {
+      // Validasi ID penilaian
       if (!assessment.id || assessment.id.trim() === "") {
+        const newId = crypto.randomUUID();
         setAssessment(prev => ({
           ...prev,
-          id: crypto.randomUUID()
+          id: newId
         }));
         throw new Error("ID penilaian tidak valid. Coba simpan lagi.");
       }
       
+      // Periksa apakah semua indikator sudah dinilai
       const isComplete = indicators.every(indicator => 
         assessment.values[indicator.id] !== undefined
       );
@@ -395,16 +580,30 @@ const AssessmentForm = () => {
       console.log("Saving assessment with ID:", assessment.id);
       console.log("User ID:", user?.id || assessment.userId);
       
+      // Generate user_id yang valid dalam format UUID jika tidak ada
+      const userId = user?.id || assessment.userId;
+      let validUserId = userId;
+      
+      // Pastikan user_id adalah UUID yang valid
+      if (typeof userId === 'number' || !userId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+        validUserId = crypto.randomUUID();
+        console.log("Generated new valid user ID:", validUserId);
+      }
+      
+      // Prepare data untuk Supabase
       const assessmentData = {
         id: assessment.id,
         name: assessment.name,
-        year: assessment.year,
+        year: Number(assessment.year), // Pastikan year adalah number
         date: assessment.date,
-        user_id: user?.id || assessment.userId,
+        user_id: validUserId,
         total_score: assessment.totalScore,
         status: status
       };
       
+      console.log("Saving assessment data:", assessmentData);
+      
+      // Simpan data penilaian ke Supabase
       const { error: assessmentError } = await supabase
         .from('assessments')
         .upsert(assessmentData, { onConflict: 'id' });
@@ -414,6 +613,7 @@ const AssessmentForm = () => {
         throw assessmentError;
       }
       
+      // Simpan nilai-nilai indikator ke Supabase
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
         id: `${assessment.id}-${indicatorId}`,
         assessment_id: assessment.id,
@@ -433,6 +633,7 @@ const AssessmentForm = () => {
         }
       }
       
+      // Tampilkan notifikasi sukses dan redirect ke halaman daftar penilaian
       toast({
         title: "Sukses",
         description: "Data penilaian berhasil disimpan",
@@ -451,6 +652,7 @@ const AssessmentForm = () => {
     }
   };
   
+  // Handler untuk export data penilaian
   const handleExport = (type: "csv" | "pdf") => {
     if (type === "csv") {
       downloadCSV(assessment);
@@ -460,6 +662,7 @@ const AssessmentForm = () => {
     setShowExportOptions(false);
   };
   
+  // Component untuk opsi export
   const ExportContent = () => (
     <div className="grid gap-4 py-4">
       <h3 className="font-medium mb-2">Pilih Format Export:</h3>
@@ -484,103 +687,7 @@ const AssessmentForm = () => {
     </div>
   );
   
-  const getFormulaInputs = (indicatorId: string) => {
-    switch (indicatorId) {
-      case "roe":
-        return [
-          { name: "labaBersih", label: "Laba Bersih" },
-          { name: "ekuitas", label: "Jumlah Ekuitas" },
-        ];
-      case "rasio_operasi":
-        return [
-          { name: "biayaOperasi", label: "Biaya Operasi" },
-          { name: "pendapatanOperasi", label: "Pendapatan Operasi" },
-        ];
-      case "cash_ratio":
-        return [
-          { name: "kas", label: "Kas" },
-          { name: "setaraKas", label: "Setara Kas" },
-          { name: "utangLancar", label: "Utang Lancar" },
-        ];
-      case "efektivitas_penagihan":
-        return [
-          { name: "penerimaanRekAir", label: "Jumlah Penerimaan Rekening Air" },
-          { name: "jumlahRekeningAir", label: "Jumlah Rekening Air" },
-        ];
-      case "solvabilitas":
-        return [
-          { name: "totalAktiva", label: "Total Aktiva" },
-          { name: "totalUtang", label: "Total Utang" },
-        ];
-      case "cakupan_pelayanan":
-        return [
-          { name: "pendudukTerlayani", label: "Jumlah Penduduk Terlayani" },
-          { name: "totalPenduduk", label: "Jumlah Penduduk" },
-        ];
-      case "pertumbuhan_pelanggan":
-        return [
-          { name: "pelangganTahunIni", label: "Jumlah Pelanggan Tahun Ini" },
-          { name: "pelangganTahunLalu", label: "Jumlah Pelanggan Tahun Lalu" },
-        ];
-      case "penyelesaian_aduan":
-        return [
-          { name: "aduanSelesai", label: "Jumlah Aduan Selesai" },
-          { name: "totalAduan", label: "Jumlah Total Aduan" },
-        ];
-      case "kualitas_air":
-        return [
-          { name: "ujiMemenuhi", label: "Jumlah Uji Yang Memenuhi Syarat" },
-          { name: "totalUji", label: "Jumlah Total Pengujian" },
-        ];
-      case "konsumsi_air":
-        return [
-          { name: "airTerjualDomestik", label: "Air Terjual Domestik (m³/tahun)" },
-          { name: "pelangganDomestik", label: "Jumlah Pelanggan Domestik" },
-        ];
-      case "efisiensi_produksi":
-        return [
-          { name: "produksiRiil", label: "Volume Produksi Riil (m³)" },
-          { name: "kapasitasTerpasang", label: "Kapasitas Terpasang (m³)" },
-        ];
-      case "tingkat_kehilangan_air":
-        return [
-          { name: "airTerjual", label: "Jumlah Air Terjual (m³)" },
-          { name: "distribusiAir", label: "Jumlah Distribusi Air (m³)" },
-        ];
-      case "jam_operasi":
-        return [
-          { name: "totalJamOperasi", label: "Total Jam Operasi Dalam Setahun" },
-        ];
-      case "tekanan_air":
-        return [
-          { name: "pelangganTekananBaik", label: "Jumlah Pelanggan dengan Tekanan > 0.7 Bar" },
-          { name: "totalPelanggan", label: "Jumlah Total Pelanggan" },
-        ];
-      case "penggantian_meter":
-        return [
-          { name: "meterDiganti", label: "Jumlah Meter Air yang Diganti" },
-          { name: "jumlahPelanggan", label: "Jumlah Total Pelanggan" },
-        ];
-      case "rasio_pegawai":
-        return [
-          { name: "jumlahPegawai", label: "Jumlah Pegawai" },
-          { name: "pelanggan", label: "Jumlah Pelanggan" },
-        ];
-      case "rasio_diklat":
-        return [
-          { name: "pegawaiDiklat", label: "Jumlah Pegawai yang Mengikuti Diklat" },
-          { name: "totalPegawai", label: "Jumlah Total Pegawai" },
-        ];
-      case "biaya_diklat":
-        return [
-          { name: "biayaDiklat", label: "Biaya Diklat" },
-          { name: "biayaPegawai", label: "Total Biaya Pegawai" },
-        ];
-      default:
-        return [];
-    }
-  };
-  
+  // Mengelompokkan indikator berdasarkan kategori
   const categories = indicators.reduce<Record<string, Indicator[]>>((acc, indicator) => {
     if (!acc[indicator.category]) {
       acc[indicator.category] = [];
@@ -697,7 +804,6 @@ const AssessmentForm = () => {
             <div className="space-y-6">
               {categoryIndicators.map((indicator) => {
                 const valueObj = assessment.values[indicator.id];
-                const inputs = getFormulaInputs(indicator.id);
                 
                 return (
                   <div key={indicator.id} className="border p-4 rounded-lg">
@@ -708,61 +814,16 @@ const AssessmentForm = () => {
                       </div>
                     </div>
                     
-                    <div className="mt-4 border-t pt-4">
-                      <h4 className="font-medium mb-2">Input Komponen Formula:</h4>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {inputs.map((input) => (
-                          <div key={input.name}>
-                            <Label htmlFor={`${indicator.id}-${input.name}`}>
-                              {input.label}
-                            </Label>
-                            <Input
-                              id={`${indicator.id}-${input.name}`}
-                              type="number"
-                              value={formulaInputs[indicator.id]?.[input.name] || ""}
-                              onChange={(e) => 
-                                handleFormulaInputChange(
-                                  indicator.id, 
-                                  input.name, 
-                                  parseFloat(e.target.value) || 0
-                                )
-                              }
-                              placeholder={`Masukkan ${input.label.toLowerCase()}`}
-                              className="mt-1"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                    <FormulaInputs 
+                      indicatorId={indicator.id}
+                      formulaInputs={formulaInputs}
+                      onInputChange={handleFormulaInputChange}
+                    />
                     
-                    <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
-                      <div>
-                        <Label>Penilaian</Label>
-                        <div className="h-10 flex items-center mt-1 text-base font-medium">
-                          {valueObj ? valueObj.value.toFixed(2) : "-"}
-                        </div>
-                      </div>
-                      <div>
-                        <Label>Bobot</Label>
-                        <div className="h-10 flex items-center mt-1 text-base">
-                          {indicator.weight.toFixed(3)}
-                        </div>
-                      </div>
-                      <div>
-                        <Label>Nilai</Label>
-                        <div className="h-10 flex items-center mt-1 text-base">
-                          {valueObj ? valueObj.score : "-"}
-                        </div>
-                      </div>
-                      <div>
-                        <Label>Hasil</Label>
-                        <div className="h-10 flex items-center mt-1 text-base">
-                          {valueObj 
-                            ? (valueObj.score * indicator.weight).toFixed(3)
-                            : "-"}
-                        </div>
-                      </div>
-                    </div>
+                    <IndicatorResults 
+                      indicator={indicator}
+                      valueObj={valueObj}
+                    />
                   </div>
                 );
               })}
