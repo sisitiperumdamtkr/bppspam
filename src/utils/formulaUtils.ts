@@ -240,7 +240,7 @@ export const calculateFormulaValue = (
         calculatedValue = 0;
       } else {
         // Formula baru: Air Terjual / Distribusi Air × 100%
-        calculatedValue = (airTerjual / distribusiAir) * 1;
+        calculatedValue = (airTerjual / distribusiAir) * 100;
       }
       break;
     
