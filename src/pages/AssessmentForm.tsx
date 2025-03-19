@@ -378,11 +378,22 @@ const AssessmentForm = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
+      if (!assessment.id || assessment.id.trim() === "") {
+        setAssessment(prev => ({
+          ...prev,
+          id: crypto.randomUUID()
+        }));
+        throw new Error("ID penilaian tidak valid. Coba simpan lagi.");
+      }
+      
       const isComplete = indicators.every(indicator => 
         assessment.values[indicator.id] !== undefined
       );
       
-      const status: "draft" | "completed" = isComplete ? "completed" : "draft";
+      const status: AssessmentStatus = isComplete ? "completed" : "draft";
+      
+      console.log("Saving assessment with ID:", assessment.id);
+      console.log("User ID:", user?.id || assessment.userId);
       
       const assessmentData = {
         id: assessment.id,
@@ -394,15 +405,14 @@ const AssessmentForm = () => {
         status: status
       };
       
-      if (!assessmentData.id) {
-        throw new Error("ID penilaian tidak valid");
-      }
-      
       const { error: assessmentError } = await supabase
         .from('assessments')
         .upsert(assessmentData, { onConflict: 'id' });
       
-      if (assessmentError) throw assessmentError;
+      if (assessmentError) {
+        console.error("Error saving assessment to Supabase:", assessmentError);
+        throw assessmentError;
+      }
       
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
         id: `${assessment.id}-${indicatorId}`,
@@ -417,7 +427,10 @@ const AssessmentForm = () => {
           .from('assessment_values')
           .upsert(valuesData, { onConflict: 'id' });
           
-        if (valuesError) throw valuesError;
+        if (valuesError) {
+          console.error("Error saving assessment values to Supabase:", valuesError);
+          throw valuesError;
+        }
       }
       
       toast({
@@ -430,7 +443,7 @@ const AssessmentForm = () => {
       console.error("Error saving assessment:", error);
       toast({
         title: "Error",
-        description: "Gagal menyimpan data penilaian",
+        description: "Gagal menyimpan data penilaian. Silakan coba lagi.",
         variant: "destructive"
       });
     } finally {
@@ -531,8 +544,8 @@ const AssessmentForm = () => {
         ];
       case "tingkat_kehilangan_air":
         return [
-          { name: "distribusiAir", label: "Jumlah Distribusi Air (m³)" },
           { name: "airTerjual", label: "Jumlah Air Terjual (m³)" },
+          { name: "distribusiAir", label: "Jumlah Distribusi Air (m³)" },
         ];
       case "jam_operasi":
         return [
