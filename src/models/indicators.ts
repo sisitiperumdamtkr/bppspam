@@ -100,7 +100,7 @@ export const indicators: Indicator[] = [
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "Air Terjual / Distribusi Air × 100",
+    formula: "Air Terjual / Distribusi Air / 100%",
     weight: 0.070,
     unit: ""
   },
