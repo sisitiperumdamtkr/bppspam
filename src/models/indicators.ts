@@ -82,7 +82,7 @@ export const indicators: Indicator[] = [
     id: "konsumsi_air",
     name: "Konsumsi Air Domestik",
     category: "Pelayanan",
-    formula: "(Jmh Air Yang Terjual Domestik Setahun) / Jumlah Pelanggan Domestik",
+    formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
     weight: 0.050,
     unit: "m³/bulan"
   },
@@ -100,7 +100,7 @@ export const indicators: Indicator[] = [
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "Air Terjual / Distribusi Air × 100%",
+    formula: "(Distribusi Air - Air Terjual) / Distribusi Air × 100%",
     weight: 0.070,
     unit: "%"
   },
