@@ -239,7 +239,8 @@ export const calculateFormulaValue = (
       if (distribusiAir === 0) {
         calculatedValue = 0;
       } else {
-        calculatedValue = ((distribusiAir - airTerjual) / distribusiAir) * 100;
+        // Formula baru: Air Terjual / Distribusi Air × 100%
+        calculatedValue = (airTerjual / distribusiAir) * 100;
       }
       break;
     
