@@ -183,8 +183,8 @@ const getFormulaInputs = (indicatorId: string) => {
       ];
     case "tingkat_kehilangan_air":
       return [
-        { name: "airTerjual", label: "Jumlah Air Terjual (m³)" },
-        { name: "distribusiAir", label: "Jumlah Distribusi Air (m³)" },
+        { name: "airTerjual", label: "Air Terjual (m³)" },
+        { name: "distribusiAir", label: "Distribusi Air (m³)" },
       ];
     case "jam_operasi":
       return [
@@ -560,15 +560,8 @@ const AssessmentForm = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // Validasi ID penilaian
-      if (!assessment.id || assessment.id.trim() === "") {
-        const newId = crypto.randomUUID();
-        setAssessment(prev => ({
-          ...prev,
-          id: newId
-        }));
-        throw new Error("ID penilaian tidak valid. Coba simpan lagi.");
-      }
+      // Generate dan pastikan ID penilaian selalu valid
+      const assessmentId = assessment.id || crypto.randomUUID();
       
       // Periksa apakah semua indikator sudah dinilai
       const isComplete = indicators.every(indicator => 
@@ -577,36 +570,30 @@ const AssessmentForm = () => {
       
       const status: AssessmentStatus = isComplete ? "completed" : "draft";
       
-      console.log("Saving assessment with ID:", assessment.id);
-      console.log("User ID:", user?.id || assessment.userId);
+      console.log("Saving assessment with ID:", assessmentId);
       
       // Generate user_id yang valid dalam format UUID jika tidak ada
-      const userId = user?.id || assessment.userId;
-      let validUserId = userId;
-      
-      // Pastikan user_id adalah UUID yang valid
-      if (typeof userId === 'number' || !userId.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
-        validUserId = crypto.randomUUID();
-        console.log("Generated new valid user ID:", validUserId);
-      }
+      const userId = user?.id || assessment.userId || crypto.randomUUID();
+      console.log("Using user ID:", userId);
       
       // Prepare data untuk Supabase
       const assessmentData = {
-        id: assessment.id,
+        id: assessmentId,
         name: assessment.name,
         year: Number(assessment.year), // Pastikan year adalah number
         date: assessment.date,
-        user_id: validUserId,
+        user_id: userId,
         total_score: assessment.totalScore,
         status: status
       };
       
       console.log("Saving assessment data:", assessmentData);
       
-      // Simpan data penilaian ke Supabase
+      // Simpan data penilaian ke Supabase dengan API Supabase yang diperbarui
       const { error: assessmentError } = await supabase
         .from('assessments')
-        .upsert(assessmentData, { onConflict: 'id' });
+        .upsert(assessmentData)
+        .select();
       
       if (assessmentError) {
         console.error("Error saving assessment to Supabase:", assessmentError);
@@ -615,8 +602,8 @@ const AssessmentForm = () => {
       
       // Simpan nilai-nilai indikator ke Supabase
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
-        id: `${assessment.id}-${indicatorId}`,
-        assessment_id: assessment.id,
+        id: `${assessmentId}-${indicatorId}`,
+        assessment_id: assessmentId,
         indicator_id: indicatorId,
         value: value.value,
         score: value.score
@@ -625,12 +612,21 @@ const AssessmentForm = () => {
       if (valuesData.length > 0) {
         const { error: valuesError } = await supabase
           .from('assessment_values')
-          .upsert(valuesData, { onConflict: 'id' });
+          .upsert(valuesData)
+          .select();
           
         if (valuesError) {
           console.error("Error saving assessment values to Supabase:", valuesError);
           throw valuesError;
         }
+      }
+      
+      // Perbarui state assessment dengan ID baru jika diperlukan
+      if (assessment.id !== assessmentId) {
+        setAssessment(prev => ({
+          ...prev,
+          id: assessmentId
+        }));
       }
       
       // Tampilkan notifikasi sukses dan redirect ke halaman daftar penilaian

@@ -74,7 +74,7 @@ export const indicators: Indicator[] = [
     id: "kualitas_air",
     name: "Kualitas Air Pelanggan",
     category: "Pelayanan",
-    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji × 100",
+    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji × 100%",
     weight: 0.075,
     unit: "%"
   },

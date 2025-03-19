@@ -64,10 +64,11 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 1;
       
     case "kualitas_air":
-      if (value >= 95) return 5;
-      if (value >= 80) return 4;
-      if (value >= 70) return 3;
-      if (value >= 60) return 2;
+      // Perbaikan nilai Kualitas Air Pelanggan sesuai permintaan
+      if (value >= 80) return 5;
+      if (value >= 60) return 4;
+      if (value >= 40) return 3;
+      if (value >= 20) return 2;
       return 1;
       
     case "konsumsi_air":
@@ -86,7 +87,8 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 1;
       
     case "tingkat_kehilangan_air":
-      if (value >= 80) return 5; // Diubah karena rumus berubah dari kehilangan ke efisiensi
+      // Perbaikan nilai Tingkat Kehilangan Air sesuai permintaan
+      if (value >= 80) return 5;
       if (value >= 60) return 4;
       if (value >= 40) return 3;
       if (value >= 20) return 2;
