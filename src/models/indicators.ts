@@ -102,7 +102,7 @@ export const indicators: Indicator[] = [
     category: "Operasional",
     formula: "Air Terjual / Distribusi Air * 1",
     weight: 0.070,
-    unit: ""
+    unit: "%"
   },
   {
     id: "jam_operasi",
