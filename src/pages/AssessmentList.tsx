@@ -19,10 +19,12 @@ const AssessmentList = () => {
   
   // Fungsi untuk mengambil data penilaian
   const fetchAssessments = async () => {
-    if (!user) return;
-    
     try {
       setLoading(true);
+      
+      // Log user ID untuk debugging
+      console.log("Current user:", user);
+      
       const { data, error } = await supabase
         .from('assessments')
         .select('*')
@@ -67,7 +69,7 @@ const AssessmentList = () => {
   
   useEffect(() => {
     fetchAssessments();
-  }, [user]);
+  }, []);
   
   const handleCreateNew = () => {
     navigate("/assessment/new");

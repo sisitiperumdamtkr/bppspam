@@ -183,7 +183,7 @@ const AssessmentForm = () => {
     }));
   };
   
-  // Handler untuk menyimpan data penilaian - PERBAIKAN DISINI
+  // Handler untuk menyimpan data penilaian
   const handleSave = async () => {
     setIsLoading(true);
     try {
@@ -199,8 +199,13 @@ const AssessmentForm = () => {
       
       console.log("Saving assessment with ID:", assessmentId);
       
-      // Generate user_id yang valid dalam format UUID jika tidak ada
-      const userId = user?.id || assessment.userId || crypto.randomUUID();
+      // PERBAIKAN: Pastikan user_id dalam format UUID yang valid
+      // Jika auth.user tidak tersedia, gunakan UUID acak
+      let userId = user?.id;
+      // Jika user.id bukan UUID atau null, buat UUID baru
+      if (!userId || typeof userId === 'number' || userId === '1') {
+        userId = crypto.randomUUID();
+      }
       console.log("Using user ID:", userId);
       
       // Prepare data untuk Supabase
@@ -216,7 +221,7 @@ const AssessmentForm = () => {
       
       console.log("Saving assessment data:", assessmentData);
       
-      // Simpan data penilaian ke Supabase dengan API Supabase yang diperbarui
+      // Simpan data penilaian ke Supabase
       const { data: savedAssessment, error: assessmentError } = await supabase
         .from('assessments')
         .upsert(assessmentData)
@@ -274,7 +279,7 @@ const AssessmentForm = () => {
       // untuk memastikan operasi database sudah selesai
       setTimeout(() => {
         navigate("/assessments");
-      }, 500);
+      }, 1000);
     } catch (error) {
       console.error("Error saving assessment:", error);
       toast({
