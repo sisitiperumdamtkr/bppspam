@@ -39,7 +39,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateFormulaValue } from "@/utils/formulaUtils";
 
-// Impor komponen-komponen baru
+// Impor komponen-komponen
 import IndicatorCategory from "@/components/assessment/IndicatorCategory";
 import ScoreSummary from "@/components/assessment/ScoreSummary";
 import ExportOptions from "@/components/assessment/ExportOptions";
@@ -110,6 +110,10 @@ const AssessmentForm = () => {
             totalScore: assessmentData.total_score || 0,
             status: assessmentData.status === "completed" ? "completed" : "draft"
           });
+          
+          // Log data yang diambil
+          console.log("Assessment data loaded:", assessmentData);
+          console.log("Values data loaded:", valuesData);
         } catch (error) {
           console.error("Error fetching assessment:", error);
           toast({
@@ -179,7 +183,7 @@ const AssessmentForm = () => {
     }));
   };
   
-  // Handler untuk menyimpan data penilaian
+  // Handler untuk menyimpan data penilaian - PERBAIKAN DISINI
   const handleSave = async () => {
     setIsLoading(true);
     try {
@@ -213,15 +217,18 @@ const AssessmentForm = () => {
       console.log("Saving assessment data:", assessmentData);
       
       // Simpan data penilaian ke Supabase dengan API Supabase yang diperbarui
-      const { error: assessmentError } = await supabase
+      const { data: savedAssessment, error: assessmentError } = await supabase
         .from('assessments')
         .upsert(assessmentData)
-        .select();
+        .select('*')
+        .single();
       
       if (assessmentError) {
         console.error("Error saving assessment to Supabase:", assessmentError);
         throw assessmentError;
       }
+      
+      console.log("Assessment saved successfully:", savedAssessment);
       
       // Simpan nilai-nilai indikator ke Supabase
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
@@ -232,16 +239,21 @@ const AssessmentForm = () => {
         score: value.score
       }));
       
+      console.log("Saving values data:", valuesData);
+      
       if (valuesData.length > 0) {
-        const { error: valuesError } = await supabase
+        // Gunakan single upsert operation untuk semua nilai
+        const { data: savedValues, error: valuesError } = await supabase
           .from('assessment_values')
           .upsert(valuesData)
-          .select();
+          .select('*');
           
         if (valuesError) {
           console.error("Error saving assessment values to Supabase:", valuesError);
           throw valuesError;
         }
+        
+        console.log("Values saved successfully:", savedValues);
       }
       
       // Perbarui state assessment dengan ID baru jika diperlukan
@@ -258,7 +270,11 @@ const AssessmentForm = () => {
         description: "Data penilaian berhasil disimpan",
       });
       
-      navigate("/assessments");
+      // Redirect ke halaman daftar penilaian dengan timeout kecil
+      // untuk memastikan operasi database sudah selesai
+      setTimeout(() => {
+        navigate("/assessments");
+      }, 500);
     } catch (error) {
       console.error("Error saving assessment:", error);
       toast({

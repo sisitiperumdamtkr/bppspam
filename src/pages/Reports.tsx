@@ -38,10 +38,11 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Download, Printer, Filter } from "lucide-react";
+import { Download, Printer, Filter, RefreshCw } from "lucide-react";
 import { getHealthCategory } from "@/models/health-categories";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
+import { useToast } from "@/components/ui/use-toast";
 
 // Color scheme for charts
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -54,46 +55,59 @@ const ASPECT_COLORS = {
 
 const Reports = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedYear, setSelectedYear] = useState<string>("all");
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Fetch assessments from Supabase
-  useEffect(() => {
-    const fetchAssessments = async () => {
-      try {
-        setLoading(true);
-        
-        const { data, error } = await supabase
-          .from('assessments')
-          .select('*')
-          .order('year', { ascending: false });
-        
-        if (error) {
-          console.error('Error fetching assessments:', error);
-          return;
-        }
-        
-        // Map database column names to our interface properties
-        const mappedData = data?.map(item => ({
-          id: item.id,
-          name: item.name,
-          year: item.year,
-          date: item.date,
-          userId: item.user_id,
-          totalScore: item.total_score || 0,
-          status: item.status as "draft" | "completed",
-          values: {} // Initialize with empty values as we're not fetching them here
-        })) || [];
-        
-        setAssessments(mappedData);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
+  const fetchAssessments = async () => {
+    try {
+      setLoading(true);
+      
+      const { data, error } = await supabase
+        .from('assessments')
+        .select('*')
+        .order('year', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching assessments:', error);
+        toast({
+          title: "Error",
+          description: "Gagal mengambil data penilaian",
+          variant: "destructive"
+        });
+        return;
       }
-    };
-    
+      
+      console.log("Reports - Fetched assessment data:", data);
+      
+      // Map database column names to our interface properties
+      const mappedData = data?.map(item => ({
+        id: item.id,
+        name: item.name,
+        year: item.year,
+        date: item.date,
+        userId: item.user_id,
+        totalScore: item.total_score || 0,
+        status: item.status as "draft" | "completed",
+        values: {} // Initialize with empty values as we're not fetching them here
+      })) || [];
+      
+      setAssessments(mappedData);
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat mengambil data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
     fetchAssessments();
   }, []);
   
@@ -172,6 +186,14 @@ const Reports = () => {
   const handlePrint = () => {
     window.print();
   };
+  
+  const handleRefresh = () => {
+    fetchAssessments();
+    toast({
+      title: "Memperbarui Data",
+      description: "Data laporan sedang diperbarui",
+    });
+  };
 
   if (loading) {
     return (
@@ -189,6 +211,15 @@ const Reports = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Laporan Penilaian PERUMDAM TIRTA KERTA RAHARJA</h1>
           <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handleRefresh} 
+              className="flex items-center gap-2"
+              disabled={loading}
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <span className="hidden md:inline">Refresh</span>
+            </Button>
             <Button variant="outline" onClick={handlePrint} className="flex items-center gap-2">
               <Printer className="h-4 w-4" />
               <span className="hidden md:inline">Cetak</span>

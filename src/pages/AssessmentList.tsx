@@ -1,56 +1,71 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, FileText } from "lucide-react";
+import { PlusCircle, FileText, RefreshCw } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { getHealthCategory } from "@/models/health-categories";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
+import { useToast } from "@/components/ui/use-toast";
 
 const AssessmentList = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
   
-  useEffect(() => {
-    // Fetch assessments from Supabase
-    const fetchAssessments = async () => {
-      if (!user) return;
-      
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('assessments')
-          .select('*')
-          .order('year', { ascending: false });
-        
-        if (error) {
-          console.error('Error fetching assessments:', error);
-          return;
-        }
-        
-        // Map database column names to our interface properties
-        const mappedData = data?.map(item => ({
-          id: item.id,
-          name: item.name,
-          year: item.year,
-          date: item.date,
-          userId: item.user_id,
-          totalScore: item.total_score || 0,
-          status: item.status as "draft" | "completed",
-          values: {} // Initialize with empty values as we're not fetching them here
-        })) || [];
-        
-        setAssessments(mappedData);
-      } catch (error) {
-        console.error('Error:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fungsi untuk mengambil data penilaian
+  const fetchAssessments = async () => {
+    if (!user) return;
     
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('assessments')
+        .select('*')
+        .order('year', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching assessments:', error);
+        toast({
+          title: "Error",
+          description: "Gagal mengambil data penilaian",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      console.log("Fetched assessment data:", data);
+      
+      // Map database column names to our interface properties
+      const mappedData = data?.map(item => ({
+        id: item.id,
+        name: item.name,
+        year: item.year,
+        date: item.date,
+        userId: item.user_id,
+        totalScore: item.total_score || 0,
+        status: item.status as "draft" | "completed",
+        values: {} // Initialize with empty values as we're not fetching them here
+      })) || [];
+      
+      setAssessments(mappedData);
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat mengambil data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
     fetchAssessments();
   }, [user]);
   
@@ -61,15 +76,34 @@ const AssessmentList = () => {
   const handleViewAssessment = (id: string) => {
     navigate(`/assessment/${id}`);
   };
+  
+  const handleRefresh = () => {
+    fetchAssessments();
+    toast({
+      title: "Memperbarui Data",
+      description: "Daftar penilaian sedang diperbarui",
+    });
+  };
 
   return (
     <DashboardLayout title="Penilaian PERUMDAM">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Penilaian PERUMDAM TIRTA KERTA RAHARJA</h1>
-        <Button onClick={handleCreateNew} className="flex items-center gap-2">
-          <PlusCircle className="h-4 w-4" />
-          Buat Penilaian Baru
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleRefresh} 
+            className="flex items-center gap-2"
+            disabled={loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <span className="hidden md:inline">Refresh</span>
+          </Button>
+          <Button onClick={handleCreateNew} className="flex items-center gap-2">
+            <PlusCircle className="h-4 w-4" />
+            Buat Penilaian Baru
+          </Button>
+        </div>
       </div>
       
       {loading ? (
