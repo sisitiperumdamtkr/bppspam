@@ -83,6 +83,45 @@ export type Database = {
         }
         Relationships: []
       }
+      indicators: {
+        Row: {
+          category: string
+          created_at: string | null
+          formula: string
+          id: string
+          max_value: number | null
+          min_value: number | null
+          name: string
+          unit: string
+          updated_at: string | null
+          weight: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          formula: string
+          id: string
+          max_value?: number | null
+          min_value?: number | null
+          name: string
+          unit: string
+          updated_at?: string | null
+          weight: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          formula?: string
+          id?: string
+          max_value?: number | null
+          min_value?: number | null
+          name?: string
+          unit?: string
+          updated_at?: string | null
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -22,9 +22,6 @@ const AssessmentList = () => {
     try {
       setLoading(true);
       
-      // Log user ID untuk debugging
-      console.log("Current user:", user);
-      
       // Query untuk mengambil data dari Supabase
       const { data, error } = await supabase
         .from('assessments')

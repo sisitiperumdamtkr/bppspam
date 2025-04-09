@@ -111,197 +111,110 @@ export const calculateFormulaValue = (
   
   switch (indicatorId) {
     case "roe":
-      const labaBersih = parseFloat(String(inputs.labaBersih || 0));
-      const ekuitas = parseFloat(String(inputs.ekuitas || 1));
-      
-      if (ekuitas === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (labaBersih / ekuitas) * 100;
+      if (inputs.labaBersih !== undefined && inputs.ekuitas !== undefined && inputs.ekuitas !== 0) {
+        calculatedValue = (inputs.labaBersih / inputs.ekuitas) * 100;
       }
       break;
     
     case "rasio_operasi":
-      const biayaOperasi = parseFloat(String(inputs.biayaOperasi || 0));
-      const pendapatanOperasi = parseFloat(String(inputs.pendapatanOperasi || 1));
-      
-      if (pendapatanOperasi === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = biayaOperasi / pendapatanOperasi;
+      if (inputs.biayaOperasi !== undefined && inputs.pendapatanOperasi !== undefined && inputs.pendapatanOperasi !== 0) {
+        calculatedValue = inputs.biayaOperasi / inputs.pendapatanOperasi;
       }
       break;
     
     case "cash_ratio":
-      const kas = parseFloat(String(inputs.kas || 0));
-      const setaraKas = parseFloat(String(inputs.setaraKas || 0));
-      const utangLancar = parseFloat(String(inputs.utangLancar || 1));
-      
-      if (utangLancar === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = ((kas + setaraKas) / utangLancar) * 100;
+      if (inputs.kas !== undefined && inputs.setaraKas !== undefined && inputs.utangLancar !== undefined && inputs.utangLancar !== 0) {
+        calculatedValue = ((inputs.kas + inputs.setaraKas) / inputs.utangLancar) * 100;
       }
       break;
     
     case "efektivitas_penagihan":
-      const penerimaanRekAir = parseFloat(String(inputs.penerimaanRekAir || 0));
-      const jumlahRekeningAir = parseFloat(String(inputs.jumlahRekeningAir || 1));
-      
-      if (jumlahRekeningAir === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (penerimaanRekAir / jumlahRekeningAir) * 100;
+      if (inputs.penerimaanRekAir !== undefined && inputs.jumlahRekeningAir !== undefined && inputs.jumlahRekeningAir !== 0) {
+        calculatedValue = (inputs.penerimaanRekAir / inputs.jumlahRekeningAir) * 100;
       }
       break;
     
     case "solvabilitas":
-      const totalAktiva = parseFloat(String(inputs.totalAktiva || 0));
-      const totalUtang = parseFloat(String(inputs.totalUtang || 1));
-      
-      if (totalUtang === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (totalAktiva / totalUtang) * 100;
+      if (inputs.totalAktiva !== undefined && inputs.totalUtang !== undefined && inputs.totalUtang !== 0) {
+        calculatedValue = (inputs.totalAktiva / inputs.totalUtang) * 100;
       }
       break;
     
     case "cakupan_pelayanan":
-      const pendudukTerlayani = parseFloat(String(inputs.pendudukTerlayani || 0));
-      const totalPenduduk = parseFloat(String(inputs.totalPenduduk || 1));
-      
-      if (totalPenduduk === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (pendudukTerlayani / totalPenduduk) * 100;
+      if (inputs.pendudukTerlayani !== undefined && inputs.totalPenduduk !== undefined && inputs.totalPenduduk !== 0) {
+        calculatedValue = (inputs.pendudukTerlayani / inputs.totalPenduduk) * 100;
       }
       break;
     
     case "pertumbuhan_pelanggan":
-      const pelangganTahunIni = parseFloat(String(inputs.pelangganTahunIni || 0));
-      const pelangganTahunLalu = parseFloat(String(inputs.pelangganTahunLalu || 1));
-      
-      if (pelangganTahunLalu === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (pelangganTahunIni / pelangganTahunLalu) * 100;
+      if (inputs.pelangganTahunIni !== undefined && inputs.pelangganTahunLalu !== undefined && inputs.pelangganTahunLalu !== 0) {
+        calculatedValue = ((inputs.pelangganTahunIni - inputs.pelangganTahunLalu) / inputs.pelangganTahunLalu) * 100;
       }
       break;
     
     case "penyelesaian_aduan":
-      const aduanSelesai = parseFloat(String(inputs.aduanSelesai || 0));
-      const totalAduan = parseFloat(String(inputs.totalAduan || 1));
-      
-      if (totalAduan === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (aduanSelesai / totalAduan) * 100;
+      if (inputs.aduanSelesai !== undefined && inputs.totalAduan !== undefined && inputs.totalAduan !== 0) {
+        calculatedValue = (inputs.aduanSelesai / inputs.totalAduan) * 100;
       }
       break;
     
     case "kualitas_air":
-      const ujiMemenuhi = parseFloat(String(inputs.ujiMemenuhi || 0));
-      const totalUji = parseFloat(String(inputs.totalUji || 1));
-      
-      if (totalUji === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (ujiMemenuhi / totalUji) * 100;
+      if (inputs.ujiMemenuhi !== undefined && inputs.totalUji !== undefined && inputs.totalUji !== 0) {
+        calculatedValue = (inputs.ujiMemenuhi / inputs.totalUji) * 100;
       }
       break;
     
     case "konsumsi_air":
-      const airTerjualDomestik = parseFloat(String(inputs.airTerjualDomestik || 0));
-      const pelangganDomestik = parseFloat(String(inputs.pelangganDomestik || 1));
-      
-      if (pelangganDomestik === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = airTerjualDomestik / pelangganDomestik / 12; // Dibagi 12 untuk mendapatkan per bulan
+      if (inputs.airTerjualDomestik !== undefined && inputs.pelangganDomestik !== undefined && inputs.pelangganDomestik !== 0) {
+        calculatedValue = (inputs.airTerjualDomestik / 12) / inputs.pelangganDomestik;
       }
       break;
     
     case "efisiensi_produksi":
-      const produksiRiil = parseFloat(String(inputs.produksiRiil || 0));
-      const kapasitasTerpasang = parseFloat(String(inputs.kapasitasTerpasang || 1));
-      
-      if (kapasitasTerpasang === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (produksiRiil / kapasitasTerpasang) * 100;
+      if (inputs.produksiRiil !== undefined && inputs.kapasitasTerpasang !== undefined && inputs.kapasitasTerpasang !== 0) {
+        calculatedValue = (inputs.produksiRiil / inputs.kapasitasTerpasang) * 100;
       }
       break;
     
     case "tingkat_kehilangan_air":
-      const distribusiAir = parseFloat(String(inputs.distribusiAir || 1));
-      const airTerjual = parseFloat(String(inputs.airTerjual || 0));
-      
-      if (distribusiAir === 0) {
-        calculatedValue = 0;
-      } else {
-        // Formula baru: Air Terjual / Distribusi Air × 100%
-        calculatedValue = (airTerjual / distribusiAir) * 100;
+      if (inputs.distribusiAir !== undefined && inputs.airTerjual !== undefined && inputs.distribusiAir !== 0) {
+        calculatedValue = ((inputs.distribusiAir - inputs.airTerjual) / inputs.distribusiAir) * 100;
       }
       break;
     
     case "jam_operasi":
-      const totalJamOperasi = parseFloat(String(inputs.totalJamOperasi || 0));
-      
-      calculatedValue = totalJamOperasi / 365;
+      if (inputs.totalJamOperasi !== undefined) {
+        calculatedValue = inputs.totalJamOperasi / 365;
+      }
       break;
     
     case "tekanan_air":
-      const pelangganTekananBaik = parseFloat(String(inputs.pelangganTekananBaik || 0));
-      const totalPelanggan = parseFloat(String(inputs.totalPelanggan || 1));
-      
-      if (totalPelanggan === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (pelangganTekananBaik / totalPelanggan) * 100;
+      if (inputs.pelangganTekananBaik !== undefined && inputs.totalPelanggan !== undefined && inputs.totalPelanggan !== 0) {
+        calculatedValue = (inputs.pelangganTekananBaik / inputs.totalPelanggan) * 100;
       }
       break;
     
     case "penggantian_meter":
-      const meterDiganti = parseFloat(String(inputs.meterDiganti || 0));
-      const jumlahPelanggan = parseFloat(String(inputs.jumlahPelanggan || 1));
-      
-      if (jumlahPelanggan === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (meterDiganti / jumlahPelanggan) * 100;
+      if (inputs.meterDiganti !== undefined && inputs.jumlahPelanggan !== undefined && inputs.jumlahPelanggan !== 0) {
+        calculatedValue = (inputs.meterDiganti / inputs.jumlahPelanggan) * 100;
       }
       break;
     
     case "rasio_pegawai":
-      const jumlahPegawai = parseFloat(String(inputs.jumlahPegawai || 0));
-      const pelanggan = parseFloat(String(inputs.pelanggan || 1));
-      
-      if (pelanggan === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (jumlahPegawai / pelanggan) * 1000;
+      if (inputs.jumlahPegawai !== undefined && inputs.pelanggan !== undefined && inputs.pelanggan !== 0) {
+        calculatedValue = (inputs.jumlahPegawai / inputs.pelanggan) * 1000;
       }
       break;
     
     case "rasio_diklat":
-      const pegawaiDiklat = parseFloat(String(inputs.pegawaiDiklat || 0));
-      const totalPegawai = parseFloat(String(inputs.totalPegawai || 1));
-      
-      if (totalPegawai === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (pegawaiDiklat / totalPegawai) * 100;
+      if (inputs.pegawaiDiklat !== undefined && inputs.totalPegawai !== undefined && inputs.totalPegawai !== 0) {
+        calculatedValue = (inputs.pegawaiDiklat / inputs.totalPegawai) * 100;
       }
       break;
     
     case "biaya_diklat":
-      const biayaDiklat = parseFloat(String(inputs.biayaDiklat || 0));
-      const biayaPegawai = parseFloat(String(inputs.biayaPegawai || 1));
-      
-      if (biayaPegawai === 0) {
-        calculatedValue = 0;
-      } else {
-        calculatedValue = (biayaDiklat / biayaPegawai) * 100;
+      if (inputs.biayaDiklat !== undefined && inputs.biayaPegawai !== undefined && inputs.biayaPegawai !== 0) {
+        calculatedValue = (inputs.biayaDiklat / inputs.biayaPegawai) * 100;
       }
       break;
     

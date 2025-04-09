@@ -58,7 +58,7 @@ export const indicators: Indicator[] = [
     id: "pertumbuhan_pelanggan",
     name: "Pertumbuhan Pelanggan",
     category: "Pelayanan",
-    formula: "(Jml Pelanggan) / pelanggan tahun lalu × 100%",
+    formula: "(Jml Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu × 100%",
     weight: 0.050,
     unit: "%"
   },
@@ -100,7 +100,7 @@ export const indicators: Indicator[] = [
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "Air Terjual / Distribusi Air * 1",
+    formula: "Air Terjual / Distribusi Air × 100%",
     weight: 0.070,
     unit: "%"
   },
