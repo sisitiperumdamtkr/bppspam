@@ -5,7 +5,7 @@ import { Indicator } from './types';
 export const indicators: Indicator[] = [
   // Aspek Keuangan
   {
-    id: "roe",
+    id: "ROE",
     name: "Return on Equity (ROE)",
     category: "Keuangan",
     formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas × 100%",
@@ -13,7 +13,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "rasio_operasi",
+    id: "RasioOperasi",
     name: "Rasio Operasi",
     category: "Keuangan",
     formula: "Biaya Operasi / Pendapatan Operasi",
@@ -21,7 +21,7 @@ export const indicators: Indicator[] = [
     unit: ""
   },
   {
-    id: "cash_ratio",
+    id: "CashRatio",
     name: "Cash Ratio",
     category: "Keuangan",
     formula: "Kas + Setara Kas / Utang Lancar × 100%",
@@ -29,7 +29,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "efektivitas_penagihan",
+    id: "EfektifitasPenagihan",
     name: "Efektivitas Penagihan",
     category: "Keuangan",
     formula: "Jumlah Penerimaan Rek Air / Jumah Rekening Air × 100%",
@@ -37,7 +37,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "solvabilitas",
+    id: "Solvabilitas",
     name: "Solvabilitas",
     category: "Keuangan",
     formula: "Total Aktiva / Total Utang × 100%",
@@ -47,7 +47,7 @@ export const indicators: Indicator[] = [
   
   // Aspek Pelayanan
   {
-    id: "cakupan_pelayanan",
+    id: "CakupanPelayananTeknis",
     name: "Cakupan Pelayanan Teknis",
     category: "Pelayanan",
     formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk wilayah pelayanan × 100%",
@@ -55,7 +55,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "pertumbuhan_pelanggan",
+    id: "PertumbuhanPelanggan",
     name: "Pertumbuhan Pelanggan",
     category: "Pelayanan",
     formula: "(Jml Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu × 100%",
@@ -63,7 +63,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "penyelesaian_aduan",
+    id: "TingkatPenyelesaianAduan",
     name: "Tingkat Penyelesaian Aduan",
     category: "Pelayanan",
     formula: "Jumlah Pengaduan Selesai Ditangani / Jumlah Pengaduan × 100%",
@@ -71,7 +71,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "kualitas_air",
+    id: "KualitasAirPelanggan",
     name: "Kualitas Air Pelanggan",
     category: "Pelayanan",
     formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji × 100%",
@@ -79,7 +79,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "konsumsi_air",
+    id: "KonsumsiAirDomestik",
     name: "Konsumsi Air Domestik",
     category: "Pelayanan",
     formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
@@ -89,7 +89,7 @@ export const indicators: Indicator[] = [
   
   // Aspek Operasional
   {
-    id: "efisiensi_produksi",
+    id: "EfisiensiProduksi",
     name: "Efisiensi Produksi",
     category: "Operasional",
     formula: "Volume Produksi Riil (m³) / Kapasitas terpasang (m³) × 100%",
@@ -97,15 +97,15 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "tingkat_kehilangan_air",
+    id: "TingkatKehilanganAir",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "Air Terjual / Distribusi Air × 100%",
+    formula: "Distribusi Air - Air Terjual / Distribusi Air × 100%",
     weight: 0.070,
     unit: "%"
   },
   {
-    id: "jam_operasi",
+    id: "JamOperasiLayanan",
     name: "Jam Operasi Layanan",
     category: "Operasional",
     formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365 hari",
@@ -113,7 +113,7 @@ export const indicators: Indicator[] = [
     unit: "jam/hari"
   },
   {
-    id: "tekanan_air",
+    id: "TekananAirSambPelanggan",
     name: "Tekanan Air Samb Pelanggan",
     category: "Operasional",
     formula: "Jmh Pelanggan dilayani dgn tekanan> 0,7Bar / Jumlah Pelanggan × 100%",
@@ -121,7 +121,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "penggantian_meter",
+    id: "PenggantianMeterAir",
     name: "Penggantian Meter Air",
     category: "Operasional",
     formula: "Jumlah Meter Yg diganti/dikalibrasi tahun ybs / Jumlah Pelanggan × 100%",
@@ -131,7 +131,7 @@ export const indicators: Indicator[] = [
   
   // Aspek SDM
   {
-    id: "rasio_pegawai",
+    id: "RasioJumlahPegawai",
     name: "Rasio Jmh Pegawai / 1000 pelanggan",
     category: "SDM",
     formula: "Jumlah Pegawai / Jumlah Pelanggan × 1000",
@@ -139,7 +139,7 @@ export const indicators: Indicator[] = [
     unit: "orang/1000 pel"
   },
   {
-    id: "rasio_diklat",
+    id: "RatioDiklatPegawai",
     name: "Ratio Diklat Pegawai / Peningkatan Kompetensi",
     category: "SDM",
     formula: "Jumlah Pegawai Yg Ikut Diklat / Jumlah Pegawai × 100%",
@@ -147,7 +147,7 @@ export const indicators: Indicator[] = [
     unit: "%"
   },
   {
-    id: "biaya_diklat",
+    id: "BiayaDiklatTerhadapBiaya",
     name: "Biaya Diklat Terhadap Biaya Pegawai",
     category: "SDM",
     formula: "Biaya Diklat / Biaya Pegawai × 100%",

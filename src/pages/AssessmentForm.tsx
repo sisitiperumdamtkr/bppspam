@@ -235,9 +235,10 @@ const AssessmentForm = () => {
       
       console.log("Assessment saved successfully:", savedAssessment);
       
+      // PERBAIKAN: Gunakan UUID yang valid untuk ID nilai indikator
       // Simpan nilai-nilai indikator ke Supabase
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
-        id: `${assessmentId}-${indicatorId}`,
+        id: crypto.randomUUID(), // Gunakan UUID yang valid untuk setiap nilai
         assessment_id: assessmentId,
         indicator_id: indicatorId,
         value: value.value,
