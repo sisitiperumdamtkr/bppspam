@@ -74,9 +74,9 @@ export const indicators: Indicator[] = [
     id: "KualitasAirPelanggan",
     name: "Kualitas Air Pelanggan",
     category: "Pelayanan",
-    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji × 100%",
+    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji",
     weight: 0.075,
-    unit: "%"
+    unit: ""
   },
   {
     id: "KonsumsiAirDomestik",
@@ -132,7 +132,7 @@ export const indicators: Indicator[] = [
   // Aspek SDM
   {
     id: "RasioJumlahPegawai",
-    name: "Rasio Jmh Pegawai / 1000 pelanggan",
+    name: "Rasio Jmh Pegawai per 1000 pelanggan",
     category: "SDM",
     formula: "Jumlah Pegawai / Jumlah Pelanggan × 1000",
     weight: 0.070,

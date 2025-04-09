@@ -30,13 +30,14 @@ const FormulaInputs = ({
               id={`${indicatorId}-${input.name}`}
               type="number"
               value={formulaInputs[indicatorId]?.[input.name] || ""}
-              onChange={(e) => 
+              onChange={(e) => {
+                const value = e.target.value === "" ? 0 : parseFloat(e.target.value);
                 onInputChange(
                   indicatorId, 
                   input.name, 
-                  parseFloat(e.target.value) || 0
-                )
-              }
+                  isNaN(value) ? 0 : value
+                );
+              }}
               placeholder={`Masukkan ${input.label.toLowerCase()}`}
               className="mt-1"
             />

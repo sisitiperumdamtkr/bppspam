@@ -145,6 +145,8 @@ const AssessmentForm = () => {
     inputName: string, 
     value: number
   ) => {
+    console.log(`Input change - Indicator: ${indicatorId}, Input: ${inputName}, Value: ${value}`);
+    
     setFormulaInputs(prev => ({
       ...prev,
       [indicatorId]: {
@@ -154,7 +156,10 @@ const AssessmentForm = () => {
     }));
     
     const indicator = indicators.find(ind => ind.id === indicatorId);
-    if (!indicator) return;
+    if (!indicator) {
+      console.error(`Indicator with ID ${indicatorId} not found`);
+      return;
+    }
     
     const updatedInputs = {
       ...(formulaInputs[indicatorId] || {}),
@@ -162,12 +167,15 @@ const AssessmentForm = () => {
     };
     
     const calculatedValue = calculateFormulaValue(indicatorId, updatedInputs);
+    console.log(`Calculated value for ${indicatorId}: ${calculatedValue}`);
     handleValueChange(indicator, calculatedValue);
   };
   
   // Handler untuk mengubah nilai indikator
   const handleValueChange = (indicator: Indicator, value: number) => {
+    console.log(`Value change - Indicator: ${indicator.id}, Value: ${value}`);
     const score = calculateScore(value, indicator.id);
+    console.log(`Score for ${indicator.id}: ${score}`);
     
     const updatedValues = {
       ...assessment.values,
@@ -199,10 +207,8 @@ const AssessmentForm = () => {
       
       console.log("Saving assessment with ID:", assessmentId);
       
-      // PERBAIKAN: Pastikan user_id dalam format UUID yang valid
-      // Jika auth.user tidak tersedia, gunakan UUID acak
+      // Pastikan user_id dalam format UUID yang valid
       let userId = user?.id;
-      // Jika user.id bukan UUID atau null, buat UUID baru
       if (!userId || typeof userId === 'number' || userId === '1') {
         userId = crypto.randomUUID();
       }
@@ -235,7 +241,19 @@ const AssessmentForm = () => {
       
       console.log("Assessment saved successfully:", savedAssessment);
       
-      // PERBAIKAN: Gunakan UUID yang valid untuk ID nilai indikator
+      // Hapus data nilai indikator yang lama jika ada
+      if (!isNewAssessment) {
+        const { error: deleteError } = await supabase
+          .from('assessment_values')
+          .delete()
+          .eq('assessment_id', assessmentId);
+          
+        if (deleteError) {
+          console.error("Error deleting old values:", deleteError);
+          throw deleteError;
+        }
+      }
+      
       // Simpan nilai-nilai indikator ke Supabase
       const valuesData = Object.entries(assessment.values).map(([indicatorId, value]) => ({
         id: crypto.randomUUID(), // Gunakan UUID yang valid untuk setiap nilai
@@ -248,10 +266,9 @@ const AssessmentForm = () => {
       console.log("Saving values data:", valuesData);
       
       if (valuesData.length > 0) {
-        // Gunakan single upsert operation untuk semua nilai
         const { data: savedValues, error: valuesError } = await supabase
           .from('assessment_values')
-          .upsert(valuesData)
+          .insert(valuesData)
           .select('*');
           
         if (valuesError) {

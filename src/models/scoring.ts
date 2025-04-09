@@ -65,10 +65,10 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 1;
       
     case "KualitasAirPelanggan":
-      if (value >= 80) return 5;
-      if (value >= 60) return 4;
-      if (value >= 40) return 3;
-      if (value >= 20) return 2;
+      if (value >= 0.8) return 5;
+      if (value >= 0.6) return 4;
+      if (value >= 0.4) return 3;
+      if (value >= 0.2) return 2;
       return 1;
       
     case "KonsumsiAirDomestik":
@@ -87,10 +87,10 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 1;
       
     case "TingkatKehilanganAir":
-      if (value >= 80) return 5;
-      if (value >= 60) return 4;
-      if (value >= 40) return 3;
-      if (value >= 20) return 2;
+      if (value <= 25) return 5;
+      if (value <= 30) return 4;
+      if (value <= 35) return 3;
+      if (value <= 40) return 2;
       return 1;
       
     case "JamOperasiLayanan":
