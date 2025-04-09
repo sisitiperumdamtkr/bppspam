@@ -25,6 +25,7 @@ const AssessmentList = () => {
       // Log user ID untuk debugging
       console.log("Current user:", user);
       
+      // Query untuk mengambil data dari Supabase
       const { data, error } = await supabase
         .from('assessments')
         .select('*')
@@ -34,7 +35,7 @@ const AssessmentList = () => {
         console.error('Error fetching assessments:', error);
         toast({
           title: "Error",
-          description: "Gagal mengambil data penilaian",
+          description: "Gagal mengambil data penilaian: " + error.message,
           variant: "destructive"
         });
         return;
@@ -59,7 +60,7 @@ const AssessmentList = () => {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: "Terjadi kesalahan saat mengambil data",
+        description: "Terjadi kesalahan saat mengambil data: " + (error as Error).message,
         variant: "destructive"
       });
     } finally {
@@ -67,6 +68,7 @@ const AssessmentList = () => {
     }
   };
   
+  // Fetch data saat komponen pertama kali dimount
   useEffect(() => {
     fetchAssessments();
   }, []);
