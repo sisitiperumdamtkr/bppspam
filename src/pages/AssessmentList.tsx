@@ -3,12 +3,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, FileText, RefreshCw } from "lucide-react";
+import { PlusCircle, FileText, RefreshCw, Trash2 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { getHealthCategory } from "@/models/health-categories";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const AssessmentList = () => {
   const navigate = useNavigate();
@@ -16,6 +27,7 @@ const AssessmentList = () => {
   const { toast } = useToast();
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [assessmentToDelete, setAssessmentToDelete] = useState<string | null>(null);
   
   // Fungsi untuk mengambil data penilaian
   const fetchAssessments = async () => {
@@ -86,6 +98,68 @@ const AssessmentList = () => {
     });
   };
 
+  // Fungsi untuk menghapus penilaian
+  const handleDeleteAssessment = async (id: string) => {
+    try {
+      setLoading(true);
+      
+      // Hapus dulu semua nilai yang terkait dengan penilaian
+      const { error: valuesError } = await supabase
+        .from('assessment_values')
+        .delete()
+        .eq('assessment_id', id);
+      
+      if (valuesError) {
+        console.error('Error deleting assessment values:', valuesError);
+        toast({
+          title: "Error",
+          description: "Gagal menghapus nilai penilaian: " + valuesError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Kemudian hapus penilaian itu sendiri
+      const { error: assessmentError } = await supabase
+        .from('assessments')
+        .delete()
+        .eq('id', id);
+      
+      if (assessmentError) {
+        console.error('Error deleting assessment:', assessmentError);
+        toast({
+          title: "Error",
+          description: "Gagal menghapus penilaian: " + assessmentError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Update daftar setelah penghapusan
+      setAssessments(assessments.filter(assessment => assessment.id !== id));
+      
+      toast({
+        title: "Berhasil",
+        description: "Penilaian telah dihapus",
+      });
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat menghapus data: " + (error as Error).message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+      setAssessmentToDelete(null);
+    }
+  };
+
+  const confirmDelete = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation(); // Mencegah klik untuk membuka penilaian
+    setAssessmentToDelete(id);
+  };
+
   return (
     <DashboardLayout title="Penilaian PERUMDAM">
       <div className="flex justify-between items-center mb-6">
@@ -142,10 +216,45 @@ const AssessmentList = () => {
                   <div className="font-medium">
                     Skor: {assessment.totalScore.toFixed(2)}
                   </div>
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    <FileText className="h-4 w-4" />
-                    Lihat
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="sm" className="gap-1">
+                      <FileText className="h-4 w-4" />
+                      Lihat
+                    </Button>
+                    <AlertDialog open={assessmentToDelete === assessment.id} onOpenChange={(open) => {
+                      if (!open) setAssessmentToDelete(null);
+                    }}>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="gap-1 text-destructive hover:bg-destructive/10"
+                          onClick={(e) => confirmDelete(e, assessment.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Hapus
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Anda yakin ingin menghapus?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Penilaian tahun {assessment.year} akan dihapus secara permanen.
+                            Tindakan ini tidak dapat dibatalkan.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => handleDeleteAssessment(assessment.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Hapus
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </div>
             );

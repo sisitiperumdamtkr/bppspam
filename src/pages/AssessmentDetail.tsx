@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,16 +13,30 @@ import {
   ResponsiveContainer 
 } from "recharts";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
-import { Edit, Download, FileSpreadsheet, FileText } from "lucide-react";
+import { Edit, Download, FileSpreadsheet, FileText, Trash2 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment, Value } from "@/models/types";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const AssessmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [assessment, setAssessment] = useState<Assessment | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   
   useEffect(() => {
     const fetchAssessment = async () => {
@@ -102,6 +115,64 @@ const AssessmentDetail = () => {
       downloadCSV(assessment);
     } else {
       downloadPDF(assessment);
+    }
+  };
+
+  const handleDeleteAssessment = async () => {
+    if (!id) return;
+
+    try {
+      setLoading(true);
+      
+      // Hapus dulu semua nilai yang terkait dengan penilaian
+      const { error: valuesError } = await supabase
+        .from('assessment_values')
+        .delete()
+        .eq('assessment_id', id);
+      
+      if (valuesError) {
+        console.error('Error deleting assessment values:', valuesError);
+        toast({
+          title: "Error",
+          description: "Gagal menghapus nilai penilaian: " + valuesError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Kemudian hapus penilaian itu sendiri
+      const { error: assessmentError } = await supabase
+        .from('assessments')
+        .delete()
+        .eq('id', id);
+      
+      if (assessmentError) {
+        console.error('Error deleting assessment:', assessmentError);
+        toast({
+          title: "Error",
+          description: "Gagal menghapus penilaian: " + assessmentError.message,
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      toast({
+        title: "Berhasil",
+        description: "Penilaian telah dihapus",
+      });
+      
+      // Redirect ke halaman daftar penilaian
+      navigate("/assessments");
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan saat menghapus data: " + (error as Error).message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+      setShowDeleteDialog(false);
     }
   };
   
@@ -188,6 +259,35 @@ const AssessmentDetail = () => {
             <Edit className="h-4 w-4 mr-2" />
             Edit
           </Button>
+          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <AlertDialogTrigger asChild>
+              <Button 
+                variant="destructive"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Hapus
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Anda yakin ingin menghapus?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Penilaian tahun {assessment.year} akan dihapus secara permanen.
+                  Tindakan ini tidak dapat dibatalkan.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleDeleteAssessment}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Hapus
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
       
