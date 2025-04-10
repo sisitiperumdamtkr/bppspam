@@ -70,7 +70,7 @@ export function AppSidebar() {
 
         {/* Grup Penilaian */}
         <SidebarGroup>
-          <SidebarGroupLabel>Penilaian</SidebarGroupLabel>
+          <SidebarGroupLabel>Penilaian Menurut PUPR tahun 2020</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
