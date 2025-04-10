@@ -201,7 +201,7 @@ export const calculateFormulaValue = (
     
     case "RasioJumlahPegawai":
       if (inputs.jumlahPegawai !== undefined && inputs.pelanggan !== undefined && inputs.pelanggan !== 0) {
-        calculatedValue = (inputs.jumlahPegawai / inputs.pelanggan) / 1000;
+        calculatedValue = (inputs.jumlahPegawai / inputs.pelanggan);
       }
       break;
     

@@ -134,7 +134,7 @@ export const indicators: Indicator[] = [
     id: "RasioJumlahPegawai",
     name: "Rasio Jmh Pegawai per 1000 pelanggan",
     category: "SDM",
-    formula: "Jumlah Pegawai / Jumlah Pelanggan / 1000",
+    formula: "Jumlah Pegawai / (Jumlah Pelanggan / 1000)",
     weight: 0.070,
     unit: "orang/1000 pel"
   },
