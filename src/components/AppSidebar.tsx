@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -30,34 +29,6 @@ export function AppSidebar() {
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  const menuItems = [
-    {
-      title: "Dashboard",
-      path: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Input Penilaian",
-      path: "/assessment/new",
-      icon: ClipboardList,
-    },
-    {
-      title: "Riwayat Penilaian",
-      path: "/assessments",
-      icon: FileText,
-    },
-    {
-      title: "Laporan",
-      path: "/reports",
-      icon: BarChart,
-    },
-    {
-      title: "Pengaturan",
-      path: "/settings",
-      icon: Settings,
-    },
-  ];
-
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
@@ -74,29 +45,98 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
+
       <SidebarContent>
+        {/* Grup Menu Utama */}
         <SidebarGroup>
           <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton 
-                    asChild 
-                    isActive={location.pathname === item.path}
-                    tooltip={item.title}
-                  >
-                    <Link to={item.path}>
-                      <item.icon className="h-5 w-5" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/dashboard"}
+                  tooltip="Dashboard"
+                >
+                  <Link to="/dashboard">
+                    <LayoutDashboard className="h-5 w-5" />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Grup Penilaian */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Penilaian</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/assessment/new"}
+                  tooltip="Input Penilaian"
+                >
+                  <Link to="/assessment/new">
+                    <ClipboardList className="h-5 w-5" />
+                    <span>Input Penilaian</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/assessments"}
+                  tooltip="Riwayat Penilaian"
+                >
+                  <Link to="/assessments">
+                    <FileText className="h-5 w-5" />
+                    <span>Riwayat Penilaian</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/reports"}
+                  tooltip="Laporan"
+                >
+                  <Link to="/reports">
+                    <BarChart className="h-5 w-5" />
+                    <span>Laporan</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Grup Lainnya */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Lainnya</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/settings"}
+                  tooltip="Pengaturan"
+                >
+                  <Link to="/settings">
+                    <Settings className="h-5 w-5" />
+                    <span>Pengaturan</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter>
         <SidebarSeparator />
         <SidebarGroup>
