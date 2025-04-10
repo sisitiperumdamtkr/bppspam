@@ -98,7 +98,7 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       if (value >= 18) return 4;
       if (value >= 16) return 3;
       if (value >= 12) return 2;
-      if (value <= 12) return 2;
+      if (value <= 12) return 1;
       
     case "TekananAirSambPelanggan":
       if (value >= 80) return 5;
