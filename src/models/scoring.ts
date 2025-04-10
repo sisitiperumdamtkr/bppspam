@@ -130,10 +130,10 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 1;
       
     case "BiayaDiklatTerhadapBiaya":
-      if (value >= 5) return 5;
-      if (value >= 4) return 4;
-      if (value >= 3) return 3;
-      if (value >= 2) return 2;
+      if (value >= 10) return 5;
+      if (value >= 7.5) return 4;
+      if (value >= 5) return 3;
+      if (value >= 2.5) return 2;
       return 1;
       
     default:
