@@ -68,9 +68,56 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Grup Penilaian */}
+        {/* Grup Penilaian pupr 2020 */}
         <SidebarGroup>
           <SidebarGroupLabel>Penilaian Menurut PUPR tahun 2020</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/assessment/new"}
+                  tooltip="Input Penilaian"
+                >
+                  <Link to="/assessment/new">
+                    <ClipboardList className="h-5 w-5" />
+                    <span>Input Penilaian</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/assessments"}
+                  tooltip="Riwayat Penilaian"
+                >
+                  <Link to="/assessments">
+                    <FileText className="h-5 w-5" />
+                    <span>Riwayat Penilaian</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  asChild 
+                  isActive={location.pathname === "/reports"}
+                  tooltip="Laporan"
+                >
+                  <Link to="/reports">
+                    <BarChart className="h-5 w-5" />
+                    <span>Laporan</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Grup Penilaian KEMENDAGRI 2020 */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Penilaian Menurut KEMENDAGRI tahun 1999</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
