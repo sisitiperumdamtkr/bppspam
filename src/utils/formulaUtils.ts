@@ -38,7 +38,7 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
       ];
     case "PertumbuhanPelanggan":
       return [
-        { name: "pelangganTahunIni", label: "Jumlah Pelanggan Tahun Ini - Tahun Lalu" },
+        { name: "pelangganTahunIni", label: "(Jumlah Pelanggan Tahun Ini - Tahun Lalu)" },
         { name: "pelangganTahunLalu", label: "Jumlah Pelanggan Tahun Lalu" },
       ];
     case "TingkatPenyelesaianAduan":
@@ -63,7 +63,7 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
       ];
     case "TingkatKehilanganAir":
       return [
-        { name: "distribusiAir", label: "Air Didistribusikan - Air Terjual" },
+        { name: "distribusiAir", label: "(Air Didistribusikan - Air Terjual)" },
         { name: "airTerjual", label: "Air Terjual" },
       ];
     case "JamOperasiLayanan":
