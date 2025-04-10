@@ -116,11 +116,11 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       
     // Aspek SDM
     case "RasioJumlahPegawai":
-      if (value <= 6) return 5;
-      if (value <= 8) return 4;
-      if (value <= 10) return 3;
-      if (value <= 12) return 2;
-      return 1;
+      if (value <= 8) return 5;
+      if (value <= 10) return 4;
+      if (value <= 12) return 3;
+      if (value <= 14) return 2;
+      if (value >= 14) return 1;
       
     case "RatioDiklatPegawai":
       if (value >= 80) return 5;
