@@ -8,7 +8,7 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
   switch (indicatorId) {
     case "ROE":
       return [
-        { name: "labaBersih", label: "Laba Bersih" },
+        { name: "labaBersih", label: "Laba Setelah Pajak" },
         { name: "ekuitas", label: "Jumlah Ekuitas" },
       ];
     case "RasioOperasi":
@@ -34,37 +34,37 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
     case "CakupanPelayananTeknis":
       return [
         { name: "pendudukTerlayani", label: "Jumlah Penduduk Terlayani" },
-        { name: "totalPenduduk", label: "Jumlah Penduduk" },
+        { name: "totalPenduduk", label: "Jumlah Penduduk Wilayah Pelayanan" },
       ];
     case "PertumbuhanPelanggan":
       return [
-        { name: "pelangganTahunIni", label: "Jumlah Pelanggan Tahun Ini" },
+        { name: "pelangganTahunIni", label: "Jumlah Pelanggan Tahun Ini - Tahun Lalu" },
         { name: "pelangganTahunLalu", label: "Jumlah Pelanggan Tahun Lalu" },
       ];
     case "TingkatPenyelesaianAduan":
       return [
-        { name: "aduanSelesai", label: "Jumlah Aduan Selesai" },
+        { name: "aduanSelesai", label: "Pengaduan Selesai Ditangani" },
         { name: "totalAduan", label: "Jumlah Total Aduan" },
       ];
     case "KualitasAirPelanggan":
       return [
-        { name: "ujiMemenuhi", label: "Jumlah Uji Yang Memenuhi Syarat" },
-        { name: "totalUji", label: "Jumlah Total Pengujian" },
+        { name: "ujiMemenuhi", label: "Jumlah Uji Kualitas Yang Memenuhi Syarat" },
+        { name: "totalUji", label: "Jumlah Titik Yang Diuji" },
       ];
     case "KonsumsiAirDomestik":
       return [
-        { name: "airTerjualDomestik", label: "Air Terjual Domestik (m³/tahun)" },
+        { name: "airTerjualDomestik", label: "Jml Air Yang Terjual pada Pel Domestik" },
         { name: "pelangganDomestik", label: "Jumlah Pelanggan Domestik" },
       ];
     case "EfisiensiProduksi":
       return [
-        { name: "produksiRiil", label: "Volume Produksi Riil (m³)" },
-        { name: "kapasitasTerpasang", label: "Kapasitas Terpasang (m³)" },
+        { name: "produksiRiil", label: "Volume Produksi Riil" },
+        { name: "kapasitasTerpasang", label: "Kapasitas Terpasang" },
       ];
     case "TingkatKehilanganAir":
       return [
-        { name: "distribusiAir", label: "Distribusi Air (m³)" },
-        { name: "airTerjual", label: "Air Terjual (m³)" },
+        { name: "distribusiAir", label: "Air Didistribusikan - Air Terjual" },
+        { name: "airTerjual", label: "Air Terjual" },
       ];
     case "JamOperasiLayanan":
       return [
@@ -73,17 +73,17 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
     case "TekananAirSambPelanggan":
       return [
         { name: "pelangganTekananBaik", label: "Jumlah Pelanggan dengan Tekanan > 0.7 Bar" },
-        { name: "totalPelanggan", label: "Jumlah Total Pelanggan" },
+        { name: "totalPelanggan", label: "Jumlah Pelanggan Aktif" },
       ];
     case "PenggantianMeterAir":
       return [
-        { name: "meterDiganti", label: "Jumlah Meter Air yang Diganti" },
-        { name: "jumlahPelanggan", label: "Jumlah Total Pelanggan" },
+        { name: "meterDiganti", label: "Jumlah Meter Air yang Diganti atau kalibrasi dalam setahun" },
+        { name: "jumlahPelanggan", label: "Jumlah Pelanggan Aktif" },
       ];
     case "RasioJumlahPegawai":
       return [
         { name: "jumlahPegawai", label: "Jumlah Pegawai" },
-        { name: "pelanggan", label: "Jumlah Pelanggan" },
+        { name: "pelanggan", label: "(Jumlah Seluruh Pelanggan / 1000)" },
       ];
     case "RatioDiklatPegawai":
       return [
@@ -93,7 +93,7 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
     case "BiayaDiklatTerhadapBiaya":
       return [
         { name: "biayaDiklat", label: "Biaya Diklat" },
-        { name: "biayaPegawai", label: "Total Biaya Pegawai" },
+        { name: "biayaPegawai", label: "Realisasi Biaya Pegawai" },
       ];
     default:
       return [];
