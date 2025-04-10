@@ -94,11 +94,11 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       return 1;
       
     case "JamOperasiLayanan":
-      if (value <= 25) return 5;
-      if (value <= 30) return 4;
-      if (value <= 35) return 3;
-      if (value >= 40) return 2;
-      return 1;
+      if (value >= 21) return 5;
+      if (value >= 18) return 4;
+      if (value >= 16) return 3;
+      if (value >= 12) return 2;
+      if (value <= 12) return 2;
       
     case "TekananAirSambPelanggan":
       if (value >= 80) return 5;
