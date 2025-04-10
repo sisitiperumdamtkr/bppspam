@@ -8,7 +8,7 @@ export const indicators: Indicator[] = [
     id: "ROE",
     name: "Return on Equity (ROE)",
     category: "Keuangan",
-    formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas × 100%",
+    formula: "Laba setelah Pajak / Jumlah Ekuitas × 100%",
     weight: 0.055,
     unit: "%"
   },
@@ -24,7 +24,7 @@ export const indicators: Indicator[] = [
     id: "CashRatio",
     name: "Cash Ratio",
     category: "Keuangan",
-    formula: "Kas + Setara Kas / Utang Lancar × 100%",
+    formula: "( Kas + Setara Kas ) / Utang Lancar × 100%",
     weight: 0.055,
     unit: "%"
   },
@@ -58,7 +58,7 @@ export const indicators: Indicator[] = [
     id: "PertumbuhanPelanggan",
     name: "Pertumbuhan Pelanggan",
     category: "Pelayanan",
-    formula: "Jumlah Pelanggan tahun ini / pelanggan tahun lalu × 100%",
+    formula: "(Jml Pel thn ini - Jml Pel thn lalu ) / pelanggan tahun lalu × 100%",
     weight: 0.050,
     unit: "%"
   },
@@ -66,7 +66,7 @@ export const indicators: Indicator[] = [
     id: "TingkatPenyelesaianAduan",
     name: "Tingkat Penyelesaian Aduan",
     category: "Pelayanan",
-    formula: "Jumlah Pengaduan Selesai Ditangani / Jumlah Pengaduan × 100%",
+    formula: "Pengaduan Selesai Ditangani / Jumlah Pengaduan × 100%",
     weight: 0.025,
     unit: "%"
   },
@@ -74,7 +74,7 @@ export const indicators: Indicator[] = [
     id: "KualitasAirPelanggan",
     name: "Kualitas Air Pelanggan",
     category: "Pelayanan",
-    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji",
+    formula: "Jumlah Uji Kualitas Yg Memenuhi syarat / Jumlah titik yang Diuji atau titik minimal",
     weight: 0.075,
     unit: ""
   },
@@ -82,7 +82,7 @@ export const indicators: Indicator[] = [
     id: "KonsumsiAirDomestik",
     name: "Konsumsi Air Domestik",
     category: "Pelayanan",
-    formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
+    formula: "Jml Air Yang Terjual pada pel. domestik / Jumlah Pelanggan Domestik",
     weight: 0.050,
     unit: "m³/bulan"
   },
@@ -92,7 +92,7 @@ export const indicators: Indicator[] = [
     id: "EfisiensiProduksi",
     name: "Efisiensi Produksi",
     category: "Operasional",
-    formula: "Volume Produksi Riil (m³) / Kapasitas terpasang (m³) × 100%",
+    formula: "Volume Produksi Riil (m³) / Kapasitas terpasang × 100%",
     weight: 0.070,
     unit: "%"
   },
@@ -100,7 +100,7 @@ export const indicators: Indicator[] = [
     id: "TingkatKehilanganAir",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "Distribusi Air / Air Terjual × 100%",
+    formula: "(Air Didistribusikan - Air Terjual) / Air Terjual × 100%",
     weight: 0.070,
     unit: "%"
   },
@@ -108,7 +108,7 @@ export const indicators: Indicator[] = [
     id: "JamOperasiLayanan",
     name: "Jam Operasi Layanan",
     category: "Operasional",
-    formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365 hari",
+    formula: "( jml waktu pelayanan / Distribusi air ke pelanggan dalam setahun) / 365 hari",
     weight: 0.080,
     unit: "jam/hari"
   },
@@ -124,7 +124,7 @@ export const indicators: Indicator[] = [
     id: "PenggantianMeterAir",
     name: "Penggantian Meter Air",
     category: "Operasional",
-    formula: "Jumlah Meter Yg diganti/dikalibrasi tahun ybs / Jumlah Pelanggan × 100%",
+    formula: "Jumlah Meter Yg diganti/dikalibrasi tahun ybs / Jumlah Pelanggan aktif × 100%",
     weight: 0.065,
     unit: "%"
   },
