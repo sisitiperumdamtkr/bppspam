@@ -18,8 +18,7 @@ export const getFormulaInputs = (indicatorId: string): FormulaInput[] => {
       ];
     case "CashRatio":
       return [
-        { name: "kas", label: "Kas" },
-        { name: "setaraKas", label: "Setara Kas" },
+        { name: "kas", label: "Kas + Setara Kas" },
         { name: "utangLancar", label: "Utang Lancar" },
       ];
     case "EfektifitasPenagihan":
@@ -122,8 +121,8 @@ export const calculateFormulaValue = (
       break;
     
     case "CashRatio":
-      if (inputs.kas !== undefined && inputs.setaraKas !== undefined && inputs.utangLancar !== undefined && inputs.utangLancar !== 0) {
-        calculatedValue = ((inputs.kas + inputs.setaraKas) / inputs.utangLancar) * 100;
+      if (inputs.kas !== undefined && inputs.utangLancar !== undefined && inputs.utangLancar !== 0) {
+        calculatedValue = (inputs.kas  / inputs.utangLancar) * 100;
       }
       break;
     
