@@ -26,7 +26,7 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       if (value >= 80) return 4;
       if (value >= 60) return 3;
       if (value >= 40) return 2;
-      return 1;
+      if (value <= 40) return 1;
       
     case "EfektifitasPenagihan":
       if (value >= 90) return 5;
