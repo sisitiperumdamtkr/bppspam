@@ -158,7 +158,7 @@ export const calculateFormulaValue = (
     
     case "KualitasAirPelanggan":
       if (inputs.ujiMemenuhi !== undefined && inputs.totalUji !== undefined && inputs.totalUji !== 0) {
-        calculatedValue = (inputs.ujiMemenuhi / inputs.totalUji);
+        calculatedValue = (inputs.ujiMemenuhi / inputs.totalUji)*100;
       }
       break;
     
