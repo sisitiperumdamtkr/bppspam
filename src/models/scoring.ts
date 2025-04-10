@@ -18,8 +18,8 @@ export const calculateScore = (value: number, indicatorId: string): number => {
       if (value <= 0.5) return 5;
       if (value <= 0.65) return 4;
       if (value <= 0.85) return 3;
-      if (value <= 1) return 2;
-      if (value >= 1) return 1;
+      if (value >= 1) return 2;
+      if (value <= 1) return 1;
       
     case "CashRatio":
       if (value >= 100) return 5;
