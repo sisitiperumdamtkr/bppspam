@@ -176,7 +176,7 @@ export const calculateFormulaValue = (
       break;
     
     case "TingkatKehilanganAir":
-      if (inputs.distribusiAir !== undefined && inputs.airTerjual !== undefined && inputs.distribusiAir !== 0) {
+      if (inputs.distribusiAir !== undefined && inputs.airTerjual !== undefined && inputs.airTerjual !== 0) {
         calculatedValue = (inputs.distribusiAir / inputs.airTerjual) * 100;
       }
       break;

@@ -1,3 +1,4 @@
+
 import { Indicator } from './types';
 
 // Data indikator penilaian PDAM berdasarkan BPPSPAM
@@ -99,7 +100,7 @@ export const indicators: Indicator[] = [
     id: "TingkatKehilanganAir",
     name: "Tingkat Kehilangan Air",
     category: "Operasional",
-    formula: "Distribusi Air - Air Terjual / Distribusi Air × 100%",
+    formula: "Distribusi Air / Air Terjual × 100%",
     weight: 0.070,
     unit: "%"
   },
