@@ -1,4 +1,3 @@
-
 import { Indicator } from './types';
 
 // Data indikator penilaian PDAM berdasarkan BPPSPAM
@@ -58,7 +57,7 @@ export const indicators: Indicator[] = [
     id: "PertumbuhanPelanggan",
     name: "Pertumbuhan Pelanggan",
     category: "Pelayanan",
-    formula: "(Jml Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu × 100%",
+    formula: "Jumlah Pelanggan tahun ini / pelanggan tahun lalu × 100%",
     weight: 0.050,
     unit: "%"
   },

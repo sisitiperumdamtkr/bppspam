@@ -1,4 +1,3 @@
-
 interface FormulaInput {
   name: string;
   label: string;
@@ -148,7 +147,7 @@ export const calculateFormulaValue = (
     
     case "PertumbuhanPelanggan":
       if (inputs.pelangganTahunIni !== undefined && inputs.pelangganTahunLalu !== undefined && inputs.pelangganTahunLalu !== 0) {
-        calculatedValue = ((inputs.pelangganTahunIni - inputs.pelangganTahunLalu) / inputs.pelangganTahunLalu) * 100;
+        calculatedValue = (inputs.pelangganTahunIni / inputs.pelangganTahunLalu) * 100;
       }
       break;
     
