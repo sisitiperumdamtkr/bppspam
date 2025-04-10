@@ -33,7 +33,7 @@ export function AppSidebar() {
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center justify-center h-16 bg-blue-700 text-white">
-          <h2 className="text-xl font-bold">Penilaian PDAM</h2>
+          <h2 className="text-xl font-bold">Penilaian PERUMMDAM TKR</h2>
         </div>
         <div className="flex items-center space-x-3 p-4 border-b">
           <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold">
