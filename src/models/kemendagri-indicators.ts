@@ -87,7 +87,7 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0.050
   },
   
-  // III. ASPEK OPERASI
+  // III. ASPEK OPERASI - Perbaiki kategori "Operasi" menjadi "Operasional"
   {
     id: "efisiensi_produksi",
     name: "Efisiensi Produksi",

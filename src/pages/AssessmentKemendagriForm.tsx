@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -38,10 +39,10 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { calculateKemendagriFormulaValue } from "@/utils/kemendagriFormulaUtils";
 
-// Impor komponen-komponen
-import IndicatorCategory from "@/components/assessment/IndicatorCategory";
-import ScoreSummary from "@/components/assessment/ScoreSummary";
-import ExportOptions from "@/components/assessment/ExportOptions";
+// Impor komponen-komponen KEMENDAGRI
+import IndicatorCategoryKemendagri from "@/components/assessment/IndicatorCategoryKemendagri";
+import ScoreSummaryKemendagri from "@/components/assessment/ScoreSummaryKemendagri";
+import ExportOptionsKemendagri from "@/components/assessment/ExportOptionsKemendagri";
 
 // Komponen utama untuk form penilaian
 const AssessmentKemendagriForm = () => {
@@ -76,7 +77,7 @@ const AssessmentKemendagriForm = () => {
         setIsLoading(true);
         try {
           const { data: assessmentData, error: assessmentError } = await supabase
-            .from('kemendagri_assessments' as any)
+            .from('kemendagri_assessments')
             .select('*')
             .eq('id', id)
             .maybeSingle();
@@ -85,7 +86,7 @@ const AssessmentKemendagriForm = () => {
           if (!assessmentData) throw new Error("Data penilaian tidak ditemukan");
           
           const { data: valuesData, error: valuesError } = await supabase
-            .from('kemendagri_assessment_values' as any)
+            .from('kemendagri_assessment_values')
             .select('*')
             .eq('assessment_id', id);
             
@@ -100,14 +101,14 @@ const AssessmentKemendagriForm = () => {
           });
           
           setAssessment({
-            id: (assessmentData as any).id,
-            name: (assessmentData as any).name,
-            year: (assessmentData as any).year,
-            date: (assessmentData as any).date,
-            userId: (assessmentData as any).user_id,
+            id: assessmentData.id,
+            name: assessmentData.name,
+            year: assessmentData.year,
+            date: assessmentData.date,
+            userId: assessmentData.user_id,
             values: values,
-            totalScore: (assessmentData as any).total_score || 0,
-            status: (assessmentData as any).status === "completed" ? "completed" : "draft"
+            totalScore: assessmentData.total_score || 0,
+            status: assessmentData.status === "completed" ? "completed" : "draft"
           });
           
           // Log data yang diambil
@@ -228,7 +229,7 @@ const AssessmentKemendagriForm = () => {
       
       // Simpan data penilaian ke Supabase
       const { data: savedAssessment, error: assessmentError } = await supabase
-        .from('kemendagri_assessments' as any)
+        .from('kemendagri_assessments')
         .upsert(assessmentData)
         .select('*')
         .single();
@@ -243,7 +244,7 @@ const AssessmentKemendagriForm = () => {
       // Hapus data nilai indikator yang lama jika ada
       if (!isNewAssessment) {
         const { error: deleteError } = await supabase
-          .from('kemendagri_assessment_values' as any)
+          .from('kemendagri_assessment_values')
           .delete()
           .eq('assessment_id', assessmentId);
           
@@ -266,7 +267,7 @@ const AssessmentKemendagriForm = () => {
       
       if (valuesData.length > 0) {
         const { data: savedValues, error: valuesError } = await supabase
-          .from('kemendagri_assessment_values' as any)
+          .from('kemendagri_assessment_values')
           .insert(valuesData)
           .select('*');
           
@@ -338,13 +339,13 @@ const AssessmentKemendagriForm = () => {
                     </DrawerTrigger>
                     <DrawerContent>
                       <DrawerHeader>
-                        <DrawerTitle>Export Penilaian</DrawerTitle>
+                        <DrawerTitle>Export Penilaian KEMENDAGRI</DrawerTitle>
                         <DrawerDescription>
                           Download data penilaian dalam format yang Anda inginkan
                         </DrawerDescription>
                       </DrawerHeader>
                       <div className="px-4">
-                        <ExportOptions 
+                        <ExportOptionsKemendagri 
                           assessment={assessment}
                           onClose={() => setShowExportOptions(false)}
                         />
@@ -366,12 +367,12 @@ const AssessmentKemendagriForm = () => {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Export Penilaian</DialogTitle>
+                        <DialogTitle>Export Penilaian KEMENDAGRI</DialogTitle>
                         <DialogDescription>
                           Download data penilaian dalam format yang Anda inginkan
                         </DialogDescription>
                       </DialogHeader>
-                      <ExportOptions 
+                      <ExportOptionsKemendagri 
                         assessment={assessment}
                         onClose={() => setShowExportOptions(false)}
                       />
@@ -428,7 +429,7 @@ const AssessmentKemendagriForm = () => {
         
         {/* Render indicators by category */}
         {Object.entries(categories).map(([category, categoryIndicators]) => (
-          <IndicatorCategory
+          <IndicatorCategoryKemendagri
             key={category}
             category={category}
             indicators={categoryIndicators}
@@ -439,7 +440,7 @@ const AssessmentKemendagriForm = () => {
         ))}
         
         {/* Score summary */}
-        <ScoreSummary totalScore={assessment.totalScore} />
+        <ScoreSummaryKemendagri totalScore={assessment.totalScore} />
       </div>
     </DashboardLayout>
   );

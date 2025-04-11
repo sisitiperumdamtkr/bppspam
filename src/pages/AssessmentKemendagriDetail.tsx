@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,7 @@ const AssessmentKemendagriDetail = () => {
         
         // Fetch assessment details
         const { data: assessmentData, error: assessmentError } = await supabase
-          .from('kemendagri_assessments' as any)
+          .from('kemendagri_assessments')
           .select('*')
           .eq('id', id)
           .single();
@@ -64,7 +65,7 @@ const AssessmentKemendagriDetail = () => {
         
         // Fetch assessment values
         const { data: valuesData, error: valuesError } = await supabase
-          .from('kemendagri_assessment_values' as any)
+          .from('kemendagri_assessment_values')
           .select('*')
           .eq('assessment_id', id);
         
@@ -85,13 +86,13 @@ const AssessmentKemendagriDetail = () => {
         
         // Set the assessment with the values mapped to our interface
         setAssessment({
-          id: (assessmentData as any).id,
-          name: (assessmentData as any).name,
-          year: (assessmentData as any).year,
-          date: (assessmentData as any).date,
-          userId: (assessmentData as any).user_id,
-          totalScore: (assessmentData as any).total_score || 0,
-          status: (assessmentData as any).status as "draft" | "completed",
+          id: assessmentData.id,
+          name: assessmentData.name,
+          year: assessmentData.year,
+          date: assessmentData.date,
+          userId: assessmentData.user_id,
+          totalScore: assessmentData.total_score || 0,
+          status: assessmentData.status as "draft" | "completed",
           values: valuesMap
         });
       } catch (error) {
@@ -126,7 +127,7 @@ const AssessmentKemendagriDetail = () => {
       
       // Hapus dulu semua nilai yang terkait dengan penilaian
       const { error: valuesError } = await supabase
-        .from('kemendagri_assessment_values' as any)
+        .from('kemendagri_assessment_values')
         .delete()
         .eq('assessment_id', id);
       
@@ -142,7 +143,7 @@ const AssessmentKemendagriDetail = () => {
       
       // Kemudian hapus penilaian itu sendiri
       const { error: assessmentError } = await supabase
-        .from('kemendagri_assessments' as any)
+        .from('kemendagri_assessments')
         .delete()
         .eq('id', id);
       
@@ -213,6 +214,21 @@ const AssessmentKemendagriDetail = () => {
     
     return result;
   }, [assessment]);
+  
+  // Hitung total skor per kategori
+  const categoryTotals = useMemo(() => {
+    const totals: Record<string, number> = {};
+    
+    if (!assessment) return totals;
+    
+    Object.entries(categoryData).forEach(([category, indicators]) => {
+      totals[category] = indicators.reduce((sum, indicator) => {
+        return sum + indicator.weightedScore;
+      }, 0);
+    });
+    
+    return totals;
+  }, [assessment, categoryData]);
   
   if (loading) {
     return (
@@ -315,11 +331,11 @@ const AssessmentKemendagriDetail = () => {
         </div>
         
         <div className="border rounded-lg p-4 bg-background">
-          <h2 className="text-lg font-semibold mb-4">Hasil Penilaian</h2>
+          <h2 className="text-lg font-semibold mb-4">Hasil Penilaian KEMENDAGRI</h2>
           <div className="space-y-2">
             <div className="grid grid-cols-2">
               <span className="text-muted-foreground">Total Skor:</span>
-              <span className="font-medium">{assessment.totalScore.toFixed(2)}</span>
+              <span className="font-medium">{assessment.totalScore.toFixed(3)}</span>
             </div>
             <div className="grid grid-cols-2">
               <span className="text-muted-foreground">Kategori:</span>
@@ -327,19 +343,22 @@ const AssessmentKemendagriDetail = () => {
                 {healthCategory.category}
               </span>
             </div>
+            <div className="col-span-2 mt-2 text-sm text-muted-foreground">
+              <p>Berdasarkan Permendagri Nomor 47 Tahun 1999 tentang Pedoman Penilaian Kinerja PDAM</p>
+            </div>
           </div>
         </div>
       </div>
       
       <div className="border rounded-lg p-4 mb-8 bg-background">
-        <h2 className="text-lg font-semibold mb-4">Grafik Penilaian</h2>
+        <h2 className="text-lg font-semibold mb-4">Grafik Penilaian KEMENDAGRI</h2>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
             <YAxis />
             <Tooltip 
-              formatter={(value: number, name: string) => [value.toFixed(2), name === "weightedScore" ? "Nilai Tertimbang" : "Skor"]}
+              formatter={(value: number, name: string) => [value.toFixed(3), name === "weightedScore" ? "Nilai Tertimbang" : "Skor"]}
               labelFormatter={(label) => `${label}`}
             />
             <Bar name="Nilai Tertimbang" dataKey="weightedScore" fill="#4f46e5" />
@@ -349,7 +368,12 @@ const AssessmentKemendagriDetail = () => {
       
       {Object.entries(categoryData).map(([category, indicators]) => (
         <div key={category} className="border rounded-lg p-4 mb-6 bg-background">
-          <h2 className="text-lg font-semibold mb-4">Aspek {category}</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Aspek {category}</h2>
+            <div className="text-sm font-medium">
+              Total Aspek: {categoryTotals[category].toFixed(3)}
+            </div>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px]">
               <thead>

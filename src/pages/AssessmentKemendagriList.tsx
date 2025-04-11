@@ -36,7 +36,7 @@ const AssessmentKemendagriList = () => {
       
       // Query untuk mengambil data dari Supabase
       const { data, error } = await supabase
-        .from('kemendagri_assessments' as any)
+        .from('kemendagri_assessments')
         .select('*')
         .order('year', { ascending: false });
       
@@ -105,7 +105,7 @@ const AssessmentKemendagriList = () => {
       
       // Hapus dulu semua nilai yang terkait dengan penilaian
       const { error: valuesError } = await supabase
-        .from('kemendagri_assessment_values' as any)
+        .from('kemendagri_assessment_values')
         .delete()
         .eq('assessment_id', id);
       
@@ -121,7 +121,7 @@ const AssessmentKemendagriList = () => {
       
       // Kemudian hapus penilaian itu sendiri
       const { error: assessmentError } = await supabase
-        .from('kemendagri_assessments' as any)
+        .from('kemendagri_assessments')
         .delete()
         .eq('id', id);
       
@@ -187,9 +187,9 @@ const AssessmentKemendagriList = () => {
         </div>
       ) : assessments.length === 0 ? (
         <div className="text-center py-10">
-          <p className="text-muted-foreground mb-4">Belum ada penilaian yang dibuat</p>
+          <p className="text-muted-foreground mb-4">Belum ada penilaian KEMENDAGRI yang dibuat</p>
           <Button onClick={handleCreateNew} variant="outline">
-            Buat Penilaian Pertama
+            Buat Penilaian KEMENDAGRI Pertama
           </Button>
         </div>
       ) : (
@@ -214,7 +214,7 @@ const AssessmentKemendagriList = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="font-medium">
-                    Skor: {assessment.totalScore.toFixed(2)}
+                    Skor: {assessment.totalScore.toFixed(3)}
                   </div>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="sm" className="gap-1">
@@ -239,7 +239,7 @@ const AssessmentKemendagriList = () => {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Anda yakin ingin menghapus?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Penilaian tahun {assessment.year} akan dihapus secara permanen.
+                            Penilaian KEMENDAGRI tahun {assessment.year} akan dihapus secara permanen.
                             Tindakan ini tidak dapat dibatalkan.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
