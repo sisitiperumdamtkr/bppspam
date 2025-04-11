@@ -9,11 +9,11 @@ import { kemendagriIndicators } from "./kemendagri-indicators";
  * @returns Skor yang dihitung
  */
 export const calculateKemendagriScore = (value: number, indicatorId: string): number => {
-  if (value < 0) return 1;
-  if (value >= 0 && value < 3) return 2;
-  if (value >= 3 && value < 7) return 3;
-  if (value >= 7 && value < 10) return 4;
-  if (value >= 10) return 5;
+  if (value < 30) return 1;
+  if (value >= 30 && value < 45) return 2;
+  if (value >= 45 && value < 60) return 3;
+  if (value >= 60 && value < 75) return 4;
+  if (value >= 75) return 5;
   
   return 0;
 };
