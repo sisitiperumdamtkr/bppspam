@@ -18,7 +18,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Biaya Operasi / Pendapatan Operasi",
     category: "Keuangan",
     unit: "",
-    weight: 0.055
+    weight: 0
   },
   {
     id: "cash_ratio",
@@ -26,7 +26,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Kas+Setara Kas / Utang Lancar * 100 %",
     category: "Keuangan",
     unit: "%",
-    weight: 0.055
+    weight: 0
   },
   {
     id: "efektifitas_penagihan",
@@ -34,7 +34,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jumlah Penerimaan Rek Air / Jumah Rekening Air * 100 %",
     category: "Keuangan",
     unit: "%",
-    weight: 0.055
+    weight: 0
   },
   {
     id: "solvabilitas",
@@ -42,7 +42,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Total Aktiva / Total Utang * 100%",
     category: "Keuangan",
     unit: "%",
-    weight: 0.030
+    weight: 0
   },
   
   // II. ASPEK PELAYANAN
@@ -52,7 +52,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk wilayah pelayanan * 100%",
     category: "Pelayanan",
     unit: "%",
-    weight: 0.050
+    weight: 0
   },
   {
     id: "pertumbuhan_pelanggan",
@@ -60,7 +60,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "(Jmh Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu * 100 %",
     category: "Pelayanan",
     unit: "%",
-    weight: 0.050
+    weight: 0
   },
   {
     id: "tingkat_penyelesaian_aduan",
@@ -68,7 +68,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jumlah Pengaduan Selesai Ditangani / Jumlah Pengaduan *100%",
     category: "Pelayanan",
     unit: "%",
-    weight: 0.025
+    weight: 0
   },
   {
     id: "kualitas_air_pelanggan",
@@ -76,7 +76,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji",
     category: "Pelayanan",
     unit: "",
-    weight: 0.075
+    weight: 0
   },
   {
     id: "konsumsi_air_domestik",
@@ -84,7 +84,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
     category: "Pelayanan",
     unit: "m³/pelanggan/bulan",
-    weight: 0.050
+    weight: 0
   },
   
   // III. ASPEK OPERASI - Perbaiki kategori "Operasi" menjadi "Operasional"
@@ -94,7 +94,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Volume Produksi Riil (m3) / Kapasitas terpasang (m3) * 100%",
     category: "Operasional",
     unit: "%",
-    weight: 0.070
+    weight: 0
   },
   {
     id: "tingkat_kehilangan_air",
@@ -102,7 +102,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Distribusi Air - Air Terjual / Distribusi Air * 100%",
     category: "Operasional",
     unit: "%",
-    weight: 0.070
+    weight: 0
   },
   {
     id: "jam_operasi_layanan",
@@ -110,7 +110,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365",
     category: "Operasional",
     unit: "jam/hari",
-    weight: 0.080
+    weight: 0
   },
   {
     id: "tekanan_air_samb_pelanggan",
@@ -118,7 +118,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jmh Pelanggan dilayani dgn tekanan diatas 0,7Bar / Jumlah Pelanggan * 100%",
     category: "Operasional",
     unit: "%",
-    weight: 0.065
+    weight: 0
   },
   {
     id: "penggantian_meter_air",
@@ -126,7 +126,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jumlah Meter Yg diganti atau dikalibrasi tahun ybs / Jumlah Pelanggan * 100%",
     category: "Operasional",
     unit: "%",
-    weight: 0.065
+    weight: 0
   },
   
   // IV. ASPEK SDM
@@ -136,7 +136,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jumlah Pegawai / Jumlah Pelanggan * 1000",
     category: "SDM",
     unit: "pegawai/1000 pelanggan",
-    weight: 0.070
+    weight: 0
   },
   {
     id: "ratio_diklat_pegawai",
@@ -144,7 +144,7 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Jumlah Pegawai Yg Ikut Diklat / Jumlah Pegawai *100%",
     category: "SDM",
     unit: "%",
-    weight: 0.040
+    weight: 0
   },
   {
     id: "biaya_diklat_terhadap_biaya",
@@ -152,6 +152,6 @@ export const kemendagriIndicators: Indicator[] = [
     formula: "Biaya Diklat / Biaya Pegawai * 100%",
     category: "SDM",
     unit: "%",
-    weight: 0.040
+    weight: 0
   }
 ];
