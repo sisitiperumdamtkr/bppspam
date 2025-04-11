@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { Indicator, Value } from "@/models/types";
 import FormulaInputsKemendagri from "./FormulaInputsKemendagri";
 import IndicatorResultsKemendagri from "./IndicatorResultsKemendagri";
-import { calculateKemendagriAspectScore } from "@/utils/kemendagriFormulaUtils";
 
 interface IndicatorCategoryKemendagriProps {
   category: string;
@@ -21,10 +20,16 @@ const IndicatorCategoryKemendagri = ({
   onFormulaInputChange
 }: IndicatorCategoryKemendagriProps) => {
   
-  // Hitung total skor untuk kategori ini
+  // Hitung total nilai tertimbang untuk kategori ini
   const categoryTotalScore = useMemo(() => {
-    return calculateKemendagriAspectScore(values, category);
-  }, [category, values]);
+    return indicators.reduce((total, indicator) => {
+      const valueObj = values[indicator.id];
+      if (valueObj) {
+        return total + valueObj.score;
+      }
+      return total;
+    }, 0);
+  }, [indicators, values]);
 
   return (
     <div className="mt-8">
