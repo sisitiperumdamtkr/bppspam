@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { FileSpreadsheet, FileText, FilePieChart } from "lucide-react";
+import { FileSpreadsheet, FileText } from "lucide-react";
 import { Assessment } from "@/models/types";
 import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
 
@@ -11,22 +11,19 @@ interface ExportOptionsProps {
 }
 
 const ExportOptions = ({ assessment, onClose }: ExportOptionsProps) => {
-  const handleExport = (type: "csv" | "pdf" | "chart") => {
+  const handleExport = (type: "csv" | "pdf") => {
     if (type === "csv") {
       downloadCSV(assessment);
-    } else if (type === "pdf") {
-      downloadPDF(assessment);
     } else {
-      // Redirect ke halaman chart/report
-      window.location.href = `/reportskemendagri/${assessment.id}`;
+      downloadPDF(assessment);
     }
     onClose();
   };
 
   return (
     <div className="grid gap-4 py-4">
-      <h3 className="font-medium mb-2">Pilih Format Ekspor:</h3>
-      <div className="grid grid-cols-3 gap-4">
+      <h3 className="font-medium mb-2">Pilih Format Export:</h3>
+      <div className="grid grid-cols-2 gap-4">
         <Button 
           onClick={() => handleExport("csv")} 
           variant="outline" 
@@ -43,17 +40,6 @@ const ExportOptions = ({ assessment, onClose }: ExportOptionsProps) => {
           <FileText className="h-8 w-8" />
           <span>PDF</span>
         </Button>
-        <Button 
-          onClick={() => handleExport("chart")} 
-          variant="outline" 
-          className="h-24 flex flex-col items-center justify-center gap-2"
-        >
-          <FilePieChart className="h-8 w-8" />
-          <span>Grafik / Report</span>
-        </Button>
-      </div>
-      <div className="mt-4 text-sm text-muted-foreground">
-        <p>Format ekspor berdasarkan standar KEMENDAGRI tahun 1999</p>
       </div>
     </div>
   );
