@@ -122,6 +122,119 @@ export type Database = {
         }
         Relationships: []
       }
+      kemendagri_assessment_values: {
+        Row: {
+          assessment_id: string | null
+          created_at: string | null
+          id: string
+          indicator_id: string
+          score: number
+          updated_at: string | null
+          value: number
+        }
+        Insert: {
+          assessment_id?: string | null
+          created_at?: string | null
+          id?: string
+          indicator_id: string
+          score: number
+          updated_at?: string | null
+          value: number
+        }
+        Update: {
+          assessment_id?: string | null
+          created_at?: string | null
+          id?: string
+          indicator_id?: string
+          score?: number
+          updated_at?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kemendagri_assessment_values_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "kemendagri_assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kemendagri_assessments: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          name: string
+          status: string
+          total_score: number | null
+          updated_at: string | null
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          name: string
+          status: string
+          total_score?: number | null
+          updated_at?: string | null
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          name?: string
+          status?: string
+          total_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
+      kemendagri_indicators: {
+        Row: {
+          category: string
+          created_at: string | null
+          formula: string
+          id: string
+          max_value: number | null
+          min_value: number | null
+          name: string
+          unit: string
+          updated_at: string | null
+          weight: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          formula: string
+          id: string
+          max_value?: number | null
+          min_value?: number | null
+          name: string
+          unit: string
+          updated_at?: string | null
+          weight: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          formula?: string
+          id?: string
+          max_value?: number | null
+          min_value?: number | null
+          name?: string
+          unit?: string
+          updated_at?: string | null
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

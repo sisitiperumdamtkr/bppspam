@@ -1,3 +1,4 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
@@ -76,10 +77,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  isActive={location.pathname === "/assessment/new"}
+                  isActive={location.pathname === "/assessment/pupr"}
                   tooltip="Input Penilaian"
                 >
-                  <Link to="/assessment/new">
+                  <Link to="/assessment/pupr">
                     <ClipboardList className="h-5 w-5" />
                     <span>Input Penilaian</span>
                   </Link>
@@ -89,10 +90,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  isActive={location.pathname === "/assessments"}
+                  isActive={location.pathname === "/assessmentpupr"}
                   tooltip="Riwayat Penilaian"
                 >
-                  <Link to="/assessments">
+                  <Link to="/assessmentpupr">
                     <FileText className="h-5 w-5" />
                     <span>Riwayat Penilaian</span>
                   </Link>
@@ -102,10 +103,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  isActive={location.pathname === "/reports"}
+                  isActive={location.pathname === "/reportspupr"}
                   tooltip="Laporan"
                 >
-                  <Link to="/reports">
+                  <Link to="/reportspupr">
                     <BarChart className="h-5 w-5" />
                     <span>Laporan</span>
                   </Link>
@@ -123,10 +124,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  isActive={location.pathname === "/assessment/new"}
+                  isActive={location.pathname === "/assessment/kemendagri"}
                   tooltip="Input Penilaian"
                 >
-                  <Link to="/assessment/new">
+                  <Link to="/assessment/kemendagri">
                     <ClipboardList className="h-5 w-5" />
                     <span>Input Penilaian</span>
                   </Link>
@@ -136,10 +137,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  isActive={location.pathname === "/assessments"}
+                  isActive={location.pathname === "/assessmentkemendagri"}
                   tooltip="Riwayat Penilaian"
                 >
-                  <Link to="/assessments">
+                  <Link to="/assessmentkemendagri">
                     <FileText className="h-5 w-5" />
                     <span>Riwayat Penilaian</span>
                   </Link>
@@ -149,10 +150,10 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton 
                   asChild 
-                  isActive={location.pathname === "/reports"}
+                  isActive={location.pathname === "/reportskemendagri"}
                   tooltip="Laporan"
                 >
-                  <Link to="/reports">
+                  <Link to="/reportskemendagri">
                     <BarChart className="h-5 w-5" />
                     <span>Laporan</span>
                   </Link>

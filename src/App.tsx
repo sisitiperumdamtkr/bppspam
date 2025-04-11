@@ -17,6 +17,12 @@ import Settings from "./pages/Settings";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+// Import halaman baru untuk Kemendagri
+import AssessmentKemendagriList from "./pages/AssessmentKemendagriList";
+import AssessmentKemendagriForm from "./pages/AssessmentKemendagriForm";
+import AssessmentKemendagriDetail from "./pages/AssessmentKemendagriDetail";
+import ReportsKemendagri from "./pages/ReportsKemendagri";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -35,31 +41,61 @@ const App = () => (
                 <Dashboard />
               </ProtectedRoute>
             } />
-            <Route path="/assessments" element={
+            
+            {/* PUPR Assessment Routes */}
+            <Route path="/assessmentpupr" element={
               <ProtectedRoute>
                 <AssessmentList />
               </ProtectedRoute>
             } />
-            <Route path="/assessment/:id" element={
+            <Route path="/assessment/pupr/:id" element={
               <ProtectedRoute>
                 <AssessmentDetail />
               </ProtectedRoute>
             } />
-            <Route path="/assessment/:id/edit" element={
+            <Route path="/assessment/pupr/:id/edit" element={
               <ProtectedRoute>
                 <AssessmentForm />
               </ProtectedRoute>
             } />
-            <Route path="/assessment/new" element={
+            <Route path="/assessment/pupr" element={
               <ProtectedRoute>
                 <AssessmentForm />
               </ProtectedRoute>
             } />
-            <Route path="/reports" element={
+            <Route path="/reportspupr" element={
               <ProtectedRoute>
                 <Reports />
               </ProtectedRoute>
             } />
+            
+            {/* Kemendagri Assessment Routes */}
+            <Route path="/assessmentkemendagri" element={
+              <ProtectedRoute>
+                <AssessmentKemendagriList />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment/kemendagri/:id" element={
+              <ProtectedRoute>
+                <AssessmentKemendagriDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment/kemendagri/:id/edit" element={
+              <ProtectedRoute>
+                <AssessmentKemendagriForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment/kemendagri" element={
+              <ProtectedRoute>
+                <AssessmentKemendagriForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/reportskemendagri" element={
+              <ProtectedRoute>
+                <ReportsKemendagri />
+              </ProtectedRoute>
+            } />
+            
             <Route path="/settings" element={
               <ProtectedRoute>
                 <Settings />
