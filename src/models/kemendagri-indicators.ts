@@ -5,153 +5,223 @@ import { Indicator } from "./types";
 export const kemendagriIndicators: Indicator[] = [
   // I. ASPEK KEUANGAN
   {
-    id: "roe",
-    name: "ROE",
+    id: "rasio_laba_terhadap_aktiva_produktif",
+    name: "Rasio Laba Terhadap Aktiva Produktif",
     category: "Keuangan",
-    formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas * 100 %",
+    formula: "Laba Sebelum Pajak / Aktiva Produktif * 100",
     unit: "%",
-    weight:0
+    weight: 0.05
   },
   {
-    id: "rasio_operasi",
-    name: "Rasio Operasi",
-    formula: "Biaya Operasi / Pendapatan Operasi",
+    id: "peningkatan_rasio_laba_terhadap_aktiva",
+    name: "Peningkatan Rasio Laba Terhadap Aktiva Produktif",
+    formula: "Rasio Laba Terhadap Aktiva Produktif Tahun Ini - Rasio Tahun Lalu",
+    category: "Keuangan",
+    unit: "%",
+    weight: 0.05
+  },
+  {
+    id: "rasio_laba_terhadap_penjualan",
+    name: "Rasio Laba Terhadap Penjualan",
+    formula: "Laba Sebelum Pajak / Pendapatan Operasi * 100",
+    category: "Keuangan",
+    unit: "%",
+    weight: 0.05
+  },
+  {
+    id: "peningkatan_rasio_laba_terhadap_penjualan",
+    name: "Peningkatan Rasio Laba Terhadap Penjualan",
+    formula: "Rasio Laba Terhadap Penjualan Tahun Ini - Rasio Tahun Lalu",
+    category: "Keuangan",
+    unit: "%",
+    weight: 0.05
+  },
+  {
+    id: "rasio_aktiva_lancar",
+    name: "Rasio Aktiva Lancar Terhadap Hutang Lancar",
+    formula: "Aktiva Lancar / Utang Lancar",
     category: "Keuangan",
     unit: "",
-    weight: 0
+    weight: 0.05
   },
   {
-    id: "cash_ratio",
-    name: "Cash Ratio",
-    formula: "Kas+Setara Kas / Utang Lancar * 100 %",
+    id: "rasio_utang_jangka_panjang",
+    name: "Rasio Utang Jangka Panjang Terhadap Ekuitas",
+    formula: "Utang Jangka Panjang / Ekuitas",
     category: "Keuangan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "efektifitas_penagihan",
-    name: "Efektifitas Penagihan",
-    formula: "Jumlah Penerimaan Rek Air / Jumah Rekening Air * 100 %",
-    category: "Keuangan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "solvabilitas",
-    name: "Solvabilitas",
-    formula: "Total Aktiva / Total Utang * 100%",
-    category: "Keuangan",
-    unit: "%",
-    weight: 0
-  },
-  
-  // II. ASPEK PELAYANAN
-  {
-    id: "cakupan_pelayanan_teknis",
-    name: "Cakupan Pelayanan Teknis",
-    formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk wilayah pelayanan * 100%",
-    category: "Pelayanan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "pertumbuhan_pelanggan",
-    name: "Pertumbuhan Pelanggan",
-    formula: "(Jmh Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu * 100 %",
-    category: "Pelayanan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "tingkat_penyelesaian_aduan",
-    name: "Tingkat Penyelesaian Aduan",
-    formula: "Jumlah Pengaduan Selesai Ditangani / Jumlah Pengaduan *100%",
-    category: "Pelayanan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "kualitas_air_pelanggan",
-    name: "Kualitas Air Pelanggan",
-    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji",
-    category: "Pelayanan",
     unit: "",
-    weight: 0
+    weight: 0.05
   },
   {
-    id: "konsumsi_air_domestik",
-    name: "Konsumsi Air Domestik",
-    formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
-    category: "Pelayanan",
-    unit: "m³/pelanggan/bulan",
-    weight: 0
+    id: "rasio_total_aktiva",
+    name: "Rasio Total Aktiva Terhadap Utang",
+    formula: "Total Aktiva / Total Utang",
+    category: "Keuangan",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "rasio_biaya_operasi",
+    name: "Rasio Biaya Operasi Terhadap Pendapatan Operasi",
+    formula: "Total Biaya Operasi / Total Pendapatan Operasi",
+    category: "Keuangan",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "rasio_laba_operasi",
+    name: "Rasio Laba Operasi Sebelum Biaya Penyusutan",
+    formula: "Laba Operasi Sebelum Biaya Penyusutan / Angsuran Pokok",
+    category: "Keuangan",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "rasio_aktiva_produktif",
+    name: "Rasio Aktiva Produktif Terhadap Penjualan Air",
+    formula: "Aktiva Produktif / Penjualan Air",
+    category: "Keuangan",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "jangka_waktu_penagihan",
+    name: "Jangka Waktu Penagihan Piutang",
+    formula: "Piutang Usaha / Jumlah Penjualan Perhari",
+    category: "Keuangan",
+    unit: "hari",
+    weight: 0.05
+  },
+  {
+    id: "efektivitas_penagihan",
+    name: "Efektivitas Penagihan",
+    formula: "Rekening Tertagih / Penjualan Air * 100",
+    category: "Keuangan",
+    unit: "%",
+    weight: 0.05
   },
   
-  // III. ASPEK OPERASI - Perbaiki kategori "Operasi" menjadi "Operasional"
+  // II. ASPEK OPERASIONAL
   {
-    id: "efisiensi_produksi",
-    name: "Efisiensi Produksi",
-    formula: "Volume Produksi Riil (m3) / Kapasitas terpasang (m3) * 100%",
+    id: "cakupan_pelayanan",
+    name: "Cakupan Pelayanan",
+    formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk * 100",
     category: "Operasional",
     unit: "%",
-    weight: 0
+    weight: 0.05
+  },
+  {
+    id: "peningkatan_cakupan_pelayanan",
+    name: "Peningkatan Cakupan Pelayanan",
+    formula: "Cakupan Pelayanan Tahun Ini - Cakupan Pelayanan Tahun Lalu",
+    category: "Operasional",
+    unit: "%",
+    weight: 0.05
+  },
+  {
+    id: "kualitas_air_distribusi",
+    name: "Kualitas Air Distribusi",
+    formula: "Pilihan: 0 = Tidak Dilakukan Tes, 1 = Tidak Memenuhi Syarat, 2 = Memenuhi Syarat Air Bersih, 3 = Memenuhi Syarat Air Minum",
+    category: "Operasional",
+    unit: "",
+    weight: 0.07
+  },
+  {
+    id: "kontinuitas_air",
+    name: "Kontinuitas Air",
+    formula: "Pilihan: 1 = Tidak Semua Pelanggan Mendapat Aliran 24 Jam, 2 = Semua Pelanggan Mendapat Aliran Air 24 Jam",
+    category: "Operasional",
+    unit: "",
+    weight: 0.07
+  },
+  {
+    id: "produktivitas_pemanfaatan",
+    name: "Produktivitas Pemanfaatan Instalasi Produksi",
+    formula: "Kapasitas Produksi / Kapasitas Terpasang * 100",
+    category: "Operasional",
+    unit: "%",
+    weight: 0.07
   },
   {
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
-    formula: "Distribusi Air - Air Terjual / Distribusi Air * 100%",
+    formula: "(Jumlah Air Didistribusikan - Air Terjual) / Jumlah Air Didistribusikan * 100",
     category: "Operasional",
     unit: "%",
-    weight: 0
+    weight: 0.05
   },
   {
-    id: "jam_operasi_layanan",
-    name: "Jam Operasi Layanan",
-    formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365",
-    category: "Operasional",
-    unit: "jam/hari",
-    weight: 0
-  },
-  {
-    id: "tekanan_air_samb_pelanggan",
-    name: "Tekanan Air Samb Pelanggan",
-    formula: "Jmh Pelanggan dilayani dgn tekanan diatas 0,7Bar / Jumlah Pelanggan * 100%",
+    id: "penurunan_kehilangan_air",
+    name: "Penurunan Tingkat Kehilangan Air",
+    formula: "Rasio Tahun Ini - Rasio Tahun Lalu",
     category: "Operasional",
     unit: "%",
-    weight: 0
+    weight: 0.05
   },
   {
-    id: "penggantian_meter_air",
-    name: "Penggantian Meter Air",
-    formula: "Jumlah Meter Yg diganti atau dikalibrasi tahun ybs / Jumlah Pelanggan * 100%",
+    id: "peneraan_meter",
+    name: "Peneraan Meter Air",
+    formula: "Jumlah Pelanggan yang Di Tera / Jumlah Total Pelanggan",
     category: "Operasional",
     unit: "%",
-    weight: 0
+    weight: 0.05
+  },
+  {
+    id: "kecepatan_penyambungan",
+    name: "Kecepatan Penyambungan Baru",
+    formula: "Pilihan: 1 = > 6 Hari, 2 = <= 6 Hari",
+    category: "Operasional",
+    unit: "",
+    weight: 0.04
   },
   
-  // IV. ASPEK SDM
+  // III. ASPEK ADMINISTRASI
   {
-    id: "rasio_pegawai_per_1000_pelanggan",
-    name: "Rasio Jmh Pegawai per 1000 pelanggan",
-    formula: "Jumlah Pegawai / Jumlah Pelanggan * 1000",
-    category: "SDM",
-    unit: "pegawai/1000 pelanggan",
-    weight: 0
+    id: "rencana_jangka_panjang",
+    name: "Rencana Jangka Panjang",
+    formula: "Pilihan: 1 = Belum Memiliki (D), 2 = Memiliki (C), 3 = Sebagian Di Pedomani (B), 4 = Sepenuhnya Di Pedomani (A)",
+    category: "Administrasi",
+    unit: "",
+    weight: 0.05
   },
   {
-    id: "ratio_diklat_pegawai",
-    name: "Ratio Diklat Pegawai atau Peningkatan Kompetensi",
-    formula: "Jumlah Pegawai Yg Ikut Diklat / Jumlah Pegawai *100%",
-    category: "SDM",
-    unit: "%",
-    weight: 0
+    id: "rencana_organisasi",
+    name: "Rencana Organisasi",
+    formula: "Pilihan: 1 = Belum Memiliki (D), 2 = Memiliki (C), 3 = Sebagian Di Pedomani (B), 4 = Sepenuhnya Di Pedomani (A)",
+    category: "Administrasi",
+    unit: "",
+    weight: 0.05
   },
   {
-    id: "biaya_diklat_terhadap_biaya",
-    name: "Biaya Diklat Terhadap Biaya",
-    formula: "Biaya Diklat / Biaya Pegawai * 100%",
-    category: "SDM",
-    unit: "%",
-    weight: 0
+    id: "prosedur_operasi",
+    name: "Prosedur Operasi",
+    formula: "Pilihan: 1 = Belum Memiliki (D), 2 = Memiliki (C), 3 = Sebagian Di Pedomani (B), 4 = Sepenuhnya Di Pedomani (A)",
+    category: "Administrasi",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "gambar_nyata_laksana",
+    name: "Gambar Nyata Laksana",
+    formula: "Pilihan: 1 = Belum Memiliki (D), 2 = Memiliki (C), 3 = Sebagian Di Pedomani (B), 4 = Sepenuhnya Di Pedomani (A)",
+    category: "Administrasi",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "pedoman_penilaian_kinerja",
+    name: "Pedoman Penilaian Kinerja Karyawan",
+    formula: "Pilihan: 1 = Belum Memiliki (D), 2 = Memiliki (C), 3 = Sebagian Di Pedomani (B), 4 = Sepenuhnya Di Pedomani (A)",
+    category: "Administrasi",
+    unit: "",
+    weight: 0.05
+  },
+  {
+    id: "rencana_kerja",
+    name: "Rencana Kerja",
+    formula: "Pilihan: 1 = Belum Memiliki (D), 2 = Memiliki (C), 3 = Sebagian Di Pedomani (B), 4 = Sepenuhnya Di Pedomani (A)",
+    category: "Administrasi",
+    unit: "",
+    weight: 0.05
   }
 ];
