@@ -19,10 +19,27 @@ const IndicatorCategory = ({
   formulaInputs,
   onFormulaInputChange
 }: IndicatorCategoryProps) => {
+  // Menghitung total skor untuk kategori
+  const categoryTotalScore = indicators.reduce((total, indicator) => {
+    const valueObj = values[indicator.id];
+    if (valueObj) {
+      return total + (valueObj.score * indicator.weight);
+    }
+    return total;
+  }, 0);
+
   return (
     <div className="mt-8">
-      <h2 className="text-lg font-semibold mb-4">Aspek {category}</h2>
-      <div className="space-y-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+        <h2 className="text-lg font-semibold">Aspek {category}</h2>
+        {categoryTotalScore > 0 && (
+          <div className="mt-2 md:mt-0 text-sm font-medium px-3 py-1 bg-blue-100 text-blue-800 rounded-md">
+            Total Skor Aspek: {categoryTotalScore.toFixed(3)}
+          </div>
+        )}
+      </div>
+      
+      <div className="space-y-6 mt-4">
         {indicators.map((indicator) => {
           const valueObj = values[indicator.id];
           

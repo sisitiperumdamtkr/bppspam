@@ -16,10 +16,13 @@ const ScoreSummary = ({ totalScore }: ScoreSummaryProps) => {
       {totalScore > 0 && (
         <div className="mt-4">
           <div className="flex justify-between items-center">
-            <h3 className="font-medium">Kategori:</h3>
+            <h3 className="font-medium">Kategori Kesehatan PDAM:</h3>
             <div className={`${getHealthCategory(totalScore).color} text-white px-3 py-1 rounded-md`}>
               {getHealthCategory(totalScore).category}
             </div>
+          </div>
+          <div className="mt-2 text-sm text-muted-foreground">
+            Berdasarkan Penilaian KEMENDAGRI Tahun 1999
           </div>
         </div>
       )}

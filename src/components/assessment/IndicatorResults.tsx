@@ -15,7 +15,7 @@ const IndicatorResults = ({
   return (
     <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
       <div>
-        <Label>Penilaian</Label>
+        <Label>Nilai</Label>
         <div className="h-10 flex items-center mt-1 text-base font-medium">
           {valueObj ? valueObj.value.toFixed(2) : "-"}
         </div>
@@ -27,14 +27,14 @@ const IndicatorResults = ({
         </div>
       </div>
       <div>
-        <Label>Nilai</Label>
+        <Label>Skor (1-5)</Label>
         <div className="h-10 flex items-center mt-1 text-base">
           {valueObj ? valueObj.score : "-"}
         </div>
       </div>
       <div>
         <Label>Hasil</Label>
-        <div className="h-10 flex items-center mt-1 text-base">
+        <div className="h-10 flex items-center mt-1 text-base font-medium">
           {valueObj 
             ? (valueObj.score * indicator.weight).toFixed(3)
             : "-"}
