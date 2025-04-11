@@ -31,13 +31,13 @@ import {
   Value,
   AssessmentStatus
 } from "@/models/types";
-import { indicators } from "@/models/indicators";
-import { calculateScore, calculateTotalScore } from "@/models/scoring";
+import { kemendagriIndicators } from "@/models/kemendagri-indicators";
+import { calculateKemendagriScore, calculateKemendagriTotalScore } from "@/models/kemendagri-scoring";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Save, Download } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
-import { calculateFormulaValue } from "@/utils/formulaUtils";
+import { calculateKemendagriFormulaValue } from "@/utils/kemendagriFormulaUtils";
 
 // Impor komponen-komponen
 import IndicatorCategory from "@/components/assessment/IndicatorCategory";
@@ -77,7 +77,7 @@ const AssessmentKemendagriForm = () => {
         setIsLoading(true);
         try {
           const { data: assessmentData, error: assessmentError } = await supabase
-            .from('kemendagri_assessments')
+            .from('kemendagri_assessments' as any)
             .select('*')
             .eq('id', id)
             .maybeSingle();
@@ -86,14 +86,14 @@ const AssessmentKemendagriForm = () => {
           if (!assessmentData) throw new Error("Data penilaian tidak ditemukan");
           
           const { data: valuesData, error: valuesError } = await supabase
-            .from('kemendagri_assessment_values')
+            .from('kemendagri_assessment_values' as any)
             .select('*')
             .eq('assessment_id', id);
             
           if (valuesError) throw valuesError;
           
           const values: Record<string, Value> = {};
-          valuesData.forEach((item) => {
+          valuesData.forEach((item: any) => {
             values[item.indicator_id] = {
               value: item.value,
               score: item.score
@@ -155,7 +155,7 @@ const AssessmentKemendagriForm = () => {
       }
     }));
     
-    const indicator = indicators.find(ind => ind.id === indicatorId);
+    const indicator = kemendagriIndicators.find(ind => ind.id === indicatorId);
     if (!indicator) {
       console.error(`Indicator with ID ${indicatorId} not found`);
       return;
@@ -166,7 +166,7 @@ const AssessmentKemendagriForm = () => {
       [inputName]: value
     };
     
-    const calculatedValue = calculateFormulaValue(indicatorId, updatedInputs);
+    const calculatedValue = calculateKemendagriFormulaValue(indicatorId, updatedInputs);
     console.log(`Calculated value for ${indicatorId}: ${calculatedValue}`);
     handleValueChange(indicator, calculatedValue);
   };
@@ -174,7 +174,7 @@ const AssessmentKemendagriForm = () => {
   // Handler untuk mengubah nilai indikator
   const handleValueChange = (indicator: Indicator, value: number) => {
     console.log(`Value change - Indicator: ${indicator.id}, Value: ${value}`);
-    const score = calculateScore(value, indicator.id);
+    const score = calculateKemendagriScore(value, indicator.id);
     console.log(`Score for ${indicator.id}: ${score}`);
     
     const updatedValues = {
@@ -182,7 +182,7 @@ const AssessmentKemendagriForm = () => {
       [indicator.id]: { value, score }
     };
     
-    const totalScore = calculateTotalScore(updatedValues);
+    const totalScore = calculateKemendagriTotalScore(updatedValues);
     
     setAssessment(prev => ({
       ...prev,
@@ -199,7 +199,7 @@ const AssessmentKemendagriForm = () => {
       const assessmentId = assessment.id || crypto.randomUUID();
       
       // Periksa apakah semua indikator sudah dinilai
-      const isComplete = indicators.every(indicator => 
+      const isComplete = kemendagriIndicators.every(indicator => 
         assessment.values[indicator.id] !== undefined
       );
       
@@ -229,7 +229,7 @@ const AssessmentKemendagriForm = () => {
       
       // Simpan data penilaian ke Supabase
       const { data: savedAssessment, error: assessmentError } = await supabase
-        .from('kemendagri_assessments')
+        .from('kemendagri_assessments' as any)
         .upsert(assessmentData)
         .select('*')
         .single();
@@ -244,7 +244,7 @@ const AssessmentKemendagriForm = () => {
       // Hapus data nilai indikator yang lama jika ada
       if (!isNewAssessment) {
         const { error: deleteError } = await supabase
-          .from('kemendagri_assessment_values')
+          .from('kemendagri_assessment_values' as any)
           .delete()
           .eq('assessment_id', assessmentId);
           
@@ -267,7 +267,7 @@ const AssessmentKemendagriForm = () => {
       
       if (valuesData.length > 0) {
         const { data: savedValues, error: valuesError } = await supabase
-          .from('kemendagri_assessment_values')
+          .from('kemendagri_assessment_values' as any)
           .insert(valuesData)
           .select('*');
           
@@ -311,7 +311,7 @@ const AssessmentKemendagriForm = () => {
   };
   
   // Mengelompokkan indikator berdasarkan kategori
-  const categories = indicators.reduce<Record<string, Indicator[]>>((acc, indicator) => {
+  const categories = kemendagriIndicators.reduce<Record<string, Indicator[]>>((acc, indicator) => {
     if (!acc[indicator.category]) {
       acc[indicator.category] = [];
     }

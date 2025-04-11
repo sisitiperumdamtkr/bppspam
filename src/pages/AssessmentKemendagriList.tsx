@@ -36,7 +36,7 @@ const AssessmentKemendagriList = () => {
       
       // Query untuk mengambil data dari Supabase
       const { data, error } = await supabase
-        .from('kemendagri_assessments')
+        .from('kemendagri_assessments' as any)
         .select('*')
         .order('year', { ascending: false });
       
@@ -105,7 +105,7 @@ const AssessmentKemendagriList = () => {
       
       // Hapus dulu semua nilai yang terkait dengan penilaian
       const { error: valuesError } = await supabase
-        .from('kemendagri_assessment_values')
+        .from('kemendagri_assessment_values' as any)
         .delete()
         .eq('assessment_id', id);
       
@@ -121,7 +121,7 @@ const AssessmentKemendagriList = () => {
       
       // Kemudian hapus penilaian itu sendiri
       const { error: assessmentError } = await supabase
-        .from('kemendagri_assessments')
+        .from('kemendagri_assessments' as any)
         .delete()
         .eq('id', id);
       

@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { indicators } from "@/models/indicators";
+import { kemendagriIndicators } from "@/models/kemendagri-indicators";
 import { getHealthCategory } from "@/models/health-categories";
 import { 
   BarChart, 
@@ -48,7 +48,7 @@ const AssessmentKemendagriDetail = () => {
         
         // Fetch assessment details
         const { data: assessmentData, error: assessmentError } = await supabase
-          .from('kemendagri_assessments')
+          .from('kemendagri_assessments' as any)
           .select('*')
           .eq('id', id)
           .single();
@@ -65,7 +65,7 @@ const AssessmentKemendagriDetail = () => {
         
         // Fetch assessment values
         const { data: valuesData, error: valuesError } = await supabase
-          .from('kemendagri_assessment_values')
+          .from('kemendagri_assessment_values' as any)
           .select('*')
           .eq('assessment_id', id);
         
@@ -77,7 +77,7 @@ const AssessmentKemendagriDetail = () => {
         // Create values object from the fetched values
         const valuesMap: Record<string, Value> = {};
         
-        valuesData?.forEach(item => {
+        valuesData?.forEach((item: any) => {
           valuesMap[item.indicator_id] = {
             value: Number(item.value),
             score: Number(item.score)
@@ -127,7 +127,7 @@ const AssessmentKemendagriDetail = () => {
       
       // Hapus dulu semua nilai yang terkait dengan penilaian
       const { error: valuesError } = await supabase
-        .from('kemendagri_assessment_values')
+        .from('kemendagri_assessment_values' as any)
         .delete()
         .eq('assessment_id', id);
       
@@ -143,7 +143,7 @@ const AssessmentKemendagriDetail = () => {
       
       // Kemudian hapus penilaian itu sendiri
       const { error: assessmentError } = await supabase
-        .from('kemendagri_assessments')
+        .from('kemendagri_assessments' as any)
         .delete()
         .eq('id', id);
       
@@ -181,7 +181,7 @@ const AssessmentKemendagriDetail = () => {
     if (!assessment) return [];
     
     return Object.entries(assessment.values).map(([indicatorId, valueObj]) => {
-      const indicator = indicators.find(ind => ind.id === indicatorId);
+      const indicator = kemendagriIndicators.find(ind => ind.id === indicatorId);
       return {
         name: indicator?.name || indicatorId,
         category: indicator?.category || "Unknown",
@@ -196,7 +196,7 @@ const AssessmentKemendagriDetail = () => {
     
     const result: Record<string, any[]> = {};
     
-    indicators.forEach(indicator => {
+    kemendagriIndicators.forEach(indicator => {
       const valueObj = assessment.values[indicator.id];
       if (!valueObj) return;
       
