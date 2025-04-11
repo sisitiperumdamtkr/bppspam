@@ -10,7 +10,7 @@ export const kemendagriIndicators: Indicator[] = [
     category: "Keuangan",
     formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas * 100 %",
     unit: "%",
-    weight: 0.055
+    weight:0
   },
   {
     id: "rasio_operasi",
