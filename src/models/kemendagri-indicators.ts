@@ -92,7 +92,7 @@ export const kemendagriIndicators: Indicator[] = [
     id: "efisiensi_produksi",
     name: "Efisiensi Produksi",
     formula: "Volume Produksi Riil (m3) / Kapasitas terpasang (m3) * 100%",
-    category: "Operasi",
+    category: "Operasional",
     unit: "%",
     weight: 0.070
   },
@@ -100,7 +100,7 @@ export const kemendagriIndicators: Indicator[] = [
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
     formula: "Distribusi Air - Air Terjual / Distribusi Air * 100%",
-    category: "Operasi",
+    category: "Operasional",
     unit: "%",
     weight: 0.070
   },
@@ -108,7 +108,7 @@ export const kemendagriIndicators: Indicator[] = [
     id: "jam_operasi_layanan",
     name: "Jam Operasi Layanan",
     formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365",
-    category: "Operasi",
+    category: "Operasional",
     unit: "jam/hari",
     weight: 0.080
   },
@@ -116,7 +116,7 @@ export const kemendagriIndicators: Indicator[] = [
     id: "tekanan_air_samb_pelanggan",
     name: "Tekanan Air Samb Pelanggan",
     formula: "Jmh Pelanggan dilayani dgn tekanan diatas 0,7Bar / Jumlah Pelanggan * 100%",
-    category: "Operasi",
+    category: "Operasional",
     unit: "%",
     weight: 0.065
   },
@@ -124,7 +124,7 @@ export const kemendagriIndicators: Indicator[] = [
     id: "penggantian_meter_air",
     name: "Penggantian Meter Air",
     formula: "Jumlah Meter Yg diganti atau dikalibrasi tahun ybs / Jumlah Pelanggan * 100%",
-    category: "Operasi",
+    category: "Operasional",
     unit: "%",
     weight: 0.065
   },

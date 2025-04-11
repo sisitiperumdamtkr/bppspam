@@ -53,7 +53,7 @@ const AssessmentKemendagriList = () => {
       console.log("Fetched assessment data:", data);
       
       // Map database column names to our interface properties
-      const mappedData = data?.map(item => ({
+      const mappedData = data?.map((item: any) => ({
         id: item.id,
         name: item.name,
         year: item.year,
