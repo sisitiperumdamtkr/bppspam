@@ -25,7 +25,7 @@ const IndicatorCategoryKemendagri = ({
     return indicators.reduce((total, indicator) => {
       const valueObj = values[indicator.id];
       if (valueObj) {
-        return total + (valueObj.score * indicator.weight);
+        return total + valueObj.score;
       }
       return total;
     }, 0);
