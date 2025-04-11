@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -93,7 +92,7 @@ const AssessmentKemendagriForm = () => {
           if (valuesError) throw valuesError;
           
           const values: Record<string, Value> = {};
-          valuesData.forEach((item: any) => {
+          (valuesData as any[]).forEach((item) => {
             values[item.indicator_id] = {
               value: item.value,
               score: item.score
@@ -101,14 +100,14 @@ const AssessmentKemendagriForm = () => {
           });
           
           setAssessment({
-            id: assessmentData.id,
-            name: assessmentData.name,
-            year: assessmentData.year,
-            date: assessmentData.date,
-            userId: assessmentData.user_id,
+            id: (assessmentData as any).id,
+            name: (assessmentData as any).name,
+            year: (assessmentData as any).year,
+            date: (assessmentData as any).date,
+            userId: (assessmentData as any).user_id,
             values: values,
-            totalScore: assessmentData.total_score || 0,
-            status: assessmentData.status === "completed" ? "completed" : "draft"
+            totalScore: (assessmentData as any).total_score || 0,
+            status: (assessmentData as any).status === "completed" ? "completed" : "draft"
           });
           
           // Log data yang diambil

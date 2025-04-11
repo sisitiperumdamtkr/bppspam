@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -77,7 +76,7 @@ const AssessmentKemendagriDetail = () => {
         // Create values object from the fetched values
         const valuesMap: Record<string, Value> = {};
         
-        valuesData?.forEach((item: any) => {
+        (valuesData as any[])?.forEach((item) => {
           valuesMap[item.indicator_id] = {
             value: Number(item.value),
             score: Number(item.score)
@@ -86,13 +85,13 @@ const AssessmentKemendagriDetail = () => {
         
         // Set the assessment with the values mapped to our interface
         setAssessment({
-          id: assessmentData.id,
-          name: assessmentData.name,
-          year: assessmentData.year,
-          date: assessmentData.date,
-          userId: assessmentData.user_id,
-          totalScore: assessmentData.total_score || 0,
-          status: assessmentData.status as "draft" | "completed",
+          id: (assessmentData as any).id,
+          name: (assessmentData as any).name,
+          year: (assessmentData as any).year,
+          date: (assessmentData as any).date,
+          userId: (assessmentData as any).user_id,
+          totalScore: (assessmentData as any).total_score || 0,
+          status: (assessmentData as any).status as "draft" | "completed",
           values: valuesMap
         });
       } catch (error) {
