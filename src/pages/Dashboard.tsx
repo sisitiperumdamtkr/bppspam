@@ -83,7 +83,7 @@ const Dashboard = () => {
             <Link to="/assessment/kemendagri">
               <Button>
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Buat Penilaian PUPR Baru
+                Buat Penilaian KEMENDAGRI Baru
               </Button>
             </Link>
           </Card>
