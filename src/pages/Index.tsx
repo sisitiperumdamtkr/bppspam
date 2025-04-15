@@ -9,7 +9,7 @@ const Index = () => {
       {/* Header */}
       <header className="bg-white shadow-sm py-4">
         <div className="container mx-auto px-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-700">HealthWise PDAM</h1>
+          <h1 className="text-2xl font-bold text-blue-700">PERHITUNGAN KINERJA PERUMDAM TKR</h1>
           <div className="flex gap-4">
             <Link to="/login">
               <Button variant="outline">Login</Button>
@@ -24,10 +24,10 @@ const Index = () => {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-12 flex-1 flex flex-col md:flex-row items-center">
         <div className="md:w-1/2 mb-8 md:mb-0">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Penilaian Tingkat Kesehatan PDAM</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Penilaian Tingkat Kesehatan PERUMDAM TKR</h2>
           <p className="text-lg text-gray-600 mb-6">
             Platform digital untuk melakukan penilaian tingkat kesehatan PDAM berdasarkan 
-            standar BPPSPAM dengan perhitungan otomatis dan laporan komprehensif.
+            standar BPPSPAM dan Menurut KEMENDAGRI No. 47 Tahun 1999 dengan perhitungan otomatis dan laporan komprehensif.
           </p>
           <div className="flex gap-4">
             <Link to="/dashboard">
