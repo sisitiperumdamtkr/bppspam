@@ -74,10 +74,18 @@ const Dashboard = () => {
             </p>
           </CardContent>
           <CardFooter>
-            <Link to="/assessment/new">
+            <Link to="/assessment/pupr">
               <Button>
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Buat Penilaian Baru
+                Buat Penilaian PUPR Baru
+              </Button>
+            </Link>
+          </CardFooter>
+          <CardFooter>
+            <Link to="/assessment/kemendagri">
+              <Button>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Buat Penilaian KEMENDAGRI Baru
               </Button>
             </Link>
           </CardFooter>
@@ -85,7 +93,7 @@ const Dashboard = () => {
 
         {/* Quick Actions BPPSPAM */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link to="/assessment/new" className="block">
+          <Link to="/assessment/pupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-2">
@@ -101,7 +109,7 @@ const Dashboard = () => {
             </Card>
           </Link>
           
-          <Link to="/assessments" className="block">
+          <Link to="/assessmentspupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-700 mb-2">
@@ -117,7 +125,7 @@ const Dashboard = () => {
             </Card>
           </Link>
           
-          <Link to="/reports" className="block">
+          <Link to="/reportspupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center text-purple-700 mb-2">
@@ -135,7 +143,7 @@ const Dashboard = () => {
         </div>
 {/* Quick Actions KEMENDAGRI */}
 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link to="/assessment/new" className="block">
+          <Link to="/assessment/kemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-2">
@@ -151,7 +159,7 @@ const Dashboard = () => {
             </Card>
           </Link>
           
-          <Link to="/assessments" className="block">
+          <Link to="/assessmentkemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-700 mb-2">
@@ -167,7 +175,7 @@ const Dashboard = () => {
             </Card>
           </Link>
           
-          <Link to="/reports" className="block">
+          <Link to="/reportskemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center text-purple-700 mb-2">
