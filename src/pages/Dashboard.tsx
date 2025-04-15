@@ -83,7 +83,7 @@ const Dashboard = () => {
           </CardFooter>
         </Card>
 
-        {/* Quick Actions */}
+        {/* Quick Actions BPPSPAM */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link to="/assessment/new" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
@@ -133,7 +133,56 @@ const Dashboard = () => {
             </Card>
           </Link>
         </div>
-
+{/* Quick Actions KEMENDAGRI */}
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Link to="/assessment/new" className="block">
+            <Card className="hover:shadow-md transition-shadow h-full">
+              <CardHeader className="pb-2">
+                <div className="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center text-blue-700 mb-2">
+                  <ListChecks className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-lg">Input Penilaian KEMENDAGRI</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  Input data penilaian tahunan berdasarkan indikator KEMENDAGRI
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+          
+          <Link to="/assessments" className="block">
+            <Card className="hover:shadow-md transition-shadow h-full">
+              <CardHeader className="pb-2">
+                <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-700 mb-2">
+                  <Clock className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-lg">Riwayat Penilaian KEMMENDAGRI</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  Lihat riwayat penilaian yang telah dilakukan dari tahun ke tahun
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+          
+          <Link to="/reports" className="block">
+            <Card className="hover:shadow-md transition-shadow h-full">
+              <CardHeader className="pb-2">
+                <div className="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center text-purple-700 mb-2">
+                  <BarChart2 className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-lg">Laporan PENILAIAN KEMENDAGRI</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  Lihat tren kinerja PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
         {/* Recent Assessments */}
         <Card>
           <CardHeader>
