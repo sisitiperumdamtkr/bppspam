@@ -80,6 +80,12 @@ const Dashboard = () => {
                 Buat Penilaian PUPR Baru
               </Button>
             </Link>
+            <Link to="/assessment/pupr">
+              <Button>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Buat Penilaian PUPR Baru
+              </Button>
+            </Link>
           </Card>
           <CardFooter>
             <Link to="/assessment/kemendagri">
