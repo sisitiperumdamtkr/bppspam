@@ -1,7 +1,7 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { Home } from "lucide-react";
 
 const Index = () => {
   return (
@@ -9,7 +9,12 @@ const Index = () => {
       {/* Header */}
       <header className="bg-white shadow-sm py-4">
         <div className="container mx-auto px-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-700">PERHITUNGAN KINERJA PERUMDAM TKR</h1>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="flex items-center">
+              <Home className="h-6 w-6 mr-2 text-blue-700" />
+              <h1 className="text-2xl font-bold text-blue-700">PERHITUNGAN KINERJA PERUMDAM TKR</h1>
+            </Link>
+          </div>
           <div className="flex gap-4">
             <Link to="/login">
               <Button variant="outline">Login</Button>
