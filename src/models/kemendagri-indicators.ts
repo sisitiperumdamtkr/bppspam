@@ -101,53 +101,43 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   
-  // II. ASPEK PELAYANAN
+  // III. ASPEK OPERASI - Perubahan sesuai permintaan
   {
-    id: "cakupan_pelayanan_teknis",
-    name: "Cakupan Pelayanan Teknis",
-    formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk wilayah pelayanan * 100%",
-    category: "Pelayanan",
+    id: "cakupan_pelayanan",
+    name: "Cakupan Pelayanan",
+    formula: "Jumlah Penduduk Terlayani / Jumlah Penduduk * 100%",
+    category: "Operasional",
     unit: "%",
     weight: 0
   },
   {
-    id: "pertumbuhan_pelanggan",
-    name: "Pertumbuhan Pelanggan",
-    formula: "(Jmh Pelanggan thn ini - pelanggan thn lalu) / pelanggan tahun lalu * 100 %",
-    category: "Pelayanan",
+    id: "peningkatan_cakupan_pelayanan",
+    name: "Peningkatan Cakupan Pelayanan",
+    formula: "Cakupan Pelayanan Tahun Ini - Cakupan Pelayanan Tahun Lalu",
+    category: "Operasional",
     unit: "%",
     weight: 0
   },
   {
-    id: "tingkat_penyelesaian_aduan",
-    name: "Tingkat Penyelesaian Aduan",
-    formula: "Jumlah Pengaduan Selesai Ditangani / Jumlah Pengaduan *100%",
-    category: "Pelayanan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "kualitas_air_pelanggan",
-    name: "Kualitas Air Pelanggan",
-    formula: "JumlahUji Kualitas Yg Memenuhi syarat / Jumlah yang Diuji",
-    category: "Pelayanan",
+    id: "kualitas_air_distribusi",
+    name: "Kualitas Air Distribusi",
+    formula: "Memenuhi Syarat Air Minum = 3, Memenuhi Syarat Air Bersih = 2, Tidak Memenuhi Syarat = 1, Tidak Dilakukan Test = 0",
+    category: "Operasional",
     unit: "",
     weight: 0
   },
   {
-    id: "konsumsi_air_domestik",
-    name: "Konsumsi Air Domestik",
-    formula: "(Jmh Air Yang Terjual Domestik Setahun/12) / Jumlah Pelanggan Domestik",
-    category: "Pelayanan",
-    unit: "m³/pelanggan/bulan",
+    id: "kontinuitas_air",
+    name: "Kontinuitas Air",
+    formula: "Semua Pelanggan mendapat Aliran Air 24 jam = 2, Tidak Semua Pelanggan Mendapat Aliran Air 24 jam = 1",
+    category: "Operasional",
+    unit: "",
     weight: 0
   },
-  
-  // III. ASPEK OPERASI
   {
-    id: "efisiensi_produksi",
-    name: "Efisiensi Produksi",
-    formula: "Volume Produksi Riil (m3) / Kapasitas terpasang (m3) * 100%",
+    id: "produktifitas_pemanfaatan_instalasi",
+    name: "Produktifitas Pemanfaatan Instalasi Produksi",
+    formula: "Kapasitas Produksi / Kapasitas Terpasang * 100%",
     category: "Operasional",
     unit: "%",
     weight: 0
@@ -155,37 +145,61 @@ export const kemendagriIndicators: Indicator[] = [
   {
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
-    formula: "Distribusi Air - Air Terjual / Distribusi Air * 100%",
+    formula: "Jumlah air didistribusikan dikurang Air terjual / Jumlah air yang diditribusikan * 100%",
     category: "Operasional",
     unit: "%",
     weight: 0
   },
   {
-    id: "jam_operasi_layanan",
-    name: "Jam Operasi Layanan",
-    formula: "Waktu Distribusi Air Ke pelggan 1 thn / 365",
-    category: "Operasional",
-    unit: "jam/hari",
-    weight: 0
-  },
-  {
-    id: "tekanan_air_samb_pelanggan",
-    name: "Tekanan Air Samb Pelanggan",
-    formula: "Jmh Pelanggan dilayani dgn tekanan diatas 0,7Bar / Jumlah Pelanggan * 100%",
+    id: "penurunan_tingkat_kehilangan_air",
+    name: "Penurunan Tingkat Kehilangan Air",
+    formula: "Rasio Tahun Ini - Rasio Tahun Lalu",
     category: "Operasional",
     unit: "%",
     weight: 0
   },
   {
-    id: "penggantian_meter_air",
-    name: "Penggantian Meter Air",
-    formula: "Jumlah Meter Yg diganti atau dikalibrasi tahun ybs / Jumlah Pelanggan * 100%",
+    id: "peneraan_meter",
+    name: "Peneraan Meter",
+    formula: "Jumlah Pelanggan yang Di Tera / Jumlah Total Pelanggan * 100%",
     category: "Operasional",
     unit: "%",
+    weight: 0
+  },
+  {
+    id: "kecepatan_penyambungan_baru",
+    name: "Kecepatan Penyambungan Baru",
+    formula: ">6 Hari = 1, <=6 Hari = 2",
+    category: "Operasional",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "kemampuan_penanganan_pengaduan",
+    name: "Kemampuan Penanganan Pengaduan Rata-Rata per Bulan",
+    formula: "Jumlah Pengaduan yang telah selesai ditangani / Jumlah Seluruh Pengaduan *100%",
+    category: "Operasional",
+    unit: "%",
+    weight: 0
+  },
+  {
+    id: "kemudahan_pelayanan_service_point",
+    name: "Kemudahan Pelayanan Service Point di Luar kantor Pusat",
+    formula: "Tidak Tersedia = 1, Tersedia = 2",
+    category: "Operasional",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "ratio_karyawan_per_1000_pelanggan",
+    name: "Ratio Karyawan per 1000 Pelanggan",
+    formula: "Jumlah Karyawan / Jumlah Pelanggan Aktif * 1000",
+    category: "Operasional",
+    unit: "",
     weight: 0
   },
   
-  // IV. ASPEK SDM
+  // IV. ASPEK SDM - Tetap seperti sebelumnya
   {
     id: "rasio_pegawai_per_1000_pelanggan",
     name: "Rasio Jmh Pegawai per 1000 pelanggan",

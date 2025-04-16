@@ -10,12 +10,15 @@ import { kemendagriIndicators } from "./kemendagri-indicators";
  */
 export const calculateKemendagriScore = (value: number, indicatorId: string): number => {
   // Indikator dengan nilai tetap
-  if (indicatorId === "peningkatan_rasio_laba_aktiva" || indicatorId === "peningkatan_ratio_laba_penjualan") {
+  if (indicatorId === "peningkatan_rasio_laba_aktiva" || 
+      indicatorId === "peningkatan_ratio_laba_penjualan" || 
+      indicatorId === "penurunan_tingkat_kehilangan_air") {
     return 1;
   }
   
   // Indikator lainnya dihitung berdasarkan formula
   switch (indicatorId) {
+    // Aspek Keuangan
     case "ratio_laba_terhadap_penjualan":
       if (value > 20) return 5;
       if (value > 14) return 4;
@@ -61,7 +64,7 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
       if (value > 1.7) return 4;
       if (value > 1.3) return 3;
       if (value > 1) return 2;
-      return 5;
+      return 1;
       
     case "ratio_aktiva_produktif_penjualan_air":
       if (value <= 2) return 5;
@@ -83,6 +86,51 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
       if (value > 80) return 3;
       if (value > 75) return 2;
       return 1;
+      
+    // Aspek Operasional
+    case "cakupan_pelayanan":
+      if (value > 60) return 5;
+      if (value > 45) return 4;
+      if (value > 30) return 3;
+      if (value > 15) return 2;
+      return 1;
+      
+    case "tingkat_kehilangan_air":
+      if (value <= 20) return 4;
+      if (value > 40) return 1;
+      if (value > 30) return 2;
+      return 3;
+      
+    case "produktifitas_pemanfaatan_instalasi":
+      if (value > 90) return 4;
+      if (value > 80) return 3;
+      if (value > 70) return 2;
+      return 1;
+      
+    case "peneraan_meter":
+      if (value <= 0) return 0;
+      if (value <= 10) return 1;
+      if (value <= 20) return 2;
+      if (value <= 25) return 3;
+      return 1;
+      
+    case "kemampuan_penanganan_pengaduan":
+      if (value < 80) return 1;
+      return 2;
+      
+    case "ratio_karyawan_per_1000_pelanggan":
+      if (value > 18) return 1;
+      if (value > 15) return 2;
+      if (value > 11) return 3;
+      if (value > 8) return 4;
+      return 5;
+      
+    // Indikator dengan nilai langsung dari input
+    case "kualitas_air_distribusi":
+    case "kontinuitas_air":
+    case "kecepatan_penyambungan_baru":
+    case "kemudahan_pelayanan_service_point":
+      return value;
       
     default:
       // Untuk indikator lain yang masih menggunakan formula default
@@ -133,11 +181,20 @@ export const calculateKemendagriTotalScore = (values: Record<string, Value>): nu
   const keuanganScore = calculateKemendagriCategoryScore(values, "Keuangan");
   const keuanganIndicators = kemendagriIndicators.filter(ind => ind.category === "Keuangan").length;
   
-  // Jika tidak ada nilai keuangan, kembalikan 0
-  if (keuanganIndicators === 0) return 0;
+  // Hitung skor aspek operasional dan konversi sesuai bobot
+  const operasionalScore = calculateKemendagriCategoryScore(values, "Operasional");
+  const operasionalIndicators = kemendagriIndicators.filter(ind => ind.category === "Operasional").length;
+  
+  // Jika tidak ada nilai keuangan atau operasional, kembalikan 0
+  if (keuanganIndicators === 0 && operasionalIndicators === 0) return 0;
   
   // Konversi skor aspek keuangan sesuai formula: nilai/60*45
-  const weightedKeuanganScore = keuanganScore / (keuanganIndicators * 5) * 45;
+  const weightedKeuanganScore = keuanganIndicators > 0 ? 
+    (keuanganScore / (keuanganIndicators * 5)) * 45 : 0;
   
-  return weightedKeuanganScore;
+  // Konversi skor aspek operasional sesuai formula: nilai/47*40
+  const weightedOperasionalScore = operasionalIndicators > 0 ? 
+    (operasionalScore / (operasionalIndicators * 5)) * 40 : 0;
+  
+  return weightedKeuanganScore + weightedOperasionalScore;
 };

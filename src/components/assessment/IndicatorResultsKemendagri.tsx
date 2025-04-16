@@ -12,7 +12,12 @@ const IndicatorResultsKemendagri = ({
   indicator, 
   valueObj 
 }: IndicatorResultsKemendagriProps) => {
-  const staticScoreIndicators = ["peningkatan_rasio_laba_aktiva", "peningkatan_ratio_laba_penjualan"];
+  // Indikator dengan nilai tetap
+  const staticScoreIndicators = [
+    "peningkatan_rasio_laba_aktiva", 
+    "peningkatan_ratio_laba_penjualan",
+    "penurunan_tingkat_kehilangan_air"
+  ];
   const isStaticScoreIndicator = staticScoreIndicators.includes(indicator.id);
   
   return (

@@ -78,70 +78,72 @@ export const getFormulaInputs = (indicatorId: string) => {
         { name: "penjualan_air", label: "Penjualan Air" }
       ];
       
-    // ... lainnya sama seperti di kemendagriFormulaUtils.ts
-    case "cakupan_pelayanan_teknis":
+    case "cakupan_pelayanan":
       return [
         { name: "penduduk_terlayani", label: "Jumlah Penduduk Terlayani" },
-        { name: "penduduk_wilayah", label: "Jumlah Penduduk Wilayah Pelayanan" }
+        { name: "penduduk_total", label: "Jumlah Penduduk" }
       ];
       
-    case "pertumbuhan_pelanggan":
+    case "peningkatan_cakupan_pelayanan":
       return [
-        { name: "pelanggan_tahun_ini", label: "Jumlah Pelanggan Tahun Ini" },
-        { name: "pelanggan_tahun_lalu", label: "Jumlah Pelanggan Tahun Lalu" }
+        { name: "cakupan_tahun_ini", label: "Cakupan Pelayanan Tahun Ini (%)" },
+        { name: "cakupan_tahun_lalu", label: "Cakupan Pelayanan Tahun Lalu (%)" }
       ];
       
-    case "tingkat_penyelesaian_aduan":
+    case "kualitas_air_distribusi":
       return [
-        { name: "pengaduan_selesai", label: "Jumlah Pengaduan Selesai Ditangani" },
-        { name: "jumlah_pengaduan", label: "Jumlah Pengaduan" }
+        { name: "kualitas", label: "Kualitas (3=Air Minum, 2=Air Bersih, 1=Tidak Memenuhi Syarat, 0=Tidak Ditest)" }
       ];
       
-    case "kualitas_air_pelanggan":
+    case "kontinuitas_air":
       return [
-        { name: "uji_memenuhi_syarat", label: "Jumlah Uji Kualitas yang Memenuhi Syarat" },
-        { name: "jumlah_diuji", label: "Jumlah yang Diuji" }
+        { name: "kontinuitas", label: "Kontinuitas (2=Semua Pelanggan 24 jam, 1=Tidak Semua 24 jam)" }
       ];
       
-    case "konsumsi_air_domestik":
+    case "produktifitas_pemanfaatan_instalasi":
       return [
-        { name: "air_terjual_domestik", label: "Jumlah Air yang Terjual Domestik Setahun" },
-        { name: "jumlah_pelanggan_domestik", label: "Jumlah Pelanggan Domestik" }
-      ];
-      
-    case "efisiensi_produksi":
-      return [
-        { name: "volume_produksi", label: "Volume Produksi Riil (m3)" },
-        { name: "kapasitas_terpasang", label: "Kapasitas Terpasang (m3)" }
+        { name: "kapasitas_produksi", label: "Kapasitas Produksi" },
+        { name: "kapasitas_terpasang", label: "Kapasitas Terpasang" }
       ];
       
     case "tingkat_kehilangan_air":
       return [
-        { name: "distribusi_air", label: "Distribusi Air" },
+        { name: "air_distribusi", label: "Jumlah Air Didistribusikan" },
         { name: "air_terjual", label: "Air Terjual" }
       ];
       
-    case "jam_operasi_layanan":
+    case "penurunan_tingkat_kehilangan_air":
       return [
-        { name: "waktu_distribusi", label: "Waktu Distribusi Air ke Pelanggan 1 Tahun" }
+        { name: "tingkat_tahun_ini", label: "Tingkat Kehilangan Air Tahun Ini (%)" },
+        { name: "tingkat_tahun_lalu", label: "Tingkat Kehilangan Air Tahun Lalu (%)" }
       ];
       
-    case "tekanan_air_samb_pelanggan":
+    case "peneraan_meter":
       return [
-        { name: "pelanggan_tekanan_baik", label: "Jumlah Pelanggan Dilayani dengan Tekanan > 0.7 Bar" },
-        { name: "jumlah_pelanggan_total", label: "Jumlah Pelanggan" }
+        { name: "pelanggan_tera", label: "Jumlah Pelanggan yang Di Tera" },
+        { name: "pelanggan_total", label: "Jumlah Total Pelanggan" }
       ];
       
-    case "penggantian_meter_air":
+    case "kecepatan_penyambungan_baru":
       return [
-        { name: "meter_diganti", label: "Jumlah Meter yang Diganti atau Dikalibrasi" },
-        { name: "jumlah_pelanggan", label: "Jumlah Pelanggan" }
+        { name: "kecepatan", label: "Kecepatan (2=≤6 Hari, 1=>6 Hari)" }
       ];
       
-    case "rasio_pegawai_per_1000_pelanggan":
+    case "kemampuan_penanganan_pengaduan":
       return [
-        { name: "jumlah_pegawai", label: "Jumlah Pegawai" },
-        { name: "jumlah_pelanggan", label: "Jumlah Pelanggan" }
+        { name: "pengaduan_selesai", label: "Jumlah Pengaduan yang Telah Selesai Ditangani" },
+        { name: "pengaduan_total", label: "Jumlah Seluruh Pengaduan" }
+      ];
+      
+    case "kemudahan_pelayanan_service_point":
+      return [
+        { name: "ketersediaan", label: "Ketersediaan (2=Tersedia, 1=Tidak Tersedia)" }
+      ];
+      
+    case "ratio_karyawan_per_1000_pelanggan":
+      return [
+        { name: "jumlah_karyawan", label: "Jumlah Karyawan" },
+        { name: "jumlah_pelanggan_aktif", label: "Jumlah Pelanggan Aktif" }
       ];
       
     case "ratio_diklat_pegawai":
@@ -201,7 +203,6 @@ export const calculateFormulaValue = (
       if (!inputs.aktiva_lancar || !inputs.utang_lancar) return 0;
       return inputs.aktiva_lancar / inputs.utang_lancar;
     
-    // ... implementasi lainnya sama seperti di kemendagriFormulaUtils.ts
     case "rasio_utang_jangka_panjang_ekuitas":
       if (!inputs.utang_jangka_panjang || !inputs.ekuitas) return 0;
       return inputs.utang_jangka_panjang / inputs.ekuitas;
@@ -230,49 +231,53 @@ export const calculateFormulaValue = (
       if (!inputs.rekening_tertagih || !inputs.penjualan_air) return 0;
       return (inputs.rekening_tertagih / inputs.penjualan_air) * 100;
       
-    case "cakupan_pelayanan_teknis":
-      if (!inputs.penduduk_terlayani || !inputs.penduduk_wilayah) return 0;
-      return (inputs.penduduk_terlayani / inputs.penduduk_wilayah) * 100;
+    case "cakupan_pelayanan":
+      if (!inputs.penduduk_terlayani || !inputs.penduduk_total) return 0;
+      return (inputs.penduduk_terlayani / inputs.penduduk_total) * 100;
       
-    case "pertumbuhan_pelanggan":
-      if (!inputs.pelanggan_tahun_ini || !inputs.pelanggan_tahun_lalu) return 0;
-      return ((inputs.pelanggan_tahun_ini - inputs.pelanggan_tahun_lalu) / inputs.pelanggan_tahun_lalu) * 100;
+    case "peningkatan_cakupan_pelayanan":
+      if (!inputs.cakupan_tahun_ini || !inputs.cakupan_tahun_lalu) return 0;
+      return inputs.cakupan_tahun_ini - inputs.cakupan_tahun_lalu;
       
-    case "tingkat_penyelesaian_aduan":
-      if (!inputs.pengaduan_selesai || !inputs.jumlah_pengaduan) return 0;
-      return (inputs.pengaduan_selesai / inputs.jumlah_pengaduan) * 100;
+    case "kualitas_air_distribusi":
+      if (inputs.kualitas === undefined) return 0;
+      return inputs.kualitas;
       
-    case "kualitas_air_pelanggan":
-      if (!inputs.uji_memenuhi_syarat || !inputs.jumlah_diuji) return 0;
-      return inputs.uji_memenuhi_syarat / inputs.jumlah_diuji;
+    case "kontinuitas_air":
+      if (inputs.kontinuitas === undefined) return 0;
+      return inputs.kontinuitas;
       
-    case "konsumsi_air_domestik":
-      if (!inputs.air_terjual_domestik || !inputs.jumlah_pelanggan_domestik) return 0;
-      return (inputs.air_terjual_domestik / 12) / inputs.jumlah_pelanggan_domestik;
-      
-    case "efisiensi_produksi":
-      if (!inputs.volume_produksi || !inputs.kapasitas_terpasang) return 0;
-      return (inputs.volume_produksi / inputs.kapasitas_terpasang) * 100;
+    case "produktifitas_pemanfaatan_instalasi":
+      if (!inputs.kapasitas_produksi || !inputs.kapasitas_terpasang) return 0;
+      return (inputs.kapasitas_produksi / inputs.kapasitas_terpasang) * 100;
       
     case "tingkat_kehilangan_air":
-      if (!inputs.distribusi_air || !inputs.air_terjual) return 0;
-      return ((inputs.distribusi_air - inputs.air_terjual) / inputs.distribusi_air) * 100;
+      if (!inputs.air_distribusi || !inputs.air_terjual) return 0;
+      return ((inputs.air_distribusi - inputs.air_terjual) / inputs.air_distribusi) * 100;
       
-    case "jam_operasi_layanan":
-      if (!inputs.waktu_distribusi) return 0;
-      return inputs.waktu_distribusi / 365;
+    case "penurunan_tingkat_kehilangan_air":
+      if (!inputs.tingkat_tahun_ini || !inputs.tingkat_tahun_lalu) return 0;
+      return inputs.tingkat_tahun_ini - inputs.tingkat_tahun_lalu;
       
-    case "tekanan_air_samb_pelanggan":
-      if (!inputs.pelanggan_tekanan_baik || !inputs.jumlah_pelanggan_total) return 0;
-      return (inputs.pelanggan_tekanan_baik / inputs.jumlah_pelanggan_total) * 100;
+    case "peneraan_meter":
+      if (!inputs.pelanggan_tera || !inputs.pelanggan_total) return 0;
+      return (inputs.pelanggan_tera / inputs.pelanggan_total) * 100;
       
-    case "penggantian_meter_air":
-      if (!inputs.meter_diganti || !inputs.jumlah_pelanggan) return 0;
-      return (inputs.meter_diganti / inputs.jumlah_pelanggan) * 100;
+    case "kecepatan_penyambungan_baru":
+      if (inputs.kecepatan === undefined) return 0;
+      return inputs.kecepatan;
       
-    case "rasio_pegawai_per_1000_pelanggan":
-      if (!inputs.jumlah_pegawai || !inputs.jumlah_pelanggan) return 0;
-      return (inputs.jumlah_pegawai / inputs.jumlah_pelanggan) * 1000;
+    case "kemampuan_penanganan_pengaduan":
+      if (!inputs.pengaduan_selesai || !inputs.pengaduan_total) return 0;
+      return (inputs.pengaduan_selesai / inputs.pengaduan_total) * 100;
+      
+    case "kemudahan_pelayanan_service_point":
+      if (inputs.ketersediaan === undefined) return 0;
+      return inputs.ketersediaan;
+      
+    case "ratio_karyawan_per_1000_pelanggan":
+      if (!inputs.jumlah_karyawan || !inputs.jumlah_pelanggan_aktif) return 0;
+      return (inputs.jumlah_karyawan / inputs.jumlah_pelanggan_aktif) * 1000;
       
     case "ratio_diklat_pegawai":
       if (!inputs.pegawai_ikut_diklat || !inputs.jumlah_pegawai_total) return 0;
