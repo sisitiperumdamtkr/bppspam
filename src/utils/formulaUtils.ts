@@ -10,10 +10,10 @@ export const getFormulaInputs = (indicatorId: string) => {
         { name: "aktiva_produktif", label: "Aktiva Produktif" }
       ];
       
-    case "rasio_operasi":
+    case "peningkatan_rasio_laba_aktiva":
       return [
-        { name: "biaya_operasi", label: "Biaya Operasi" },
-        { name: "pendapatan_operasi", label: "Pendapatan Operasi" }
+        { name: "rasio_tahun_ini", label: "Rasio Laba terhadap Aktiva Produktif Tahun Ini (%)" },
+        { name: "rasio_tahun_lalu", label: "Rasio Laba terhadap Aktiva Produktif Tahun Lalu (%)" }
       ];
       
     case "cash_ratio":
@@ -140,9 +140,9 @@ export const calculateFormulaValue = (
       if (!inputs.laba_sebelum_pajak || !inputs.aktiva_produktif) return 0;
       return (inputs.laba_sebelum_pajak / inputs.aktiva_produktif) * 100;
       
-    case "rasio_operasi":
-      if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;
-      return inputs.biaya_operasi / inputs.pendapatan_operasi;
+    case "peningkatan_rasio_laba_aktiva":
+      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
+      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
       
     case "cash_ratio":
       if (!inputs.kas || !inputs.utang_lancar) return 0;

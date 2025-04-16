@@ -23,13 +23,13 @@ const IndicatorResultsKemendagri = ({
       <div>
         <Label>Nilai</Label>
         <div className="h-10 flex items-center mt-1 text-base">
-          {valueObj ? valueObj.score : "-"}
+          {indicator.id === "peningkatan_rasio_laba_aktiva" ? "-" : (valueObj ? valueObj.score : "-")}
         </div>
       </div>
       <div>
         <Label>Hasil</Label>
         <div className="h-10 flex items-center mt-1 text-base">
-          {valueObj ? valueObj.score.toFixed(0) : "-"}
+          {indicator.id === "peningkatan_rasio_laba_aktiva" ? "-" : (valueObj ? valueObj.score.toFixed(0) : "-")}
         </div>
       </div>
     </div>

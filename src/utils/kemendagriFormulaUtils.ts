@@ -23,9 +23,9 @@ export const calculateKemendagriFormulaValue = (
       if (!inputs.laba_sebelum_pajak || !inputs.aktiva_produktif) return 0;
       return (inputs.laba_sebelum_pajak / inputs.aktiva_produktif) * 100;
       
-    case "rasio_operasi":
-      if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;
-      return inputs.biaya_operasi / inputs.pendapatan_operasi;
+    case "peningkatan_rasio_laba_aktiva":
+      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
+      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
       
     case "cash_ratio":
       if (!inputs.kas || !inputs.utang_lancar) return 0;

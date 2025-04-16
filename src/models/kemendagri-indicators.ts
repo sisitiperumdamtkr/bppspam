@@ -13,11 +13,11 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   {
-    id: "rasio_operasi",
-    name: "Rasio Operasi",
-    formula: "Biaya Operasi / Pendapatan Operasi",
+    id: "peningkatan_rasio_laba_aktiva",
+    name: "Peningkatan Ratio Laba terhadap Aktiva Produktif Dibanding Tahun lalu",
+    formula: "Ratio Laba terhadap Aktiva Produktif Tahun ini - Ratio Laba terhadap Aktiva Produktif Tahun lalu",
     category: "Keuangan",
-    unit: "",
+    unit: "%",
     weight: 0
   },
   {
