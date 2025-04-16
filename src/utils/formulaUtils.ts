@@ -56,8 +56,8 @@ export const getFormulaInputs = (indicatorId: string) => {
     case "ratio_laba_operasi_angsuran":
       return [
         { name: "laba_operasi", label: "Laba Operasi" },
-        { name: "angsuran_pokok", label: "Angsuran Pokok" },
-        { name: "bunga_jatuh_tempo", label: "Bunga Jatuh Tempo" }
+        { name: "angsuran_pokok", label: "0" },
+        { name: "bunga_jatuh_tempo", label: "0" }
       ];
       
     case "ratio_aktiva_produktif_penjualan_air":
