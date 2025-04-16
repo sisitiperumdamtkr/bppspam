@@ -15,9 +15,9 @@ export const getFormulaInputs = (indicatorId: string) => {
   // Input formula untuk KEMENDAGRI
   const kemendagriInputs: Record<string, { name: string; label: string }[]> = {
     // ASPEK KEUANGAN
-    "roe": [
-      { name: "laba_bersih", label: "Laba (Rugi) Bersih setelah Pajak" },
-      { name: "jumlah_ekuitas", label: "Jumlah Ekuitas" }
+    "rasio_laba": [
+      { name: "laba_sebelumpajak", label: "Laba Sebelum Pajak" },
+      { name: "aktiva_produuktif", label: "Aktiva Produktif" }
     ],
     "rasio_operasi": [
       { name: "biaya_operasi", label: "Biaya Operasi" },
