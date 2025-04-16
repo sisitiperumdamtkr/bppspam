@@ -5,12 +5,12 @@ import { Indicator } from "./types";
 export const kemendagriIndicators: Indicator[] = [
   // I. ASPEK KEUANGAN
   {
-    id: "roe",
-    name: "ROE",
+    id: "rasio_laba_aktiva_produktif",
+    name: "Rasio Laba terhadap Aktiva Produktif",
     category: "Keuangan",
-    formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas * 100 %",
+    formula: "Laba Sebelum Pajak / Aktiva Produktif * 100 %",
     unit: "%",
-    weight:0
+    weight: 0
   },
   {
     id: "rasio_operasi",
@@ -87,7 +87,7 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   
-  // III. ASPEK OPERASI - Perbaiki kategori "Operasi" menjadi "Operasional"
+  // III. ASPEK OPERASI
   {
     id: "efisiensi_produksi",
     name: "Efisiensi Produksi",

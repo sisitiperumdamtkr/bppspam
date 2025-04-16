@@ -19,9 +19,9 @@ export const calculateKemendagriFormulaValue = (
   
   // Hitung berdasarkan ID indikator
   switch (indicatorId) {
-    case "roe":
-      if (!inputs.laba_bersih || !inputs.jumlah_ekuitas) return 0;
-      return (inputs.laba_bersih / inputs.jumlah_ekuitas) * 100;
+    case "rasio_laba_aktiva_produktif":
+      if (!inputs.laba_sebelum_pajak || !inputs.aktiva_produktif) return 0;
+      return (inputs.laba_sebelum_pajak / inputs.aktiva_produktif) * 100;
       
     case "rasio_operasi":
       if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;

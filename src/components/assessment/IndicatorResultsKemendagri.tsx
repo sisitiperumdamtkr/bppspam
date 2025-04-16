@@ -13,17 +13,11 @@ const IndicatorResultsKemendagri = ({
   valueObj 
 }: IndicatorResultsKemendagriProps) => {
   return (
-    <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
+    <div className="grid md:grid-cols-3 gap-4 mt-4 border-t pt-4">
       <div>
         <Label>Penilaian KEMENDAGRI</Label>
         <div className="h-10 flex items-center mt-1 text-base font-medium">
           {valueObj ? valueObj.value.toFixed(2) : "-"}
-        </div>
-      </div>
-      <div>
-        <Label>Bobot</Label>
-        <div className="h-10 flex items-center mt-1 text-base">
-          {indicator.weight.toFixed(3)}
         </div>
       </div>
       <div>
@@ -35,9 +29,7 @@ const IndicatorResultsKemendagri = ({
       <div>
         <Label>Hasil</Label>
         <div className="h-10 flex items-center mt-1 text-base">
-          {valueObj 
-            ? (valueObj.score * indicator.weight).toFixed(3)
-            : "-"}
+          {valueObj ? valueObj.score.toFixed(0) : "-"}
         </div>
       </div>
     </div>
