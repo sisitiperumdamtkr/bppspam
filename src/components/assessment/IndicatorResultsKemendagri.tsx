@@ -12,6 +12,9 @@ const IndicatorResultsKemendagri = ({
   indicator, 
   valueObj 
 }: IndicatorResultsKemendagriProps) => {
+  const staticScoreIndicators = ["peningkatan_rasio_laba_aktiva", "peningkatan_ratio_laba_penjualan"];
+  const isStaticScoreIndicator = staticScoreIndicators.includes(indicator.id);
+  
   return (
     <div className="grid md:grid-cols-3 gap-4 mt-4 border-t pt-4">
       <div>
@@ -23,13 +26,13 @@ const IndicatorResultsKemendagri = ({
       <div>
         <Label>Nilai</Label>
         <div className="h-10 flex items-center mt-1 text-base">
-          {indicator.id === "peningkatan_rasio_laba_aktiva" ? "-" : (valueObj ? valueObj.score : "-")}
+          {isStaticScoreIndicator ? "1" : (valueObj ? valueObj.score : "-")}
         </div>
       </div>
       <div>
         <Label>Hasil</Label>
         <div className="h-10 flex items-center mt-1 text-base">
-          {indicator.id === "peningkatan_rasio_laba_aktiva" ? "-" : (valueObj ? valueObj.score.toFixed(0) : "-")}
+          {isStaticScoreIndicator ? "1" : (valueObj ? valueObj.score.toFixed(0) : "-")}
         </div>
       </div>
     </div>

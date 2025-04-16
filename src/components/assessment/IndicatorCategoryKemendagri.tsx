@@ -31,12 +31,31 @@ const IndicatorCategoryKemendagri = ({
     }, 0);
   }, [indicators, values]);
 
+  // Perhitungan khusus untuk Aspek Keuangan
+  const displayScore = useMemo(() => {
+    if (category === "Keuangan") {
+      const maxPossibleScore = indicators.length * 5;
+      if (maxPossibleScore === 0) return 0;
+      const weightedScore = categoryTotalScore / maxPossibleScore * 45;
+      return weightedScore.toFixed(3);
+    }
+    return categoryTotalScore.toFixed(3);
+  }, [category, categoryTotalScore, indicators.length]);
+
+  // Title dinamis berdasarkan kategori
+  const categoryTitle = useMemo(() => {
+    if (category === "Keuangan") {
+      return "Nilai kinerja Aspek keuangan";
+    }
+    return "Total Aspek";
+  }, [category]);
+
   return (
     <div className="mt-8">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold mb-4">Aspek {category}</h2>
         <div className="text-sm font-medium">
-          Total Aspek: {categoryTotalScore.toFixed(3)}
+          {categoryTitle}: {displayScore}
         </div>
       </div>
       

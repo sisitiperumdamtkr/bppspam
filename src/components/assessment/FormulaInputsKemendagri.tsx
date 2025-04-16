@@ -2,7 +2,7 @@
 import React from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { getFormulaInputs } from "@/utils/formulaUtils";
+import { getKemendagriFormulaInputs } from "@/utils/kemendagriFormulaUtils";
 
 interface FormulaInputsKemendagriProps {
   indicatorId: string;
@@ -15,7 +15,7 @@ const FormulaInputsKemendagri = ({
   formulaInputs,
   onInputChange 
 }: FormulaInputsKemendagriProps) => {
-  const inputs = getFormulaInputs(indicatorId);
+  const inputs = getKemendagriFormulaInputs(indicatorId);
   
   return (
     <div className="mt-4 border-t pt-4">

@@ -1,6 +1,7 @@
-
 /**
- * Mendapatkan input komponen untuk rumus tertentu
+ * Mengembalikan daftar input yang diperlukan untuk formula berdasarkan ID indikator
+ * @param indicatorId ID indikator
+ * @returns Array dari objek dengan nama dan label input
  */
 export const getFormulaInputs = (indicatorId: string) => {
   switch (indicatorId) {
@@ -16,24 +17,68 @@ export const getFormulaInputs = (indicatorId: string) => {
         { name: "rasio_tahun_lalu", label: "Rasio Laba terhadap Aktiva Produktif Tahun Lalu (%)" }
       ];
       
-    case "cash_ratio":
+    case "ratio_laba_terhadap_penjualan":
       return [
-        { name: "kas", label: "Kas + Setara Kas" },
+        { name: "laba_sebelum_pajak", label: "Laba Sebelum Pajak" },
+        { name: "pendapatan_operasi", label: "Pendapatan Operasi" }
+      ];
+      
+    case "peningkatan_ratio_laba_penjualan":
+      return [
+        { name: "rasio_tahun_ini", label: "Ratio Laba Terhadap Penjualan Tahun Ini (%)" },
+        { name: "rasio_tahun_lalu", label: "Ratio Laba Terhadap Penjualan Tahun Lalu (%)" }
+      ];
+      
+    case "ratio_aktiva_lancar_utang_lancar":
+      return [
+        { name: "aktiva_lancar", label: "Aktiva Lancar" },
         { name: "utang_lancar", label: "Utang Lancar" }
       ];
       
-    case "efektifitas_penagihan":
+    case "rasio_utang_jangka_panjang_ekuitas":
       return [
-        { name: "penerimaan_rekening", label: "Jumlah Penerimaan Rekening Air" },
-        { name: "jumlah_rekening", label: "Jumlah Rekening Air" }
+        { name: "utang_jangka_panjang", label: "Utang Jangka Panjang" },
+        { name: "ekuitas", label: "Ekuitas" }
       ];
       
-    case "solvabilitas":
+    case "rasio_total_aktiva_total_utang":
       return [
         { name: "total_aktiva", label: "Total Aktiva" },
         { name: "total_utang", label: "Total Utang" }
       ];
       
+    case "rasio_biaya_operasi_pendapatan_operasi":
+      return [
+        { name: "biaya_operasi", label: "Total Biaya Operasi" },
+        { name: "pendapatan_operasi", label: "Total Pendapatan Operasi" }
+      ];
+      
+    case "ratio_laba_operasi_angsuran":
+      return [
+        { name: "laba_operasi", label: "Laba Operasi" },
+        { name: "angsuran_pokok", label: "Angsuran Pokok" },
+        { name: "bunga_jatuh_tempo", label: "Bunga Jatuh Tempo" }
+      ];
+      
+    case "ratio_aktiva_produktif_penjualan_air":
+      return [
+        { name: "aktiva_produktif", label: "Aktiva Produktif" },
+        { name: "penjualan_air", label: "Penjualan Air" }
+      ];
+      
+    case "jangka_waktu_penagihan_piutang":
+      return [
+        { name: "piutang_usaha", label: "Piutang Usaha" },
+        { name: "penjualan_per_hari", label: "Jumlah Penjualan per Hari" }
+      ];
+      
+    case "efektifitas_penagihan":
+      return [
+        { name: "rekening_tertagih", label: "Rekening Tertagih" },
+        { name: "penjualan_air", label: "Penjualan Air" }
+      ];
+      
+    // ... lainnya sama seperti di kemendagriFormulaUtils.ts
     case "cakupan_pelayanan_teknis":
       return [
         { name: "penduduk_terlayani", label: "Jumlah Penduduk Terlayani" },
@@ -54,42 +99,42 @@ export const getFormulaInputs = (indicatorId: string) => {
       
     case "kualitas_air_pelanggan":
       return [
-        { name: "uji_memenuhi_syarat", label: "Jumlah Uji Kualitas Memenuhi Syarat" },
-        { name: "jumlah_diuji", label: "Jumlah Yang Diuji" }
+        { name: "uji_memenuhi_syarat", label: "Jumlah Uji Kualitas yang Memenuhi Syarat" },
+        { name: "jumlah_diuji", label: "Jumlah yang Diuji" }
       ];
       
     case "konsumsi_air_domestik":
       return [
-        { name: "air_terjual_domestik", label: "Air Terjual Domestik Setahun (m³)" },
+        { name: "air_terjual_domestik", label: "Jumlah Air yang Terjual Domestik Setahun" },
         { name: "jumlah_pelanggan_domestik", label: "Jumlah Pelanggan Domestik" }
       ];
       
     case "efisiensi_produksi":
       return [
-        { name: "volume_produksi", label: "Volume Produksi Riil (m³)" },
-        { name: "kapasitas_terpasang", label: "Kapasitas Terpasang (m³)" }
+        { name: "volume_produksi", label: "Volume Produksi Riil (m3)" },
+        { name: "kapasitas_terpasang", label: "Kapasitas Terpasang (m3)" }
       ];
       
     case "tingkat_kehilangan_air":
       return [
-        { name: "distribusi_air", label: "Distribusi Air (m³)" },
-        { name: "air_terjual", label: "Air Terjual (m³)" }
+        { name: "distribusi_air", label: "Distribusi Air" },
+        { name: "air_terjual", label: "Air Terjual" }
       ];
       
     case "jam_operasi_layanan":
       return [
-        { name: "waktu_distribusi", label: "Waktu Distribusi Air ke Pelanggan 1 Tahun (jam)" }
+        { name: "waktu_distribusi", label: "Waktu Distribusi Air ke Pelanggan 1 Tahun" }
       ];
       
     case "tekanan_air_samb_pelanggan":
       return [
-        { name: "pelanggan_tekanan_baik", label: "Jumlah Pelanggan Dilayani Tekanan > 0,7 Bar" },
-        { name: "jumlah_pelanggan_total", label: "Jumlah Pelanggan Total" }
+        { name: "pelanggan_tekanan_baik", label: "Jumlah Pelanggan Dilayani dengan Tekanan > 0.7 Bar" },
+        { name: "jumlah_pelanggan_total", label: "Jumlah Pelanggan" }
       ];
       
     case "penggantian_meter_air":
       return [
-        { name: "meter_diganti", label: "Jumlah Meter Diganti/Dikalibrasi" },
+        { name: "meter_diganti", label: "Jumlah Meter yang Diganti atau Dikalibrasi" },
         { name: "jumlah_pelanggan", label: "Jumlah Pelanggan" }
       ];
       
@@ -101,8 +146,8 @@ export const getFormulaInputs = (indicatorId: string) => {
       
     case "ratio_diklat_pegawai":
       return [
-        { name: "pegawai_ikut_diklat", label: "Jumlah Pegawai Ikut Diklat" },
-        { name: "jumlah_pegawai_total", label: "Jumlah Pegawai Total" }
+        { name: "pegawai_ikut_diklat", label: "Jumlah Pegawai yang Ikut Diklat" },
+        { name: "jumlah_pegawai_total", label: "Jumlah Pegawai" }
       ];
       
     case "biaya_diklat_terhadap_biaya":
@@ -144,17 +189,46 @@ export const calculateFormulaValue = (
       if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
       return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
       
-    case "cash_ratio":
-      if (!inputs.kas || !inputs.utang_lancar) return 0;
-      return (inputs.kas / inputs.utang_lancar) * 100;
+    case "ratio_laba_terhadap_penjualan":
+      if (!inputs.laba_sebelum_pajak || !inputs.pendapatan_operasi) return 0;
+      return (inputs.laba_sebelum_pajak / inputs.pendapatan_operasi) * 100;
+      
+    case "peningkatan_ratio_laba_penjualan":
+      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
+      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
+      
+    case "ratio_aktiva_lancar_utang_lancar":
+      if (!inputs.aktiva_lancar || !inputs.utang_lancar) return 0;
+      return inputs.aktiva_lancar / inputs.utang_lancar;
+    
+    // ... implementasi lainnya sama seperti di kemendagriFormulaUtils.ts
+    case "rasio_utang_jangka_panjang_ekuitas":
+      if (!inputs.utang_jangka_panjang || !inputs.ekuitas) return 0;
+      return inputs.utang_jangka_panjang / inputs.ekuitas;
+      
+    case "rasio_total_aktiva_total_utang":
+      if (!inputs.total_aktiva || !inputs.total_utang) return 0;
+      return inputs.total_aktiva / inputs.total_utang;
+      
+    case "rasio_biaya_operasi_pendapatan_operasi":
+      if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;
+      return inputs.biaya_operasi / inputs.pendapatan_operasi;
+      
+    case "ratio_laba_operasi_angsuran":
+      if (!inputs.laba_operasi || !(inputs.angsuran_pokok + inputs.bunga_jatuh_tempo)) return 0;
+      return inputs.laba_operasi / (inputs.angsuran_pokok + inputs.bunga_jatuh_tempo);
+      
+    case "ratio_aktiva_produktif_penjualan_air":
+      if (!inputs.aktiva_produktif || !inputs.penjualan_air) return 0;
+      return inputs.aktiva_produktif / inputs.penjualan_air;
+      
+    case "jangka_waktu_penagihan_piutang":
+      if (!inputs.piutang_usaha || !inputs.penjualan_per_hari) return 0;
+      return inputs.piutang_usaha / inputs.penjualan_per_hari;
       
     case "efektifitas_penagihan":
-      if (!inputs.penerimaan_rekening || !inputs.jumlah_rekening) return 0;
-      return (inputs.penerimaan_rekening / inputs.jumlah_rekening) * 100;
-      
-    case "solvabilitas":
-      if (!inputs.total_aktiva || !inputs.total_utang) return 0;
-      return (inputs.total_aktiva / inputs.total_utang) * 100;
+      if (!inputs.rekening_tertagih || !inputs.penjualan_air) return 0;
+      return (inputs.rekening_tertagih / inputs.penjualan_air) * 100;
       
     case "cakupan_pelayanan_teknis":
       if (!inputs.penduduk_terlayani || !inputs.penduduk_wilayah) return 0;

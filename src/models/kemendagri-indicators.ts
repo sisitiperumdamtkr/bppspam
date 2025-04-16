@@ -21,25 +21,81 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   {
-    id: "cash_ratio",
-    name: "Cash Ratio",
-    formula: "Kas+Setara Kas / Utang Lancar * 100 %",
+    id: "ratio_laba_terhadap_penjualan",
+    name: "Ratio Laba Terhadap Penjualan",
+    formula: "Laba Sebelum Pajak / Pendapatan Operasi * 100%",
     category: "Keuangan",
     unit: "%",
+    weight: 0
+  },
+  {
+    id: "peningkatan_ratio_laba_penjualan",
+    name: "Peningkatan Ratio Laba Terhadap Penjualan dibanding tahun lalu",
+    formula: "Ratio Laba Terhadap Penjualan Tahun ini - Ratio Laba Terhadap Penjualan Tahun Lalu",
+    category: "Keuangan",
+    unit: "%",
+    weight: 0
+  },
+  {
+    id: "ratio_aktiva_lancar_utang_lancar",
+    name: "Ratio Aktiva Lancar Terhadap Utang Lancar",
+    formula: "Aktiva Lancar / Utang Lancar",
+    category: "Keuangan",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "rasio_utang_jangka_panjang_ekuitas",
+    name: "Rasio Utang Jangka Panjang Terhadap Ekuitas",
+    formula: "Utang Jangka Panjang / Ekuitas",
+    category: "Keuangan",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "rasio_total_aktiva_total_utang",
+    name: "Rasio Total Aktiva terhadap Total Utang",
+    formula: "Total Aktiva / Total Utang",
+    category: "Keuangan",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "rasio_biaya_operasi_pendapatan_operasi",
+    name: "Rasio Biaya Operasi terhadap Pendapatan Operasi",
+    formula: "Total Biaya operasi / Total Pendapatan Operasi",
+    category: "Keuangan",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "ratio_laba_operasi_angsuran",
+    name: "Ratio Laba Operasi sebelum Biaya Penyusutan terhadap Angsuran pokok dan Bunga jatuh tempo",
+    formula: "Laba Operasi / ( Angsuran Pokok + Bunga Jatuh tempo )",
+    category: "Keuangan",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "ratio_aktiva_produktif_penjualan_air",
+    name: "Ratio Aktiva Produktif terhadap Penjualan Air",
+    formula: "Aktiva Produktif / Penjualan Air",
+    category: "Keuangan",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "jangka_waktu_penagihan_piutang",
+    name: "Jangka Waktu Penaggihan Piutang",
+    formula: "Piutang Usaha / Jumlah Penjualan per Hari",
+    category: "Keuangan",
+    unit: "hari",
     weight: 0
   },
   {
     id: "efektifitas_penagihan",
-    name: "Efektifitas Penagihan",
-    formula: "Jumlah Penerimaan Rek Air / Jumah Rekening Air * 100 %",
-    category: "Keuangan",
-    unit: "%",
-    weight: 0
-  },
-  {
-    id: "solvabilitas",
-    name: "Solvabilitas",
-    formula: "Total Aktiva / Total Utang * 100%",
+    name: "Efektifitas Penaggihan",
+    formula: "Rekening Tertagih / Penjualan Air * 100 %",
     category: "Keuangan",
     unit: "%",
     weight: 0
