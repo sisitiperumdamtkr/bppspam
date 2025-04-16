@@ -5,10 +5,10 @@ import { Indicator } from "./types";
 export const kemendagriIndicators: Indicator[] = [
   // I. ASPEK KEUANGAN
   {
-    id: "rasio_laba",
-    name: "Rasio Laba",
+    id: "roe",
+    name: "ROE",
     category: "Keuangan",
-    formula: "Laba Sebelum Pajak / Aktiva Produktif * 100 %",
+    formula: "Laba (Rugi) Bersih setelah Pajak / Jumlah Ekuitas * 100 %",
     unit: "%",
     weight:0
   },
