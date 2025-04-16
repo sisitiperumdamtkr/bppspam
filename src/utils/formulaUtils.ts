@@ -17,7 +17,7 @@ export const getFormulaInputs = (indicatorId: string) => {
     // ASPEK KEUANGAN
     "rasio_laba": [
       { name: "laba_sebelumpajak", label: "Laba Sebelum Pajak" },
-      { name: "aktiva_produuktif", label: "Aktiva Produktif" }
+      { name: "aktiva_produktif", label: "Aktiva Produktif" }
     ],
     "rasio_operasi": [
       { name: "biaya_operasi", label: "Biaya Operasi" },
@@ -111,9 +111,9 @@ export const calculateFormulaValue = (
   let calculatedValue = 0;
   
   switch (indicatorId) {
-    case "ROE":
-      if (inputs.laba_bersih !== undefined && inputs.jumlah_ekuitas !== undefined && inputs.jumlah_ekuitas !== 0) {
-        calculatedValue = (inputs.laba_bersih / inputs.jumlah_ekuitas) * 100;
+    case "RasioLaba":
+      if (inputs.laba_sebelumpajak !== undefined && inputs.aktiva_produktif !== undefined && inputs.aktiva_produktif !== 0) {
+        calculatedValue = (inputs.laba_sebelumpajak / inputs.aktiva_produktif) * 100;
       }
       break;
     
