@@ -66,10 +66,7 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
       return 1;
       
     case "rasio_biaya_operasi_pendapatan_operasi":
-      if (value > 1) return 1;
-      if (value > 0.85) return 2;
-      if (value > 0.65) return 3;
-      if (value > 0.5) return 4;
+      if (value > 0) return 5;
       return 5;
       
     case "ratio_laba_operasi_angsuran":
