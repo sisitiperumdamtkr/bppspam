@@ -37,19 +37,19 @@ const IndicatorCategoryKemendagri = ({
       const maxPossibleScore = indicators.length * 60;
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 45;
-      return weightedScore.toFixed(3);
+      return weightedScore.toFixed(0);
     } else if (category === "Operasional") {
       const maxPossibleScore = indicators.length * 47;
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 40;
-      return weightedScore.toFixed(3);
+      return weightedScore.toFixed(0);
     } else if (category === "Administrasi") {
       const maxPossibleScore = indicators.length * 36;
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 15;
-      return weightedScore.toFixed(3);
+      return weightedScore.toFixed(0);
     }
-    return categoryTotalScore.toFixed(3);
+    return categoryTotalScore.toFixed(0);
   }, [category, categoryTotalScore, indicators.length]);
 
   // Title dinamis berdasarkan kategori
