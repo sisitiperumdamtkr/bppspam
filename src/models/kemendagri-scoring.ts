@@ -1,4 +1,3 @@
-
 import { Indicator, Value } from "./types";
 import { kemendagriIndicators } from "./kemendagri-indicators";
 
@@ -14,6 +13,20 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
       indicatorId === "peningkatan_ratio_laba_penjualan" || 
       indicatorId === "penurunan_tingkat_kehilangan_air") {
     return 1;
+  }
+  
+  // Indikator Administrasi - nilai langsung dari input
+  if (indicatorId === "rencana_jangka_panjang" || 
+      indicatorId === "rencana_organisasi" || 
+      indicatorId === "prosedur_operasi_standar" || 
+      indicatorId === "gambar_nyata_laksana" || 
+      indicatorId === "pedoman_penilaian_kinerja" || 
+      indicatorId === "rencana_kerja_anggaran" || 
+      indicatorId === "tertib_laporan_internal" || 
+      indicatorId === "tertib_laporan_eksternal" || 
+      indicatorId === "opini_auditor_independen" || 
+      indicatorId === "tindak_lanjut_hasil_pemeriksaan") {
+    return value;
   }
   
   // Indikator lainnya dihitung berdasarkan formula
@@ -185,8 +198,12 @@ export const calculateKemendagriTotalScore = (values: Record<string, Value>): nu
   const operasionalScore = calculateKemendagriCategoryScore(values, "Operasional");
   const operasionalIndicators = kemendagriIndicators.filter(ind => ind.category === "Operasional").length;
   
-  // Jika tidak ada nilai keuangan atau operasional, kembalikan 0
-  if (keuanganIndicators === 0 && operasionalIndicators === 0) return 0;
+  // Hitung skor aspek administrasi dan konversi sesuai bobot
+  const administrasiScore = calculateKemendagriCategoryScore(values, "Administrasi");
+  const administrasiIndicators = kemendagriIndicators.filter(ind => ind.category === "Administrasi").length;
+  
+  // Jika tidak ada nilai keuangan, operasional, atau administrasi, kembalikan 0
+  if (keuanganIndicators === 0 && operasionalIndicators === 0 && administrasiIndicators === 0) return 0;
   
   // Konversi skor aspek keuangan sesuai formula: nilai/60*45
   const weightedKeuanganScore = keuanganIndicators > 0 ? 
@@ -196,5 +213,9 @@ export const calculateKemendagriTotalScore = (values: Record<string, Value>): nu
   const weightedOperasionalScore = operasionalIndicators > 0 ? 
     (operasionalScore / (operasionalIndicators * 5)) * 40 : 0;
   
-  return weightedKeuanganScore + weightedOperasionalScore;
+  // Konversi skor aspek administrasi sesuai formula: nilai/36*15
+  const weightedAdministrasiScore = administrasiIndicators > 0 ? 
+    (administrasiScore / (administrasiIndicators * 5)) * 15 : 0;
+  
+  return weightedKeuanganScore + weightedOperasionalScore + weightedAdministrasiScore;
 };

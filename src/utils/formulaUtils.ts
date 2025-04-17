@@ -158,6 +158,56 @@ export const getFormulaInputs = (indicatorId: string) => {
         { name: "biaya_pegawai", label: "Biaya Pegawai" }
       ];
       
+    case "rencana_jangka_panjang":
+      return [
+        { name: "nilai", label: "Nilai (1=Belum Memiliki \"D\", 2=Memiliki belum dipedomani \"C\", 3=Sebagian Dipedomani \"B\", 4=Sepenuhnya Dipedomani \"A\")" }
+      ];
+      
+    case "rencana_organisasi":
+      return [
+        { name: "nilai", label: "Nilai (1=Belum Memiliki \"D\", 2=Memiliki belum dipedomani \"C\", 3=Sebagian Dipedomani \"B\", 4=Sepenuhnya Dipedomani \"A\")" }
+      ];
+      
+    case "prosedur_operasi_standar":
+      return [
+        { name: "nilai", label: "Nilai (1=Belum Memiliki \"D\", 2=Memiliki belum dipedomani \"C\", 3=Sebagian Dipedomani \"B\", 4=Sepenuhnya Dipedomani \"A\")" }
+      ];
+      
+    case "gambar_nyata_laksana":
+      return [
+        { name: "nilai", label: "Nilai (1=Belum Memiliki \"D\", 2=Memiliki belum dipedomani \"C\", 3=Sebagian Dipedomani \"B\", 4=Sepenuhnya Dipedomani \"A\")" }
+      ];
+      
+    case "pedoman_penilaian_kinerja":
+      return [
+        { name: "nilai", label: "Nilai (1=Belum Memiliki \"D\", 2=Memiliki belum dipedomani \"C\", 3=Sebagian Dipedomani \"B\", 4=Sepenuhnya Dipedomani \"A\")" }
+      ];
+      
+    case "rencana_kerja_anggaran":
+      return [
+        { name: "nilai", label: "Nilai (1=Belum Memiliki \"D\", 2=Memiliki belum dipedomani \"C\", 3=Sebagian Dipedomani \"B\", 4=Sepenuhnya Dipedomani \"A\")" }
+      ];
+      
+    case "tertib_laporan_internal":
+      return [
+        { name: "nilai", label: "Nilai (1=Tidak Tepat Waktu, 2=Tepat Waktu)" }
+      ];
+      
+    case "tertib_laporan_eksternal":
+      return [
+        { name: "nilai", label: "Nilai (1=Tidak Tepat Waktu, 2=Tepat Waktu)" }
+      ];
+      
+    case "opini_auditor_independen":
+      return [
+        { name: "nilai", label: "Nilai (0=Not audit, 1=Adverse, 2=Disclaimer, 3=Qualified, 4=Unqualified)" }
+      ];
+      
+    case "tindak_lanjut_hasil_pemeriksaan":
+      return [
+        { name: "nilai", label: "Nilai (1=Tidak Di-TL \"D\", 2=Di-TL Sebagian \"C\", 3=Di-TL Seluruhnya \"B\", 4=Tidak ada Temuan \"A\")" }
+      ];
+      
     default:
       return [];
   }
@@ -286,6 +336,19 @@ export const calculateFormulaValue = (
     case "biaya_diklat_terhadap_biaya":
       if (!inputs.biaya_diklat || !inputs.biaya_pegawai) return 0;
       return (inputs.biaya_diklat / inputs.biaya_pegawai) * 100;
+      
+    case "rencana_jangka_panjang":
+    case "rencana_organisasi":
+    case "prosedur_operasi_standar":
+    case "gambar_nyata_laksana":
+    case "pedoman_penilaian_kinerja":
+    case "rencana_kerja_anggaran":
+    case "tertib_laporan_internal":
+    case "tertib_laporan_eksternal":
+    case "opini_auditor_independen":
+    case "tindak_lanjut_hasil_pemeriksaan":
+      if (inputs.nilai === undefined) return 0;
+      return inputs.nilai;
       
     default:
       console.error(`Unknown indicator ID: ${indicatorId}`);

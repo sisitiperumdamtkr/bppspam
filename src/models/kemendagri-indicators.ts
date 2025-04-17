@@ -1,3 +1,4 @@
+
 import { Indicator } from "./types";
 
 // Indikator penilaian KEMENDAGRI
@@ -100,7 +101,7 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   
-  // III. ASPEK OPERASI - Perubahan sesuai permintaan
+  // III. ASPEK OPERASI
   {
     id: "cakupan_pelayanan",
     name: "Cakupan Pelayanan",
@@ -144,7 +145,7 @@ export const kemendagriIndicators: Indicator[] = [
   {
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
-    formula: "Jumlah air didistribusikan dikurang Air terjual / Jumlah air yang didistribusikan * 100%",
+    formula: "(Jumlah air didistribusikan - Air terjual) / Jumlah air yang didistribusikan * 100%",
     category: "Operasional",
     unit: "%",
     weight: 0
@@ -198,29 +199,85 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   
-  // IV. ASPEK SDM - Tetap seperti sebelumnya
+  // IV. ASPEK ADMINISTRASI - Menggantikan Aspek SDM
   {
-    id: "rasio_pegawai_per_1000_pelanggan",
-    name: "Rasio Jmh Pegawai per 1000 pelanggan",
-    formula: "Jumlah Pegawai / Jumlah Pelanggan * 1000",
-    category: "SDM",
-    unit: "pegawai/1000 pelanggan",
+    id: "rencana_jangka_panjang",
+    name: "Rencana Jangka Panjang",
+    formula: "Belum Memiliki \"D\" = 1, Memiliki, belum dipedomani \"C\" = 2, Sebagian Dipedomani \"B\" = 3, Sepenuhnya Dipedomani \"A\" = 4",
+    category: "Administrasi",
+    unit: "",
     weight: 0
   },
   {
-    id: "ratio_diklat_pegawai",
-    name: "Ratio Diklat Pegawai atau Peningkatan Kompetensi",
-    formula: "Jumlah Pegawai Yg Ikut Diklat / Jumlah Pegawai *100%",
-    category: "SDM",
-    unit: "%",
+    id: "rencana_organisasi",
+    name: "Rencana Organisasi dan Uraian tugas",
+    formula: "Belum Memiliki \"D\" = 1, Memiliki, belum dipedomani \"C\" = 2, Sebagian Dipedomani \"B\" = 3, Sepenuhnya Dipedomani \"A\" = 4",
+    category: "Administrasi",
+    unit: "",
     weight: 0
   },
   {
-    id: "biaya_diklat_terhadap_biaya",
-    name: "Biaya Diklat Terhadap Biaya",
-    formula: "Biaya Diklat / Biaya Pegawai * 100%",
-    category: "SDM",
-    unit: "%",
+    id: "prosedur_operasi_standar",
+    name: "Prosedur Operasi Standar",
+    formula: "Belum Memiliki \"D\" = 1, Memiliki, belum dipedomani \"C\" = 2, Sebagian Dipedomani \"B\" = 3, Sepenuhnya Dipedomani \"A\" = 4",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "gambar_nyata_laksana",
+    name: "Gambar Nyata laksana (As-Built Drawing)",
+    formula: "Belum Memiliki \"D\" = 1, Memiliki, belum dipedomani \"C\" = 2, Sebagian Dipedomani \"B\" = 3, Sepenuhnya Dipedomani \"A\" = 4",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "pedoman_penilaian_kinerja",
+    name: "Pedoman Penilaian Kinerja karyawan",
+    formula: "Belum Memiliki \"D\" = 1, Memiliki, belum dipedomani \"C\" = 2, Sebagian Dipedomani \"B\" = 3, Sepenuhnya Dipedomani \"A\" = 4",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "rencana_kerja_anggaran",
+    name: "Rencana Kerja dan Anggaran Perusahaan (RKAP)",
+    formula: "Belum Memiliki \"D\" = 1, Memiliki, belum dipedomani \"C\" = 2, Sebagian Dipedomani \"B\" = 3, Sepenuhnya Dipedomani \"A\" = 4",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "tertib_laporan_internal",
+    name: "Tertib Laporan Internal",
+    formula: "Tidak Tepat Waktu = 1, Tepat Waktu = 2",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "tertib_laporan_eksternal",
+    name: "Tertib Laporan Eksternal",
+    formula: "Tidak Tepat Waktu = 1, Tepat Waktu = 2",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "opini_auditor_independen",
+    name: "Opini Auditor Independen",
+    formula: "Not audit = 0, Adverse = 1, Disclaimer = 2, Qualified = 3, Unqualified = 4",
+    category: "Administrasi",
+    unit: "",
+    weight: 0
+  },
+  {
+    id: "tindak_lanjut_hasil_pemeriksaan",
+    name: "Tindak Lanjut Hasil Pemeriksaan Tahun Terakhir",
+    formula: "Tidak ada Temuan \"A\" = 4, Di-TL, Seluruhnya \"B\" = 3, Di-TL Sebagian \"C\" = 2, Tidak Di-TL \"D\" = 1",
+    category: "Administrasi",
+    unit: "",
     weight: 0
   }
 ];

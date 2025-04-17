@@ -31,7 +31,7 @@ const IndicatorCategoryKemendagri = ({
     }, 0);
   }, [indicators, values]);
 
-  // Perhitungan khusus untuk Aspek Keuangan dan Operasional
+  // Perhitungan khusus untuk Aspek Keuangan, Operasional, dan Administrasi
   const displayScore = useMemo(() => {
     if (category === "Keuangan") {
       const maxPossibleScore = indicators.length * 5;
@@ -43,6 +43,11 @@ const IndicatorCategoryKemendagri = ({
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 40;
       return weightedScore.toFixed(3);
+    } else if (category === "Administrasi") {
+      const maxPossibleScore = indicators.length * 5;
+      if (maxPossibleScore === 0) return 0;
+      const weightedScore = categoryTotalScore / maxPossibleScore * 15;
+      return weightedScore.toFixed(3);
     }
     return categoryTotalScore.toFixed(3);
   }, [category, categoryTotalScore, indicators.length]);
@@ -53,6 +58,8 @@ const IndicatorCategoryKemendagri = ({
       return "Nilai kinerja Aspek keuangan";
     } else if (category === "Operasional") {
       return "Nilai kinerja Aspek Operasional";
+    } else if (category === "Administrasi") {
+      return "Nilai kinerja Aspek Administrasi";
     }
     return "Total Aspek";
   }, [category]);
