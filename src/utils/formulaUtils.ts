@@ -1,4 +1,147 @@
 /**
+ * Menghitung nilai berdasarkan formula untuk indikator tertentu
+ * @param indicatorId ID indikator
+ * @param inputs Inputan untuk formula
+ * @returns Nilai yang dihitung
+ */
+export const calculateFormulaValue = (
+  indicatorId: string,
+  inputs: Record<string, number>
+): number => {
+  console.log(`Calculating formula value for: ${indicatorId}`, inputs);
+  
+  // Pastikan semua input yang diperlukan ada
+  if (!inputs || Object.keys(inputs).length === 0) {
+    console.error(`No inputs provided for formula: ${indicatorId}`);
+    return 0;
+  }
+  
+  // Hitung berdasarkan ID indikator
+  switch (indicatorId) {
+    case "rasio_laba_aktiva_produktif":
+      if (!inputs.laba_sebelum_pajak || !inputs.aktiva_produktif) return 0;
+      return (inputs.laba_sebelum_pajak / inputs.aktiva_produktif) * 100;
+      
+    case "peningkatan_rasio_laba_aktiva":
+      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
+      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
+      
+    case "ratio_laba_terhadap_penjualan":
+      if (!inputs.laba_sebelum_pajak || !inputs.pendapatan_operasi) return 0;
+      return (inputs.laba_sebelum_pajak / inputs.pendapatan_operasi) * 100;
+      
+    case "peningkatan_ratio_laba_penjualan":
+      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
+      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
+      
+    case "ratio_aktiva_lancar_utang_lancar":
+      if (!inputs.aktiva_lancar || !inputs.utang_lancar) return 0;
+      return inputs.aktiva_lancar / inputs.utang_lancar;
+    
+    case "rasio_utang_jangka_panjang_ekuitas":
+      if (!inputs.utang_jangka_panjang || !inputs.ekuitas) return 0;
+      return inputs.utang_jangka_panjang / inputs.ekuitas;
+      
+    case "rasio_total_aktiva_total_utang":
+      if (!inputs.total_aktiva || !inputs.total_utang) return 0;
+      return inputs.total_aktiva / inputs.total_utang;
+      
+    case "rasio_biaya_operasi_pendapatan_operasi":
+      if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;
+      return inputs.biaya_operasi / inputs.pendapatan_operasi;
+      
+    case "ratio_laba_operasi_angsuran":
+      if (!inputs.laba_operasi || !(inputs.angsuran_pokok + inputs.bunga_jatuh_tempo)) return 0;
+      return inputs.laba_operasi / (inputs.angsuran_pokok + inputs.bunga_jatuh_tempo);
+      
+    case "ratio_aktiva_produktif_penjualan_air":
+      if (!inputs.aktiva_produktif || !inputs.penjualan_air) return 0;
+      return inputs.aktiva_produktif / inputs.penjualan_air;
+      
+    case "jangka_waktu_penagihan_piutang":
+      if (!inputs.piutang_usaha || !inputs.penjualan_per_hari) return 0;
+      return inputs.piutang_usaha / inputs.penjualan_per_hari;
+      
+    case "efektifitas_penagihan":
+      if (!inputs.rekening_tertagih || !inputs.penjualan_air) return 0;
+      return (inputs.rekening_tertagih / inputs.penjualan_air) * 100;
+      
+    case "cakupan_pelayanan":
+      if (!inputs.penduduk_terlayani || !inputs.penduduk_total) return 0;
+      return (inputs.penduduk_terlayani / inputs.penduduk_total) * 100;
+      
+    case "peningkatan_cakupan_pelayanan":
+      if (!inputs.cakupan_tahun_ini || !inputs.cakupan_tahun_lalu) return 0;
+      return inputs.cakupan_tahun_ini - inputs.cakupan_tahun_lalu;
+      
+    case "kualitas_air_distribusi":
+      if (inputs.kualitas === undefined) return 0;
+      return inputs.kualitas;
+      
+    case "kontinuitas_air":
+      if (inputs.kontinuitas === undefined) return 0;
+      return inputs.kontinuitas;
+      
+    case "produktifitas_pemanfaatan_instalasi":
+      if (!inputs.kapasitas_produksi || !inputs.kapasitas_terpasang) return 0;
+      return (inputs.kapasitas_produksi / inputs.kapasitas_terpasang) * 100;
+      
+    case "tingkat_kehilangan_air":
+      if (!inputs.air_distribusi || !inputs.air_terjual) return 0;
+      return ((inputs.air_distribusi - inputs.air_terjual) / inputs.air_distribusi) * 100;
+      
+    case "penurunan_tingkat_kehilangan_air":
+      if (!inputs.tingkat_tahun_ini || !inputs.tingkat_tahun_lalu) return 0;
+      return inputs.tingkat_tahun_ini - inputs.tingkat_tahun_lalu;
+      
+    case "peneraan_meter":
+      if (!inputs.pelanggan_tera || !inputs.pelanggan_total) return 0;
+      return (inputs.pelanggan_tera / inputs.pelanggan_total) * 100;
+      
+    case "kecepatan_penyambungan_baru":
+      if (inputs.kecepatan === undefined) return 0;
+      return inputs.kecepatan;
+      
+    case "kemampuan_penanganan_pengaduan":
+      if (!inputs.pengaduan_selesai || !inputs.pengaduan_total) return 0;
+      return (inputs.pengaduan_selesai / inputs.pengaduan_total) * 100;
+      
+    case "kemudahan_pelayanan_service_point":
+      if (inputs.ketersediaan === undefined) return 0;
+      return inputs.ketersediaan;
+      
+    case "ratio_karyawan_per_1000_pelanggan":
+      if (!inputs.jumlah_karyawan || !inputs.jumlah_pelanggan_aktif) return 0;
+      return (inputs.jumlah_karyawan / inputs.jumlah_pelanggan_aktif) * 1000;
+      
+    case "ratio_diklat_pegawai":
+      if (!inputs.pegawai_ikut_diklat || !inputs.jumlah_pegawai_total) return 0;
+      return (inputs.pegawai_ikut_diklat / inputs.jumlah_pegawai_total) * 100;
+      
+    case "biaya_diklat_terhadap_biaya":
+      if (!inputs.biaya_diklat || !inputs.biaya_pegawai) return 0;
+      return (inputs.biaya_diklat / inputs.biaya_pegawai) * 100;
+      
+    case "rencana_jangka_panjang":
+    case "rencana_organisasi":
+    case "prosedur_operasi_standar":
+    case "gambar_nyata_laksana":
+    case "pedoman_penilaian_kinerja":
+    case "rencana_kerja_anggaran":
+    case "tertib_laporan_internal":
+    case "tertib_laporan_eksternal":
+    case "opini_auditor_independen":
+    case "tindak_lanjut_hasil_pemeriksaan":
+      if (inputs.nilai === undefined) return 0;
+      return inputs.nilai;
+      
+    default:
+      console.error(`Unknown indicator ID: ${indicatorId}`);
+      return 0;
+  }
+};
+
+/**
  * Mengembalikan daftar input yang diperlukan untuk formula berdasarkan ID indikator
  * @param indicatorId ID indikator
  * @returns Array dari objek dengan nama dan label input
@@ -210,148 +353,5 @@ export const getFormulaInputs = (indicatorId: string) => {
       
     default:
       return [];
-  }
-};
-
-/**
- * Menghitung nilai berdasarkan formula untuk indikator tertentu
- * @param indicatorId ID indikator
- * @param inputs Inputan untuk formula
- * @returns Nilai yang dihitung
- */
-export const calculateFormulaValue = (
-  indicatorId: string,
-  inputs: Record<string, number>
-): number => {
-  console.log(`Calculating formula value for: ${indicatorId}`, inputs);
-  
-  // Pastikan semua input yang diperlukan ada
-  if (!inputs || Object.keys(inputs).length === 0) {
-    console.error(`No inputs provided for formula: ${indicatorId}`);
-    return 0;
-  }
-  
-  // Hitung berdasarkan ID indikator
-  switch (indicatorId) {
-    case "rasio_laba_aktiva_produktif":
-      if (!inputs.laba_sebelum_pajak || !inputs.aktiva_produktif) return 0;
-      return (inputs.laba_sebelum_pajak / inputs.aktiva_produktif) * 100;
-      
-    case "peningkatan_rasio_laba_aktiva":
-      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
-      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
-      
-    case "ratio_laba_terhadap_penjualan":
-      if (!inputs.laba_sebelum_pajak || !inputs.pendapatan_operasi) return 0;
-      return (inputs.laba_sebelum_pajak / inputs.pendapatan_operasi) * 100;
-      
-    case "peningkatan_ratio_laba_penjualan":
-      if (!inputs.rasio_tahun_ini || !inputs.rasio_tahun_lalu) return 0;
-      return inputs.rasio_tahun_ini - inputs.rasio_tahun_lalu;
-      
-    case "ratio_aktiva_lancar_utang_lancar":
-      if (!inputs.aktiva_lancar || !inputs.utang_lancar) return 0;
-      return inputs.aktiva_lancar / inputs.utang_lancar;
-    
-    case "rasio_utang_jangka_panjang_ekuitas":
-      if (!inputs.utang_jangka_panjang || !inputs.ekuitas) return 0;
-      return inputs.utang_jangka_panjang / inputs.ekuitas;
-      
-    case "rasio_total_aktiva_total_utang":
-      if (!inputs.total_aktiva || !inputs.total_utang) return 0;
-      return inputs.total_aktiva / inputs.total_utang;
-      
-    case "rasio_biaya_operasi_pendapatan_operasi":
-      if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;
-      return inputs.biaya_operasi / inputs.pendapatan_operasi;
-      
-    case "ratio_laba_operasi_angsuran":
-      if (!inputs.laba_operasi || !(inputs.angsuran_pokok + inputs.bunga_jatuh_tempo)) return 0;
-      return inputs.laba_operasi / (inputs.angsuran_pokok + inputs.bunga_jatuh_tempo);
-      
-    case "ratio_aktiva_produktif_penjualan_air":
-      if (!inputs.aktiva_produktif || !inputs.penjualan_air) return 0;
-      return inputs.aktiva_produktif / inputs.penjualan_air;
-      
-    case "jangka_waktu_penagihan_piutang":
-      if (!inputs.piutang_usaha || !inputs.penjualan_per_hari) return 0;
-      return inputs.piutang_usaha / inputs.penjualan_per_hari;
-      
-    case "efektifitas_penagihan":
-      if (!inputs.rekening_tertagih || !inputs.penjualan_air) return 0;
-      return (inputs.rekening_tertagih / inputs.penjualan_air) * 100;
-      
-    case "cakupan_pelayanan":
-      if (!inputs.penduduk_terlayani || !inputs.penduduk_total) return 0;
-      return (inputs.penduduk_terlayani / inputs.penduduk_total) * 100;
-      
-    case "peningkatan_cakupan_pelayanan":
-      if (!inputs.cakupan_tahun_ini || !inputs.cakupan_tahun_lalu) return 0;
-      return inputs.cakupan_tahun_ini - inputs.cakupan_tahun_lalu;
-      
-    case "kualitas_air_distribusi":
-      if (inputs.kualitas === undefined) return 0;
-      return inputs.kualitas;
-      
-    case "kontinuitas_air":
-      if (inputs.kontinuitas === undefined) return 0;
-      return inputs.kontinuitas;
-      
-    case "produktifitas_pemanfaatan_instalasi":
-      if (!inputs.kapasitas_produksi || !inputs.kapasitas_terpasang) return 0;
-      return (inputs.kapasitas_produksi / inputs.kapasitas_terpasang) * 100;
-      
-    case "tingkat_kehilangan_air":
-      if (!inputs.air_distribusi || !inputs.air_terjual) return 0;
-      return ((inputs.air_distribusi - inputs.air_terjual) / inputs.air_distribusi) * 100;
-      
-    case "penurunan_tingkat_kehilangan_air":
-      if (!inputs.tingkat_tahun_ini || !inputs.tingkat_tahun_lalu) return 0;
-      return inputs.tingkat_tahun_ini - inputs.tingkat_tahun_lalu;
-      
-    case "peneraan_meter":
-      if (!inputs.pelanggan_tera || !inputs.pelanggan_total) return 0;
-      return (inputs.pelanggan_tera / inputs.pelanggan_total) * 100;
-      
-    case "kecepatan_penyambungan_baru":
-      if (inputs.kecepatan === undefined) return 0;
-      return inputs.kecepatan;
-      
-    case "kemampuan_penanganan_pengaduan":
-      if (!inputs.pengaduan_selesai || !inputs.pengaduan_total) return 0;
-      return (inputs.pengaduan_selesai / inputs.pengaduan_total) * 100;
-      
-    case "kemudahan_pelayanan_service_point":
-      if (inputs.ketersediaan === undefined) return 0;
-      return inputs.ketersediaan;
-      
-    case "ratio_karyawan_per_1000_pelanggan":
-      if (!inputs.jumlah_karyawan || !inputs.jumlah_pelanggan_aktif) return 0;
-      return (inputs.jumlah_karyawan / inputs.jumlah_pelanggan_aktif) * 1000;
-      
-    case "ratio_diklat_pegawai":
-      if (!inputs.pegawai_ikut_diklat || !inputs.jumlah_pegawai_total) return 0;
-      return (inputs.pegawai_ikut_diklat / inputs.jumlah_pegawai_total) * 100;
-      
-    case "biaya_diklat_terhadap_biaya":
-      if (!inputs.biaya_diklat || !inputs.biaya_pegawai) return 0;
-      return (inputs.biaya_diklat / inputs.biaya_pegawai) * 100;
-      
-    case "rencana_jangka_panjang":
-    case "rencana_organisasi":
-    case "prosedur_operasi_standar":
-    case "gambar_nyata_laksana":
-    case "pedoman_penilaian_kinerja":
-    case "rencana_kerja_anggaran":
-    case "tertib_laporan_internal":
-    case "tertib_laporan_eksternal":
-    case "opini_auditor_independen":
-    case "tindak_lanjut_hasil_pemeriksaan":
-      if (inputs.nilai === undefined) return 0;
-      return inputs.nilai;
-      
-    default:
-      console.error(`Unknown indicator ID: ${indicatorId}`);
-      return 0;
   }
 };
