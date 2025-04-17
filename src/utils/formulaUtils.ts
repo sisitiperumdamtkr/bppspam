@@ -152,13 +152,13 @@ export const calculateFormulaValue = (
       return safeDivide(inputs.ujiMemenuhi, inputs.totalUji);
 
     case "KonsumsiAirDomestik":
-      return safeDivide(inputs.airTerjualDomestik / 12, inputs.pelangganDomestik);
+      return safeDivide(inputs.airTerjualDomestik / inputs.pelangganDomestik) * 100;
 
     case "EfisiensiProduksi":
       return safeDivide(inputs.produksiRiil, inputs.kapasitasTerpasang) * 100;
 
     case "TingkatKehilanganAir":
-      return safeDivide(inputs.distribusiAir - inputs.airTerjual, inputs.distribusiAir) * 100;
+      return safeDivide(inputs.distribusiAir / inputs.airTerjual) * 100;
 
     case "JamOperasiLayanan":
       return safeDivide(inputs.totalJamOperasi, 365);
@@ -170,7 +170,7 @@ export const calculateFormulaValue = (
       return safeDivide(inputs.meterDiganti, inputs.jumlahPelanggan) * 100;
 
     case "RasioJumlahPegawai":
-      return safeDivide(inputs.jumlahPegawai, inputs.pelanggan) * 1000;
+      return safeDivide(inputs.jumlahPegawai/ inputs.pelanggan) / 1000;
 
     case "RatioDiklatPegawai":
       return safeDivide(inputs.pegawaiDiklat, inputs.totalPegawai) * 100;
