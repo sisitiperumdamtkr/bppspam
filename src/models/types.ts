@@ -3,7 +3,7 @@
 export interface Indicator {
   id: string;
   name: string;
-  category: "Keuangan" | "Pelayanan" | "Operasional" | "SDM";
+  category: "Keuangan" | "Pelayanan" | "Operasional" | "SDM" | "Administrasi";
   formula: string;
   weight: number;
   unit: string;

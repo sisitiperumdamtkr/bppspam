@@ -199,7 +199,7 @@ export const kemendagriIndicators: Indicator[] = [
     weight: 0
   },
   
-  // IV. ASPEK ADMINISTRASI - Menggantikan Aspek SDM
+  // IV. ASPEK ADMINISTRASI
   {
     id: "rencana_jangka_panjang",
     name: "Rencana Jangka Panjang",
