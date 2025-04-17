@@ -87,8 +87,8 @@ export const calculateKemendagriFormulaValue = (
       return (inputs.kapasitas_produksi / inputs.kapasitas_terpasang) * 100;
       
     case "tingkat_kehilangan_air":
-      if (!inputs.air_distribusi || !inputs.air_terjual) return 0;
-      return ((inputs.air_distribusi - inputs.air_terjual) / inputs.air_distribusi) * 100;
+      if (!inputs.air_distribusi) return 0;
+      return inputs.air_distribusi * 100; // Sesuai dengan rumus baru
       
     case "penurunan_tingkat_kehilangan_air":
       if (!inputs.tingkat_tahun_ini || !inputs.tingkat_tahun_lalu) return 0;
@@ -238,8 +238,7 @@ export const getKemendagriFormulaInputs = (indicatorId: string) => {
       
     case "tingkat_kehilangan_air":
       return [
-        { name: "air_distribusi", label: "Jumlah Air Didistribusikan" },
-        { name: "air_terjual", label: "Air Terjual" }
+        { name: "air_distribusi", label: "Jumlah Air Didistribusikan" }
       ];
       
     case "penurunan_tingkat_kehilangan_air":
