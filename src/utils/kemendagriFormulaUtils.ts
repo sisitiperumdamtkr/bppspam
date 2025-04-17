@@ -88,7 +88,7 @@ export const calculateKemendagriFormulaValue = (
       
     case "tingkat_kehilangan_air":
       if (!inputs.air_distribusi || !inputs.air_terjual) return 0;
-      return ((inputs.air_distribusi - inputs.air_terjual) / inputs.air_distribusi) * 100;
+      return ((inputs.air_distribusi ) / inputs.air_terjual) * 100;
       
     case "penurunan_tingkat_kehilangan_air":
       if (!inputs.tingkat_tahun_ini || !inputs.tingkat_tahun_lalu) return 0;
