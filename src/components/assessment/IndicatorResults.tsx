@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Label } from "@/components/ui/label";
 import { Indicator, Value } from "@/models/types";
 
 interface IndicatorResultsProps {
@@ -8,36 +7,27 @@ interface IndicatorResultsProps {
   valueObj?: Value;
 }
 
-const IndicatorResults = ({ 
-  indicator, 
-  valueObj 
-}: IndicatorResultsProps) => {
+const IndicatorResults = ({ indicator, valueObj }: IndicatorResultsProps) => {
   return (
-    <div className="grid md:grid-cols-4 gap-4 mt-4 border-t pt-4">
-      <div>
-        <Label>Penilaian</Label>
-        <div className="h-10 flex items-center mt-1 text-base font-medium">
-          {valueObj ? valueObj.value.toFixed(2) : "-"}
+    <div className="mt-4 border-t pt-4">
+      <div className="grid grid-cols-4 gap-4">
+        <div>
+          <h4 className="font-medium mb-2">Penilaian</h4>
+          <p className="text-lg">{valueObj?.value !== undefined ? valueObj.value.toFixed(2) : "-"}</p>
         </div>
-      </div>
-      <div>
-        <Label>Bobot</Label>
-        <div className="h-10 flex items-center mt-1 text-base">
-          {indicator.weight.toFixed(3)}
+        <div>
+          <h4 className="font-medium mb-2">Bobot</h4>
+          <p className="text-lg">{indicator.weight.toFixed(3)}</p>
         </div>
-      </div>
-      <div>
-        <Label>Nilai</Label>
-        <div className="h-10 flex items-center mt-1 text-base">
-          {valueObj ? valueObj.score : "-"}
+        <div>
+          <h4 className="font-medium mb-2">Nilai</h4>
+          <p className="text-lg">{valueObj?.score !== undefined ? valueObj.score.toFixed(2) : "-"}</p>
         </div>
-      </div>
-      <div>
-        <Label>Hasil</Label>
-        <div className="h-10 flex items-center mt-1 text-base">
-          {valueObj 
-            ? (valueObj.score * indicator.weight).toFixed(3)
-            : "-"}
+        <div>
+          <h4 className="font-medium mb-2">Hasil</h4>
+          <p className="text-lg">
+            {valueObj ? (valueObj.score * indicator.weight).toFixed(3) : "-"}
+          </p>
         </div>
       </div>
     </div>
