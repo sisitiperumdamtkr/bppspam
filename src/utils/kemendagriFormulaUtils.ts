@@ -50,10 +50,14 @@ export const calculateKemendagriFormulaValue = (
       if (!inputs.biaya_operasi || !inputs.pendapatan_operasi) return 0;
       return inputs.biaya_operasi / inputs.pendapatan_operasi;
       
-    case "ratio_laba_operasi_angsuran":
-      if (!inputs.laba_operasi || !(inputs.angsuran_pokok + inputs.bunga_jatuh_tempo)) return 0;
-      return inputs.laba_operasi / (inputs.angsuran_pokok + inputs.bunga_jatuh_tempo);
+    // case "ratio_laba_operasi_angsuran":
+    //   if (!inputs.laba_operasi || !(inputs.angsuran_pokok + inputs.bunga_jatuh_tempo)) return 0;
+    //   return inputs.laba_operasi / (inputs.angsuran_pokok + inputs.bunga_jatuh_tempo);
       
+    case "ratio_laba_operasi_angsuran":
+  const totalAngsuran = (inputs.angsuran_pokok ?? 0) + (inputs.bunga_jatuh_tempo ?? 0);
+  return safeDivide(inputs.laba_operasi, totalAngsuran);
+
     case "ratio_aktiva_produktif_penjualan_air":
       if (!inputs.aktiva_produktif || !inputs.penjualan_air) return 0;
       return inputs.aktiva_produktif / inputs.penjualan_air;
