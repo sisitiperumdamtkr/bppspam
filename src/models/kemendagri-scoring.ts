@@ -207,15 +207,15 @@ export const calculateKemendagriTotalScore = (values: Record<string, Value>): nu
   
   // Konversi skor aspek keuangan sesuai formula: nilai/60*45
   const weightedKeuanganScore = keuanganIndicators > 0 ? 
-    (keuanganScore / (keuanganIndicators * 60)) * 45 : 0;
+    (keuanganScore / (keuanganIndicators * 60)) * 0.45 : 0;
   
   // Konversi skor aspek operasional sesuai formula: nilai/47*40
   const weightedOperasionalScore = operasionalIndicators > 0 ? 
-    (operasionalScore / (operasionalIndicators * 47)) * 40 : 0;
+    (operasionalScore / (operasionalIndicators * 47)) * 0.40 : 0;
   
   // Konversi skor aspek administrasi sesuai formula: nilai/36*15
   const weightedAdministrasiScore = administrasiIndicators > 0 ? 
-    (administrasiScore / (administrasiIndicators * 36)) * 15 : 0;
+    (administrasiScore / (administrasiIndicators * 36)) * 0.15 : 0;
   
   return weightedKeuanganScore + weightedOperasionalScore + weightedAdministrasiScore;
 };
