@@ -158,7 +158,7 @@ export const calculateFormulaValue = (
       return safeDivide(inputs.produksiRiil, inputs.kapasitasTerpasang) * 100;
 
     case "TingkatKehilanganAir":
-      return safeDivide(inputs.distribusiAir - inputs.airTerjual, inputs.distribusiAir) * 100;
+      return safeDivide(inputs.distribusiAir, inputs.airTerjual) * 100;
 
     case "JamOperasiLayanan":
       return safeDivide(inputs.totalJamOperasi, 365);
