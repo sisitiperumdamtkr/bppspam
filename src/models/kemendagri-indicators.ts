@@ -1,3 +1,4 @@
+
 import { Indicator } from "./types";
 
 // Indikator penilaian KEMENDAGRI
@@ -144,7 +145,7 @@ export const kemendagriIndicators: Indicator[] = [
   {
     id: "tingkat_kehilangan_air",
     name: "Tingkat Kehilangan Air",
-    formula: "Jumlah air didistribusikan / Jumlah air yang didistribusikan * 100%",
+    formula: "Jumlah air didistribusikan dikurang Air terjual / Jumlah air yang diditribusikan * 100%",
     category: "Operasional",
     unit: "%",
     weight: 0

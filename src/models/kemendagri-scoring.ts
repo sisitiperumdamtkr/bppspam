@@ -1,3 +1,4 @@
+
 import { Indicator, Value } from "./types";
 import { kemendagriIndicators } from "./kemendagri-indicators";
 
@@ -10,7 +11,7 @@ import { kemendagriIndicators } from "./kemendagri-indicators";
 export const calculateKemendagriScore = (value: number, indicatorId: string): number => {
   // Indikator dengan nilai tetap
   if (indicatorId === "peningkatan_rasio_laba_aktiva" || 
-      indicatorId === "peningkatan_ratio_laba_penjualan" ||
+      indicatorId === "peningkatan_ratio_laba_penjualan" || 
       indicatorId === "penurunan_tingkat_kehilangan_air") {
     return 1;
   }
@@ -98,7 +99,7 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
       if (value <= 20) return 4;
       if (value > 40) return 1;
       if (value > 30) return 2;
-      return 3; // untuk nilai 20-30
+      return 3;
       
     case "produktifitas_pemanfaatan_instalasi":
       if (value > 90) return 4;
