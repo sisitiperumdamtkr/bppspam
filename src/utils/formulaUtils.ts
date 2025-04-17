@@ -170,7 +170,7 @@ export const calculateFormulaValue = (
       return safeDivide(inputs.meterDiganti, inputs.jumlahPelanggan) * 100;
 
     case "RasioJumlahPegawai":
-      return safeDivide(inputs.jumlahPegawai, inputs.pelanggan) * 1000;
+      return safeDivide(inputs.jumlahPegawai, inputs.pelanggan);
 
     case "RatioDiklatPegawai":
       return safeDivide(inputs.pegawaiDiklat, inputs.totalPegawai) * 100;
