@@ -77,7 +77,7 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
       if (value > 1.7) return 4;
       if (value > 1.3) return 3;
       if (value > 1) return 2;
-      return 1;
+      return 5;
       
     case "ratio_aktiva_produktif_penjualan_air":
       if (value <= 2) return 5;
