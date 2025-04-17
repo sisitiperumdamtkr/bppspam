@@ -34,17 +34,17 @@ const IndicatorCategoryKemendagri = ({
   // Perhitungan khusus untuk Aspek Keuangan, Operasional, dan Administrasi
   const displayScore = useMemo(() => {
     if (category === "Keuangan") {
-      const maxPossibleScore = indicators.length * 5;
+      const maxPossibleScore = indicators.length * 60;
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 45;
       return weightedScore.toFixed(3);
     } else if (category === "Operasional") {
-      const maxPossibleScore = indicators.length * 5;
+      const maxPossibleScore = indicators.length * 47;
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 40;
       return weightedScore.toFixed(3);
     } else if (category === "Administrasi") {
-      const maxPossibleScore = indicators.length * 5;
+      const maxPossibleScore = indicators.length * 36;
       if (maxPossibleScore === 0) return 0;
       const weightedScore = categoryTotalScore / maxPossibleScore * 15;
       return weightedScore.toFixed(3);
