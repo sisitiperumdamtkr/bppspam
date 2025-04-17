@@ -149,7 +149,7 @@ export const calculateFormulaValue = (
       return safeDivide(inputs.aduanSelesai, inputs.totalAduan) * 100;
 
     case "KualitasAirPelanggan":
-      return safeDivide(inputs.ujiMemenuhi, inputs.totalUji);
+      return safeDivide(inputs.ujiMemenuhi / inputs.totalUji) * 100;
 
     case "KonsumsiAirDomestik":
       return safeDivide(inputs.airTerjualDomestik / inputs.pelangganDomestik) * 100;
