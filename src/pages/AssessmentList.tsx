@@ -83,11 +83,11 @@ const AssessmentList = () => {
   }, []);
   
   const handleCreateNew = () => {
-    navigate("/assessment/new");
+    navigate("/assessment/pupr");
   };
   
   const handleViewAssessment = (id: string) => {
-    navigate(`/assessment/${id}`);
+    navigate(`/assessment/pupr${id}`);
   };
   
   const handleRefresh = () => {
