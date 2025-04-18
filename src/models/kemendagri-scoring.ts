@@ -158,9 +158,6 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
 
 /**
  * Menghitung total skor dari semua indikator dalam kategori
- * @param values Object berisi nilai dan skor untuk setiap indikator
- * @param category Kategori yang akan dihitung
- * @returns Total skor (jumlah nilai hasil) untuk kategori
  */
 export const calculateKemendagriCategoryScore = (
   values: Record<string, Value>, 
@@ -184,26 +181,18 @@ export const calculateKemendagriCategoryScore = (
 
 /**
  * Menghitung total skor dari semua indikator
- * @param values Object berisi nilai dan skor untuk setiap indikator
- * @returns Total skor tertimbang berdasarkan formula
  */
 export const calculateKemendagriTotalScore = (values: Record<string, Value>): number => {
-  // Hitung skor aspek keuangan (jumlah nilai hasil)
+  // Hitung skor untuk setiap aspek
   const keuanganScore = calculateKemendagriCategoryScore(values, "Keuangan");
-  
-  // Hitung skor aspek operasional (jumlah nilai hasil)
   const operasionalScore = calculateKemendagriCategoryScore(values, "Operasional");
-  
-  // Hitung skor aspek administrasi (jumlah nilai hasil)
   const administrasiScore = calculateKemendagriCategoryScore(values, "Administrasi");
   
-  // Total Skor = (Nilai Kinerja Aspek Keuangan / (60 * 45)) + 
-  //              (Nilai Kinerja Aspek Operasional / (47 * 40)) + 
-  //              (Nilai Kinerja Aspek Administrasi / (36 * 15))
+  // Hitung total skor dengan bobot yang benar
   const totalScore = 
-    (keuanganScore / (60 * 45)) + 
-    (operasionalScore / (47 * 40)) + 
-    (administrasiScore / (36 * 15));
+    (keuanganScore / 60 * 45) + 
+    (operasionalScore / 47 * 40) + 
+    (administrasiScore / 36 * 15);
   
   return totalScore;
 };
