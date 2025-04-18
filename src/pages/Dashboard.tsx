@@ -107,7 +107,7 @@ const Dashboard = () => {
             </Card>
           </Link>
           
-          <Link to="/assessmentspupr" className="block">
+          <Link to="/assessmentpupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
                 <div className="bg-green-100 w-10 h-10 rounded-full flex items-center justify-center text-green-700 mb-2">
