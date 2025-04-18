@@ -24,9 +24,12 @@ const ScoreSummaryKemendagri = ({ totalScore }: ScoreSummaryKemendagriProps) => 
         </div>
       )}
       <div className="mt-4 text-sm text-muted-foreground">
-        <p>Penilaian aspek keuangan dihitung berdasarkan jumlah nilai dari grup aspek keuangan dibagi 60 dikali 45.</p>
-        <p>Penilaian aspek operasional dihitung berdasarkan jumlah nilai dari grup aspek operasional dibagi 47 dikali 40.</p>
-        <p>Penilaian aspek administrasi dihitung berdasarkan jumlah nilai dari grup aspek administrasi dibagi 36 dikali 15.</p>
+        <p>Total Skor dihitung dengan rumus:</p>
+        <p>Total Skor = (Nilai Kinerja Aspek Keuangan / (60 * 45)) + (Nilai Kinerja Aspek Operasional / (47 * 40)) + (Nilai Kinerja Aspek Administrasi / (36 * 15))</p>
+        <p>Dimana:</p>
+        <p>Nilai Kinerja Aspek Keuangan = Jumlah dari semua nilai hasil indikator aspek keuangan</p>
+        <p>Nilai Kinerja Aspek Operasional = Jumlah dari semua nilai hasil indikator aspek operasional</p>
+        <p>Nilai Kinerja Aspek Administrasi = Jumlah dari semua nilai hasil indikator aspek administrasi</p>
       </div>
     </div>
   );

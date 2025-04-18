@@ -160,7 +160,7 @@ export const calculateKemendagriScore = (value: number, indicatorId: string): nu
  * Menghitung total skor dari semua indikator dalam kategori
  * @param values Object berisi nilai dan skor untuk setiap indikator
  * @param category Kategori yang akan dihitung
- * @returns Total skor tertimbang untuk kategori
+ * @returns Total skor (jumlah nilai hasil) untuk kategori
  */
 export const calculateKemendagriCategoryScore = (
   values: Record<string, Value>, 
@@ -171,51 +171,39 @@ export const calculateKemendagriCategoryScore = (
   );
   
   let categoryScore = 0;
-  let totalIndicators = 0;
   
   categoryIndicators.forEach((indicator) => {
     const valueObj = values[indicator.id];
     if (valueObj) {
       categoryScore += valueObj.score;
-      totalIndicators++;
     }
   });
   
-  return totalIndicators > 0 ? categoryScore : 0;
+  return categoryScore;
 };
 
 /**
  * Menghitung total skor dari semua indikator
  * @param values Object berisi nilai dan skor untuk setiap indikator
- * @returns Total skor tertimbang
+ * @returns Total skor tertimbang berdasarkan formula
  */
 export const calculateKemendagriTotalScore = (values: Record<string, Value>): number => {
-  // Hitung skor aspek keuangan dan konversi sesuai bobot
+  // Hitung skor aspek keuangan (jumlah nilai hasil)
   const keuanganScore = calculateKemendagriCategoryScore(values, "Keuangan");
-  const keuanganIndicators = kemendagriIndicators.filter(ind => ind.category === "Keuangan").length;
   
-  // Hitung skor aspek operasional dan konversi sesuai bobot
+  // Hitung skor aspek operasional (jumlah nilai hasil)
   const operasionalScore = calculateKemendagriCategoryScore(values, "Operasional");
-  const operasionalIndicators = kemendagriIndicators.filter(ind => ind.category === "Operasional").length;
   
-  // Hitung skor aspek administrasi dan konversi sesuai bobot
+  // Hitung skor aspek administrasi (jumlah nilai hasil)
   const administrasiScore = calculateKemendagriCategoryScore(values, "Administrasi");
-  const administrasiIndicators = kemendagriIndicators.filter(ind => ind.category === "Administrasi").length;
   
-  // Jika tidak ada nilai keuangan, operasional, atau administrasi, kembalikan 0
-  if (keuanganIndicators === 0 && operasionalIndicators === 0 && administrasiIndicators === 0) return 0;
+  // Total Skor = (Nilai Kinerja Aspek Keuangan / (60 * 45)) + 
+  //              (Nilai Kinerja Aspek Operasional / (47 * 40)) + 
+  //              (Nilai Kinerja Aspek Administrasi / (36 * 15))
+  const totalScore = 
+    (keuanganScore / (60 * 45)) + 
+    (operasionalScore / (47 * 40)) + 
+    (administrasiScore / (36 * 15));
   
-  // Konversi skor aspek keuangan sesuai formula: nilai/60*45
-  const weightedKeuanganScore = keuanganIndicators > 0 ? 
-    (keuanganScore / (keuanganIndicators * 60)) * 45 : 0;
-  
-  // Konversi skor aspek operasional sesuai formula: nilai/47*40
-  const weightedOperasionalScore = operasionalIndicators > 0 ? 
-    (operasionalScore / (operasionalIndicators * 47)) * 40 : 0;
-  
-  // Konversi skor aspek administrasi sesuai formula: nilai/36*15
-  const weightedAdministrasiScore = administrasiIndicators > 0 ? 
-    (administrasiScore / (administrasiIndicators * 36)) * 15 : 0;
-  
-  return weightedKeuanganScore + weightedOperasionalScore + weightedAdministrasiScore;
+  return totalScore;
 };

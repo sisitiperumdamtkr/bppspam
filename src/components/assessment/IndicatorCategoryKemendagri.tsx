@@ -20,7 +20,8 @@ const IndicatorCategoryKemendagri = ({
   onFormulaInputChange
 }: IndicatorCategoryKemendagriProps) => {
   
-  // Hitung total nilai tertimbang untuk kategori ini
+  // Hitung total nilai hasil untuk kategori ini 
+  // (jumlah dari semua nilai hasil indikator)
   const categoryTotalScore = useMemo(() => {
     return indicators.reduce((total, indicator) => {
       const valueObj = values[indicator.id];
@@ -30,27 +31,6 @@ const IndicatorCategoryKemendagri = ({
       return total;
     }, 0);
   }, [indicators, values]);
-
-  // Perhitungan khusus untuk Aspek Keuangan, Operasional, dan Administrasi
-  const displayScore = useMemo(() => {
-    if (category === "Keuangan") {
-      const maxPossibleScore = indicators.length * 60;
-      if (maxPossibleScore === 0) return 0;
-      const weightedScore = categoryTotalScore / maxPossibleScore * 45;
-      return weightedScore.toFixed(0);
-    } else if (category === "Operasional") {
-      const maxPossibleScore = indicators.length * 47;
-      if (maxPossibleScore === 0) return 0;
-      const weightedScore = categoryTotalScore / maxPossibleScore * 40;
-      return weightedScore.toFixed(0);
-    } else if (category === "Administrasi") {
-      const maxPossibleScore = indicators.length * 36;
-      if (maxPossibleScore === 0) return 0;
-      const weightedScore = categoryTotalScore / maxPossibleScore * 15;
-      return weightedScore.toFixed(0);
-    }
-    return categoryTotalScore.toFixed(0);
-  }, [category, categoryTotalScore, indicators.length]);
 
   // Title dinamis berdasarkan kategori
   const categoryTitle = useMemo(() => {
@@ -63,6 +43,11 @@ const IndicatorCategoryKemendagri = ({
     }
     return "Total Aspek";
   }, [category]);
+
+  // Menampilkan total skor aspek (nilai hasil)
+  const displayScore = useMemo(() => {
+    return categoryTotalScore.toFixed(0);
+  }, [categoryTotalScore]);
 
   return (
     <div className="mt-8">
