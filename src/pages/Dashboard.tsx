@@ -75,7 +75,7 @@ const Dashboard = () => {
           </CardContent>
           <Card>
             <Link to="/assessment/pupr">
-              <Button>
+              <Button mr-2>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Buat Penilaian PUPR Baru
               </Button>
