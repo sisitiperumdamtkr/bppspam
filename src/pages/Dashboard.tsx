@@ -257,6 +257,63 @@ const Dashboard = () => {
         {/* Recent Assessments kemendagri */}
         <Card>
           <CardHeader>
+            <CardTitle>Data Penilaian</CardTitle>
+            <CardDescription>
+              Daftar penilaian KEMENDAGRI dari tahun ke tahun
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-2">Tahun</th>
+                    <th className="text-left p-2">Tanggal</th>
+                    <th className="text-right p-2">Skor</th>
+                    <th className="text-left p-2">Kategori</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {assessments.length > 0 ? (
+                    assessments.map((assessment) => {
+                      const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
+                      return (
+                        <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer">
+                          <td className="p-2">{assessment.year}</td>
+                          <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
+                          <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>
+                          <td className="p-2">
+                            <span className={`${healthCategory.color} text-white text-xs px-2 py-1 rounded-full`}>
+                              {healthCategory.category}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={4} className="p-4 text-center text-muted-foreground">
+                        Tidak ada data yang sesuai dengan filter
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Link to="/assessments">
+              <Button variant="outline">Lihat Semua Penilaian</Button>
+            </Link>
+          </CardFooter>
+        </Card>    
+
+
+
+
+
+        {/* <Card>
+          <CardHeader>
             <CardTitle className="text-xl">Penilaian Terakhir KEMENDAGRI </CardTitle>
           </CardHeader>
           <CardContent>
@@ -319,7 +376,7 @@ const Dashboard = () => {
               <Button variant="outline">Lihat Semua Penilaian</Button>
             </Link>
           </CardFooter>
-        </Card>
+        </Card> */}
       </div>
     </DashboardLayout>
   );
