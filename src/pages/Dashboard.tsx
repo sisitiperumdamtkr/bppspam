@@ -73,20 +73,20 @@ const Dashboard = () => {
               BPPSPAM dan Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
             </p>
           </CardContent>
-          <Card>
-        <Link to="/assessment/pupr">
-          <Button className="mb-4">
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Buat Penilaian PUPR Baru
-          </Button>
-        </Link>
-        <Link to="/assessment/kemendagri">
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Buat Penilaian KEMENDAGRI Baru
-          </Button>
-        </Link>
-      </Card>
+          <Card className="flex flex-col gap-4">
+  <Link to="/assessment/pupr">
+    <Button>
+      <PlusCircle className="h-4 w-4 mr-2" />
+      Buat Penilaian PUPR Baru
+    </Button>
+  </Link>
+  <Link to="/assessment/kemendagri">
+    <Button>
+      <PlusCircle className="h-4 w-4 mr-2" />
+      Buat Penilaian KEMENDAGRI Baru
+    </Button>
+  </Link>
+</Card>
 
         {/* Quick Actions BPPSPAM */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
