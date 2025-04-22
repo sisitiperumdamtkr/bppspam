@@ -386,8 +386,21 @@ const Dashboard = () => {
   </CardContent>
 </Card>
 
-    </DashboardLayout>
-  );
-};
+{/* Ringkasan Penilaian KEMENDAGRI */}
+<Card>
+  <CardHeader className="pb-3">
+    <CardTitle className="text-base">Ringkasan Penilaian KEMENDAGRI</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{recentAssessments.length}</div>
+        </CardContent>
+      </Card>
 
-export default Dashboard;
+      <Card>
+        <CardHeader className="pb-2"></CardHeader>
