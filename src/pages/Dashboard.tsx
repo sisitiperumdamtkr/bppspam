@@ -321,6 +321,66 @@ const Dashboard = () => {
           </CardFooter>
         </Card>
       </div>
+
+{/* sumary penilaian */}
+<Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">Filter</CardTitle>
+          </CardHeader>
+          <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{filteredAssessments.length}</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {filteredAssessments.length > 0 
+                  ? (filteredAssessments.reduce((sum, a) => sum + a.totalScore, 0) / filteredAssessments.length).toFixed(2)
+                  : "-"}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {filteredAssessments.length > 0 
+                  ? Math.max(...filteredAssessments.map(a => a.totalScore)).toFixed(2)
+                  : "-"}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {filteredAssessments.length > 0 
+                  ? Math.min(...filteredAssessments.map(a => a.totalScore)).toFixed(2)
+                  : "-"}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+          </CardContent>
+        </Card>
+
+
     </DashboardLayout>
   );
 };
