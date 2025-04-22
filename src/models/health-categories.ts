@@ -1,4 +1,3 @@
-
 // Fungsi untuk mendapatkan kategori berdasarkan total skor
 export const getHealthCategory = (score: number): {
   category: string;
@@ -50,11 +49,11 @@ export const getHealthCategorykemendagri = (score: number): {
   } else if (score >= 30) {
     return {
       category: "Kurang",
-      color: "bg-orange-500"
+      color: "bg-orange-500" // Warna oranye untuk kategori "Kurang"
     };
   } else {
     return {
-      category: "Tidak Baik",
+      category: "Sakit",
       color: "bg-red-500"
     };
   }
