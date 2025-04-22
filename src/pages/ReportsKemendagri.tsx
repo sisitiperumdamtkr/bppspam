@@ -197,6 +197,7 @@ const ReportsKemendagri = () => {
     return acc;
   }, {});
   
+  // Hitung total nilai masing-masing aspek dari tahun ke tahun
   const yearlyAspectScores = assessments.map(assessment => {
     const aspectScores: Record<string, number> = {};
 
@@ -206,11 +207,11 @@ const ReportsKemendagri = () => {
       indicators.forEach(indicatorId => {
         const value = assessment.values[indicatorId];
         if (value) {
-          totalScore += value.score;
+          totalScore += value.score; // Hitung total nilai, bukan rata-rata
         }
       });
 
-      aspectScores[category] = totalScore / indicators.length; // Rata-rata skor per aspek
+      aspectScores[category] = totalScore; // Simpan total nilai untuk setiap aspek
     });
 
     return {
@@ -396,7 +397,7 @@ const ReportsKemendagri = () => {
             <CardHeader>
               <CardTitle>Perkembangan Aspek Penilaian</CardTitle>
               <CardDescription>
-                Skor per aspek dari tahun ke tahun
+                Total nilai masing-masing aspek dari tahun ke tahun
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -404,7 +405,7 @@ const ReportsKemendagri = () => {
                 <LineChart data={yearlyAspectScores}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
-                  <YAxis domain={[0, 100]} />
+                  <YAxis domain={[0, 'auto']} />
                   <Tooltip />
                   <Legend />
                   {Object.keys(aspectData).map((category, index) => (
