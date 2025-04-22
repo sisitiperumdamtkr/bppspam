@@ -74,20 +74,19 @@ const Dashboard = () => {
             </p>
           </CardContent>
           <Card>
-            <Link to="/assessment/pupr">
-              <Button mr-2>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Buat Penilaian PUPR Baru
-              </Button>
-            </Link>
-            <Link to="/assessment/kemendagri">
-              <Button>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Buat Penilaian KEMENDAGRI Baru
-              </Button>
-            </Link>
-          </Card>
-        </Card>
+        <Link to="/assessment/pupr">
+          <Button className="mb-4">
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Buat Penilaian PUPR Baru
+          </Button>
+        </Link>
+        <Link to="/assessment/kemendagri">
+          <Button>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Buat Penilaian KEMENDAGRI Baru
+          </Button>
+        </Link>
+      </Card>
 
         {/* Quick Actions BPPSPAM */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
