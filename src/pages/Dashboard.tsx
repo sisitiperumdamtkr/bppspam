@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { PlusCircle, BarChart2, FileText, ListChecks, Clock } from "lucide-react";
-import { getHealthCategory } from "@/models/health-categories";
+import { getHealthCategory, getHealthCategorykemendagri } from "@/models/health-categories";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 
@@ -60,7 +60,7 @@ const Dashboard = () => {
     <DashboardLayout title="Dashboard">
       <div className="grid gap-6">
         {/* Welcome Card */}
-        <Card>
+        <Card />
           <CardHeader className="pb-2">
             <CardTitle>Selamat Datang, {user?.name || 'Pengguna'}</CardTitle>
             <CardDescription>
@@ -287,7 +287,7 @@ const Dashboard = () => {
                   </thead>
                   <tbody>
                     {recentAssessments.map((assessment) => {
-                      const healthCategory = getHealthCategory(assessment.totalScore);
+                      const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
                       return (
                         <tr key={assessment.id} className="border-b hover:bg-gray-50">
                           <td className="py-3 px-2">{assessment.year}</td>
