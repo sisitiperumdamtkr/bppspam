@@ -18,40 +18,41 @@ const Dashboard = () => {
     // Fetch recent assessments from Supabase
     const fetchRecentAssessments = async () => {
       if (!user) return;
-      
+
       try {
         setLoading(true);
         const { data, error } = await supabase
-          .from('assessments')
-          .select('*')
-          .order('year', { ascending: false })
+          .from("assessments")
+          .select("*")
+          .order("year", { ascending: false })
           .limit(3);
-        
+
         if (error) {
-          console.error('Error fetching recent assessments:', error);
+          console.error("Error fetching recent assessments:", error);
           return;
         }
-        
+
         // Map database column names to our interface properties
-        const mappedData = data?.map(item => ({
-          id: item.id,
-          name: item.name,
-          year: item.year,
-          date: item.date,
-          userId: item.user_id,
-          totalScore: item.total_score || 0,
-          status: item.status as "draft" | "completed",
-          values: {} // Initialize with empty values as we're not fetching them here
-        })) || [];
-        
+        const mappedData =
+          data?.map((item) => ({
+            id: item.id,
+            name: item.name,
+            year: item.year,
+            date: item.date,
+            userId: item.user_id,
+            totalScore: item.total_score || 0,
+            status: item.status as "draft" | "completed",
+            values: {}, // Initialize with empty values as we're not fetching them here
+          })) || [];
+
         setRecentAssessments(mappedData);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchRecentAssessments();
   }, [user]);
 
@@ -60,32 +61,32 @@ const Dashboard = () => {
       <div className="grid gap-6">
         {/* Welcome Card */}
         <Card />
-          <CardHeader className="pb-2">
-            <CardTitle>Selamat Datang, {user?.name || 'Pengguna'}</CardTitle>
-            <CardDescription>
-              Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600">
-              Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan standar 
-              BPPSPAM dan Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
-            </p>
-          </CardContent>
-          <Card className="flex flex-col gap-4">
-  <Link to="/assessment/pupr">
-    <Button>
-      <PlusCircle className="h-4 w-4 mr-2" />
-      Buat Penilaian PUPR Baru
-    </Button>
-  </Link>
-  <Link to="/assessment/kemendagri">
-    <Button>
-      <PlusCircle className="h-4 w-4 mr-2" />
-      Buat Penilaian KEMENDAGRI Baru
-    </Button>
-  </Link>
-</Card>
+        <CardHeader className="pb-2">
+          <CardTitle>Selamat Datang, {user?.name || "Pengguna"}</CardTitle>
+          <CardDescription>
+            Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600">
+            Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan standar
+            BPPSPAM dan Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
+          </p>
+        </CardContent>
+        <Card className="flex flex-col gap-4">
+          <Link to="/assessment/pupr">
+            <Button>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Buat Penilaian PUPR Baru
+            </Button>
+          </Link>
+          <Link to="/assessment/kemendagri">
+            <Button>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Buat Penilaian KEMENDAGRI Baru
+            </Button>
+          </Link>
+        </Card>
 
         {/* Quick Actions BPPSPAM */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -98,13 +99,11 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Input Penilaian</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
-                  Input data penilaian tahunan berdasarkan indikator BPPSPAM
-                </p>
+                <p className="text-sm text-gray-600">Input data penilaian tahunan berdasarkan indikator BPPSPAM</p>
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/assessmentpupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -114,13 +113,11 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Riwayat Penilaian</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
-                  Lihat riwayat penilaian yang telah dilakukan dari tahun ke tahun
-                </p>
+                <p className="text-sm text-gray-600">Lihat riwayat penilaian yang telah dilakukan dari tahun ke tahun</p>
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/reportspupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -130,15 +127,13 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Laporan</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
-                  Lihat tren kinerja PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun
-                </p>
+                <p className="text-sm text-gray-600">Lihat tren kinerja PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun</p>
               </CardContent>
             </Card>
           </Link>
         </div>
-{/* Quick Actions KEMENDAGRI */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Quick Actions KEMENDAGRI */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link to="/assessment/kemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -148,13 +143,11 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Input Penilaian KEMENDAGRI</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
-                  Input data penilaian tahunan berdasarkan indikator KEMENDAGRI
-                </p>
+                <p className="text-sm text-gray-600">Input data penilaian tahunan berdasarkan indikator KEMENDAGRI</p>
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/assessmentkemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -164,13 +157,11 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Riwayat Penilaian KEMMENDAGRI</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
-                  Lihat riwayat penilaian yang telah dilakukan dari tahun ke tahun
-                </p>
+                <p className="text-sm text-gray-600">Lihat riwayat penilaian yang telah dilakukan dari tahun ke tahun</p>
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/reportskemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -180,9 +171,7 @@ const Dashboard = () => {
                 <CardTitle className="text-lg">Laporan PENILAIAN KEMENDAGRI</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">
-                  Lihat tren kinerja PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun
-                </p>
+                <p className="text-sm text-gray-600">Lihat tren kinerja PERUMDAM TIRTA KERTA RAHARJA dari tahun ke tahun</p>
               </CardContent>
             </Card>
           </Link>
@@ -224,10 +213,14 @@ const Dashboard = () => {
                       return (
                         <tr key={assessment.id} className="border-b hover:bg-gray-50">
                           <td className="py-3 px-2">{assessment.year}</td>
-                          <td className="py-3 px-2">{new Date(assessment.date).toLocaleDateString('id-ID')}</td>
+                          <td className="py-3 px-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
                           <td className="py-3 px-2">{assessment.totalScore.toFixed(2)}</td>
                           <td className="py-3 px-2">
-                            <span className={`px-2 py-1 rounded-full text-xs ${healthCategory.color.replace('bg-', 'bg-opacity-20 text-').replace('-500', '-700')}`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs ${healthCategory.color
+                                .replace("bg-", "bg-opacity-20 text-")
+                                .replace("-500", "-700")}`}
+                            >
                               {healthCategory.category}
                             </span>
                           </td>
@@ -290,13 +283,13 @@ const Dashboard = () => {
                       return (
                         <tr key={assessmentkemendagri.id} className="border-b hover:bg-gray-50">
                           <td className="py-3 px-2">{assessmentkemendagri.year}</td>
-                          <td className="py-3 px-2">{new Date(assessmentkemendagri.date).toLocaleDateString('id-ID')}</td>
+                          <td className="py-3 px-2">{new Date(assessmentkemendagri.date).toLocaleDateString("id-ID")}</td>
                           <td className="py-3 px-2">{assessmentkemendagri.totalScore.toFixed(2)}</td>
                           <td className="py-3 px-2">
                             <span
                               className={`px-2 py-1 rounded-full text-xs ${healthCategory.color
-                                .replace('bg-', 'bg-opacity-20 text-')
-                                .replace('-500', '-700')}`}
+                                .replace("bg-", "bg-opacity-20 text-")
+                                .replace("-500", "-700")}`}
                             >
                               {healthCategory.category}
                             </span>
@@ -325,128 +318,127 @@ const Dashboard = () => {
         </Card>
       </div>
 
-{/* Summary Penilaian */}
-<Card>
-  <CardHeader className="pb-3">
-    <CardTitle className="text-base">Ringkasan Penilaian</CardTitle>
-  </CardHeader>
-  <CardContent>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Summary Penilaian */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Ringkasan Penilaian</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{recentAssessments.length}</div>
-        </CardContent>
-      </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{recentAssessments.length}</div>
+              </CardContent>
+            </Card>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {recentAssessments.length > 0
-              ? (
-                  recentAssessments.reduce((sum, a) => sum + a.totalScore, 0) /
-                  recentAssessments.length
-                ).toFixed(2)
-              : "-"}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {recentAssessments.length > 0
+                    ? (
+                        recentAssessments.reduce((sum, a) => sum + a.totalScore, 0) /
+                        recentAssessments.length
+                      ).toFixed(2)
+                    : "-"}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {recentAssessments.length > 0
+                    ? Math.max(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+                    : "-"}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {recentAssessments.length > 0
+                    ? Math.min(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+                    : "-"}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
 
+      {/* Ringkasan Penilaian KEMENDAGRI */}
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Ringkasan Penilaian KEMENDAGRI</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            {recentAssessments.length > 0
-              ? Math.max(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
-              : "-"}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{recentAssessments.length}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {recentAssessments.length > 0
+                    ? (
+                        recentAssessments.reduce((sum, a) => sum + a.totalScore, 0) /
+                        recentAssessments.length
+                      ).toFixed(2)
+                    : "-"}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {recentAssessments.length > 0
+                    ? Math.max(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+                    : "-"}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {recentAssessments.length > 0
+                    ? Math.min(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+                    : "-"}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
-
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {recentAssessments.length > 0
-              ? Math.min(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
-              : "-"}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  </CardContent>
-</Card>
-
-{/* Ringkasan Penilaian KEMENDAGRI */}
-<Card>
-  <CardHeader className="pb-3">
-    <CardTitle className="text-base">Ringkasan Penilaian KEMENDAGRI</CardTitle>
-  </CardHeader>
-  <CardContent>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{recentAssessments.length}</div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {recentAssessments.length > 0
-              ? (
-                  recentAssessments.reduce((sum, a) => sum + a.totalScore, 0) /
-                  recentAssessments.length
-                ).toFixed(2)
-              : "-"}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {recentAssessments.length > 0
-              ? Math.max(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
-              : "-"}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">
-            {recentAssessments.length > 0
-              ? Math.min(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
-              : "-"}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  </CardContent>
-</Card>
-
     </DashboardLayout>
   );
 };
