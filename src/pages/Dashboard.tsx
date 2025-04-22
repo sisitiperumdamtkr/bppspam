@@ -233,7 +233,7 @@ const Dashboard = () => {
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            <Link to={`/assessment/pupr${assessment.id}`}>
+                            <Link to={`/assessment/pupr/${assessment.id}`}>
                               <Button variant="outline" size="sm">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Detail
@@ -299,7 +299,7 @@ const Dashboard = () => {
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            <Link to={`/assessment/kemendagri${assessmentkemendagri.id}`}>
+                            <Link to={`/assessment/kemendagri/${assessmentkemendagri.id}`}>
                               <Button variant="outline" size="sm">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Detail
