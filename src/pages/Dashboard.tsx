@@ -233,7 +233,7 @@ const Dashboard = () => {
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            <Link to={`/assessment/pupr/${assessment.id}`}>
+                            <Link to={`/assessment/${assessment.id}`}>
                               <Button variant="outline" size="sm">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Detail
@@ -286,20 +286,20 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {recentAssessments.map((assessment) => {
-                      const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
+                    {recentAssessments.map((assessmentkemendagri) => {
+                      const healthCategory = getHealthCategorykemendagri(assessmentkemendagri.totalScore);
                       return (
-                        <tr key={assessment.id} className="border-b hover:bg-gray-50">
-                          <td className="py-3 px-2">{assessment.year}</td>
-                          <td className="py-3 px-2">{new Date(assessment.date).toLocaleDateString('id-ID')}</td>
-                          <td className="py-3 px-2">{assessment.totalScore.toFixed(2)}</td>
+                        <tr key={assessmentkemendagri.id} className="border-b hover:bg-gray-50">
+                          <td className="py-3 px-2">{assessmentkemendagri.year}</td>
+                          <td className="py-3 px-2">{new Date(assessmentkemendagri.date).toLocaleDateString('id-ID')}</td>
+                          <td className="py-3 px-2">{assessmentkemendagri.totalScore.toFixed(2)}</td>
                           <td className="py-3 px-2">
                             <span className={`px-2 py-1 rounded-full text-xs ${healthCategory.color.replace('bg-', 'bg-opacity-20 text-').replace('-500', '-700')}`}>
                               {healthCategory.category}
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            <Link to={`/assessment/kemendagri/${assessment.id}`}>
+                            <Link to={`/assessment${assessmentkemendagri.id}`}>
                               <Button variant="outline" size="sm">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Detail
