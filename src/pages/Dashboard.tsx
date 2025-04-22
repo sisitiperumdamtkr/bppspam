@@ -403,4 +403,52 @@ const Dashboard = () => {
       </Card>
 
       <Card>
-        <CardHeader className="pb-2"></CardHeader>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {recentAssessments.length > 0
+              ? (
+                  recentAssessments.reduce((sum, a) => sum + a.totalScore, 0) /
+                  recentAssessments.length
+                ).toFixed(2)
+              : "-"}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {recentAssessments.length > 0
+              ? Math.max(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+              : "-"}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {recentAssessments.length > 0
+              ? Math.min(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+              : "-"}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </CardContent>
+</Card>
+
+    </DashboardLayout>
+  );
+};
+
+export default Dashboard;
