@@ -24,6 +24,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
 import { kemendagriIndicators } from "@/models/kemendagri-indicators";
+import AssessmentKemendagriDetail from "./AssessmentKemendagriDetail";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
@@ -197,7 +198,7 @@ const ReportsKemendagri = () => {
     return acc;
   }, {});
   
-  const yearlyAspectScores = assessments.map(assessment => {
+  const yearlyAspectScores = assessments.map(AssessmentKemendagriDetail => {
     const aspectScores: Record<string, number> = {};
     
     Object.entries(aspectData).forEach(([category, { indicators }]) => {
@@ -206,7 +207,7 @@ const ReportsKemendagri = () => {
       
       indicators.forEach(indicatorId => {
         const indicator = kemendagriIndicators.find(ind => ind.id === indicatorId);
-        const value = assessment.values[indicatorId];
+        const value = AssessmentKemendagriDetail.values[indicatorId];
         
         if (indicator && value) {
           totalWeightedScore += value.score * indicator.weight;
@@ -218,7 +219,7 @@ const ReportsKemendagri = () => {
     });
     
     return {
-      year: assessment.year,
+      year: AssessmentKemendagriDetail.year,
       ...aspectScores
     };
   });
@@ -518,13 +519,13 @@ const ReportsKemendagri = () => {
                 </thead>
                 <tbody>
                   {assessments.length > 0 ? (
-                    assessments.map((assessment) => {
-                      const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
+                    assessments.map((AssessmentKemendagriDetail) => {
+                      const healthCategory = getHealthCategorykemendagri(AssessmentKemendagriDetail.totalScore);
                       return (
-                        <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer">
-                          <td className="p-2">{assessment.year}</td>
-                          <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
-                          <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>
+                        <tr key={AssessmentKemendagriDetail.id} className="border-b hover:bg-muted/50 cursor-pointer">
+                          <td className="p-2">{AssessmentKemendagriDetail.year}</td>
+                          <td className="p-2">{new Date(AssessmentKemendagriDetail.date).toLocaleDateString("id-ID")}</td>
+                          <td className="p-2 text-right font-medium">{AssessmentKemendagriDetail.totalScore.toFixed(2)}</td>
                           <td className="p-2">
                             <span className={`${healthCategory.color} text-white text-xs px-2 py-1 rounded-full`}>
                               {healthCategory.category}
