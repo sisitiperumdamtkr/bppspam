@@ -267,7 +267,7 @@ const Dashboard = () => {
             ) : recentAssessments.length === 0 ? (
               <div className="text-center py-4">
                 <p className="text-muted-foreground">Belum ada penilaian yang dibuat</p>
-                <Link to="/assessment/new" className="inline-block mt-2">
+                <Link to="/assessment/kemendagri" className="inline-block mt-2">
                   <Button variant="outline" size="sm">
                     Buat Penilaian Pertama
                   </Button>
