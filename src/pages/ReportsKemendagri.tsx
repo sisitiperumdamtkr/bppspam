@@ -402,23 +402,21 @@ const ReportsKemendagri = () => {
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={yearlyAspectScores}>
+                <BarChart data={yearlyAspectScores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
                   <YAxis domain={[0, 'auto']} />
                   <Tooltip />
                   <Legend />
                   {Object.keys(aspectData).map((category, index) => (
-                    <Line
+                    <Bar
                       key={category}
-                      type="monotone"
                       dataKey={category}
                       name={`Aspek ${category}`}
-                      stroke={COLORS[index % COLORS.length]}
-                      activeDot={{ r: 8 }}
+                      fill={COLORS[index % COLORS.length]}
                     />
                   ))}
-                </LineChart>
+                </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
