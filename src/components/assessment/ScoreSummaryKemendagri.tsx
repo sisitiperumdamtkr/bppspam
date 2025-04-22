@@ -1,6 +1,6 @@
 
 import React from "react";
-import { getHealthCategory } from "@/models/health-categories";
+import { getHealthCategorykemendagri } from "@/models/health-categories";
 import { kemendagriIndicators } from "@/models/kemendagri-indicators";
 
 interface ScoreSummaryKemendagriProps {
@@ -42,8 +42,8 @@ const ScoreSummaryKemendagri = ({ totalScore, values }: ScoreSummaryKemendagriPr
         <div className="mt-4">
           <div className="flex justify-between items-center">
             <h3 className="font-medium">Kategori:</h3>
-            <div className={`${getHealthCategory(totalScore).color} text-white px-3 py-1 rounded-md`}>
-              {getHealthCategory(totalScore).category}
+            <div className={`${getHealthCategorykemendagri(totalScore).color} text-white px-3 py-1 rounded-md`}>
+              {getHealthCategorykemendagri(totalScore).category}
             </div>
           </div>
           
