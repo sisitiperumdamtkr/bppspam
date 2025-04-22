@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -183,8 +182,8 @@ const AssessmentKemendagriDetail = () => {
     return Object.entries(assessment.values).map(([indicatorId, valueObj]) => {
       const indicator = kemendagriIndicators.find(ind => ind.id === indicatorId);
       return {
-        name: indicator?.name || indicatorId,
-        category: indicator?.category || "Unknown",
+        name: indicator?.name || `Indikator ${indicatorId}`,
+        category: indicator?.category || "Tidak Diketahui",
         score: valueObj.score,
         weightedScore: valueObj.score * (indicator?.weight || 0),
       };
@@ -222,9 +221,20 @@ const AssessmentKemendagriDetail = () => {
     if (!assessment) return totals;
     
     Object.entries(categoryData).forEach(([category, indicators]) => {
-      totals[category] = indicators.reduce((sum, indicator) => {
-        return sum + indicator.weightedScore;
+      const totalScore = indicators.reduce((sum, indicator) => {
+        return sum + indicator.score;
       }, 0);
+
+      // Hitung total aspek berdasarkan kategori
+      if (category === "Keuangan") {
+        totals[category] = (totalScore / 60) * 45;
+      } else if (category === "Operasional") {
+        totals[category] = (totalScore / 47) * 40;
+      } else if (category === "Administrasi") {
+        totals[category] = (totalScore / 36) * 15;
+      } else {
+        totals[category] = totalScore; // Default jika kategori tidak dikenal
+      }
     });
     
     return totals;
@@ -355,13 +365,22 @@ const AssessmentKemendagriDetail = () => {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+            <XAxis 
+              dataKey="name" 
+              angle={-45} 
+              textAnchor="end" 
+              height={80} 
+              tick={{ fontSize: 12 }} 
+            />
             <YAxis />
             <Tooltip 
-              formatter={(value: number, name: string) => [value.toFixed(3), name === "weightedScore" ? "Nilai Tertimbang" : "Skor"]}
-              labelFormatter={(label) => `${label}`}
+              formatter={(value: number, name: string) => [
+                value.toFixed(3), 
+                name === "score" ? "Skor" : name
+              ]}
+              labelFormatter={(label) => `Indikator: ${label}`}
             />
-            <Bar name="Nilai Tertimbang" dataKey="weightedScore" fill="#4f46e5" />
+            <Bar name="Skor" dataKey="score" fill="#22c55e" />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -381,8 +400,6 @@ const AssessmentKemendagriDetail = () => {
                   <th className="py-2 px-4 text-left">Indikator</th>
                   <th className="py-2 px-4 text-left">Nilai</th>
                   <th className="py-2 px-4 text-left">Skor</th>
-                  <th className="py-2 px-4 text-left">Bobot</th>
-                  <th className="py-2 px-4 text-left">Nilai Tertimbang</th>
                 </tr>
               </thead>
               <tbody>
@@ -391,8 +408,6 @@ const AssessmentKemendagriDetail = () => {
                     <td className="py-2 px-4">{indicator.name}</td>
                     <td className="py-2 px-4">{indicator.value.toFixed(2)}</td>
                     <td className="py-2 px-4">{indicator.score}</td>
-                    <td className="py-2 px-4">{indicator.weight.toFixed(3)}</td>
-                    <td className="py-2 px-4">{indicator.weightedScore.toFixed(3)}</td>
                   </tr>
                 ))}
               </tbody>
