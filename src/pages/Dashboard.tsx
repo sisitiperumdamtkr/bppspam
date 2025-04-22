@@ -257,7 +257,7 @@ const Dashboard = () => {
         {/* Recent Assessments kemendagri */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Penilaian Terakhir</CardTitle>
+            <CardTitle className="text-xl">Penilaian Terakhir KEMENDAGRI</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
