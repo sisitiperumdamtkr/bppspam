@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -254,10 +253,10 @@ const Dashboard = () => {
             </Link>
           </CardFooter>
         </Card>
-        {/* Recent Assessments kemendagri */}
+        {/* Recent Assessments KEMENDAGRI */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Penilaian Terakhir KEMENDAGRI </CardTitle>
+            <CardTitle className="text-xl">Penilaian Terakhir KEMENDAGRI</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -266,7 +265,7 @@ const Dashboard = () => {
               </div>
             ) : recentAssessments.length === 0 ? (
               <div className="text-center py-4">
-                <p className="text-muted-foreground">Belum ada penilaian yang dibuat</p>
+                <p className="text-muted-foreground">Belum ada penilaian KEMENDAGRI yang dibuat</p>
                 <Link to="/assessment/kemendagri" className="inline-block mt-2">
                   <Button variant="outline" size="sm">
                     Buat Penilaian Pertama
@@ -294,7 +293,11 @@ const Dashboard = () => {
                           <td className="py-3 px-2">{new Date(assessmentkemendagri.date).toLocaleDateString('id-ID')}</td>
                           <td className="py-3 px-2">{assessmentkemendagri.totalScore.toFixed(2)}</td>
                           <td className="py-3 px-2">
-                            <span className={`px-2 py-1 rounded-full text-xs ${healthCategory.color.replace('bg-', 'bg-opacity-20 text-').replace('-500', '-700')}`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs ${healthCategory.color
+                                .replace('bg-', 'bg-opacity-20 text-')
+                                .replace('-500', '-700')}`}
+                            >
                               {healthCategory.category}
                             </span>
                           </td>
@@ -315,71 +318,73 @@ const Dashboard = () => {
             )}
           </CardContent>
           <CardFooter>
-            <Link to="/assessments">
-              <Button variant="outline">Lihat Semua Penilaian</Button>
+            <Link to="/assessments/kemendagri">
+              <Button variant="outline">Lihat Semua Penilaian KEMENDAGRI</Button>
             </Link>
           </CardFooter>
         </Card>
       </div>
 
-{/* sumary penilaian */}
+{/* Summary Penilaian */}
 <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">Filter</CardTitle>
-          </CardHeader>
-          <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{filteredAssessments.length}</div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {filteredAssessments.length > 0 
-                  ? (filteredAssessments.reduce((sum, a) => sum + a.totalScore, 0) / filteredAssessments.length).toFixed(2)
-                  : "-"}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {filteredAssessments.length > 0 
-                  ? Math.max(...filteredAssessments.map(a => a.totalScore)).toFixed(2)
-                  : "-"}
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {filteredAssessments.length > 0 
-                  ? Math.min(...filteredAssessments.map(a => a.totalScore)).toFixed(2)
-                  : "-"}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-          </CardContent>
-        </Card>
+  <CardHeader className="pb-3">
+    <CardTitle className="text-base">Ringkasan Penilaian</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{recentAssessments.length}</div>
+        </CardContent>
+      </Card>
 
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Rata-rata Skor</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {recentAssessments.length > 0
+              ? (
+                  recentAssessments.reduce((sum, a) => sum + a.totalScore, 0) /
+                  recentAssessments.length
+                ).toFixed(2)
+              : "-"}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Skor Tertinggi</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {recentAssessments.length > 0
+              ? Math.max(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+              : "-"}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-medium">Skor Terendah</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {recentAssessments.length > 0
+              ? Math.min(...recentAssessments.map((a) => a.totalScore)).toFixed(2)
+              : "-"}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </CardContent>
+</Card>
 
     </DashboardLayout>
   );
