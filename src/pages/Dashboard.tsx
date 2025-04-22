@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -19,7 +18,7 @@ const Dashboard = () => {
     // Fetch recent assessments from Supabase
     const fetchRecentAssessments = async () => {
       if (!user) return;
-      
+
       try {
         setLoading(true);
         const { data, error } = await supabase
@@ -27,12 +26,12 @@ const Dashboard = () => {
           .select('*')
           .order('year', { ascending: false })
           .limit(3);
-        
+
         if (error) {
           console.error('Error fetching recent assessments:', error);
           return;
         }
-        
+
         // Map database column names to our interface properties
         const mappedData = data?.map(item => ({
           id: item.id,
@@ -44,7 +43,7 @@ const Dashboard = () => {
           status: item.status as "draft" | "completed",
           values: {} // Initialize with empty values as we're not fetching them here
         })) || [];
-        
+
         setRecentAssessments(mappedData);
       } catch (error) {
         console.error('Error:', error);
@@ -52,7 +51,7 @@ const Dashboard = () => {
         setLoading(false);
       }
     };
-    
+
     fetchRecentAssessments();
   }, [user]);
 
@@ -61,32 +60,32 @@ const Dashboard = () => {
       <div className="grid gap-6">
         {/* Welcome Card */}
         <Card />
-          <CardHeader className="pb-2">
-            <CardTitle>Selamat Datang, {user?.name || 'Pengguna'}</CardTitle>
-            <CardDescription>
-              Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600">
-              Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan standar 
-              BPPSPAM dan Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
-            </p>
-          </CardContent>
-          <Card className="flex flex-col gap-4">
-  <Link to="/assessment/pupr">
-    <Button>
-      <PlusCircle className="h-4 w-4 mr-2" />
-      Buat Penilaian PUPR Baru
-    </Button>
-  </Link>
-  <Link to="/assessment/kemendagri">
-    <Button>
-      <PlusCircle className="h-4 w-4 mr-2" />
-      Buat Penilaian KEMENDAGRI Baru
-    </Button>
-  </Link>
-</Card>
+        <CardHeader className="pb-2">
+          <CardTitle>Selamat Datang, {user?.name || 'Pengguna'}</CardTitle>
+          <CardDescription>
+            Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-600">
+            Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan standar
+            BPPSPAM dan Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
+          </p>
+        </CardContent>
+        <Card className="flex flex-col gap-4">
+          <Link to="/assessment/pupr">
+            <Button>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Buat Penilaian PUPR Baru
+            </Button>
+          </Link>
+          <Link to="/assessment/kemendagri">
+            <Button>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Buat Penilaian KEMENDAGRI Baru
+            </Button>
+          </Link>
+        </Card>
 
         {/* Quick Actions BPPSPAM */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -105,7 +104,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/assessmentpupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -121,7 +120,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/reportspupr" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -138,8 +137,8 @@ const Dashboard = () => {
             </Card>
           </Link>
         </div>
-{/* Quick Actions KEMENDAGRI */}
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Quick Actions KEMENDAGRI */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link to="/assessment/kemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -155,7 +154,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/assessmentkemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -171,7 +170,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
           </Link>
-          
+
           <Link to="/reportskemendagri" className="block">
             <Card className="hover:shadow-md transition-shadow h-full">
               <CardHeader className="pb-2">
@@ -233,7 +232,7 @@ const Dashboard = () => {
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            <Link to={`/assessment/pupr/${assessment.id}`}>
+                            <Link to={`/assessment/${assessment.id}`}>
                               <Button variant="outline" size="sm">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Detail
@@ -254,10 +253,10 @@ const Dashboard = () => {
             </Link>
           </CardFooter>
         </Card>
-        {/* Recent Assessments kemendagri */}
+        {/* Recent Assessments KEMENDAGRI */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Penilaian Terakhir KEMENDAGRI </CardTitle>
+            <CardTitle className="text-xl">Penilaian Terakhir KEMENDAGRI</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -266,7 +265,7 @@ const Dashboard = () => {
               </div>
             ) : recentAssessments.length === 0 ? (
               <div className="text-center py-4">
-                <p className="text-muted-foreground">Belum ada penilaian yang dibuat</p>
+                <p className="text-muted-foreground">Belum ada penilaian KEMENDAGRI yang dibuat</p>
                 <Link to="/assessment/kemendagri" className="inline-block mt-2">
                   <Button variant="outline" size="sm">
                     Buat Penilaian Pertama
@@ -294,7 +293,11 @@ const Dashboard = () => {
                           <td className="py-3 px-2">{new Date(assessmentkemendagri.date).toLocaleDateString('id-ID')}</td>
                           <td className="py-3 px-2">{assessmentkemendagri.totalScore.toFixed(2)}</td>
                           <td className="py-3 px-2">
-                            <span className={`px-2 py-1 rounded-full text-xs ${healthCategory.color.replace('bg-', 'bg-opacity-20 text-').replace('-500', '-700')}`}>
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs ${healthCategory.color
+                                .replace('bg-', 'bg-opacity-20 text-')
+                                .replace('-500', '-700')}`}
+                            >
                               {healthCategory.category}
                             </span>
                           </td>
@@ -315,8 +318,8 @@ const Dashboard = () => {
             )}
           </CardContent>
           <CardFooter>
-            <Link to="/assessments">
-              <Button variant="outline">Lihat Semua Penilaian</Button>
+            <Link to="/assessments/kemendagri">
+              <Button variant="outline">Lihat Semua Penilaian KEMENDAGRI</Button>
             </Link>
           </CardFooter>
         </Card>
