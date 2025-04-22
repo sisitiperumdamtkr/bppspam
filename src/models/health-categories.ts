@@ -53,7 +53,7 @@ export const getHealthCategorykemendagri = (score: number): {
     };
   } else {
     return {
-      category: "Sakit",
+      category: "Tidak Baik",
       color: "bg-red-500"
     };
   }
