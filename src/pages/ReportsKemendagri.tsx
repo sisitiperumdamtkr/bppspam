@@ -169,6 +169,21 @@ const ReportsKemendagri = () => {
     });
   };
 
+  // Filter data berdasarkan tahun yang dipilih
+  const filteredAssessments = selectedYear === "all"
+    ? assessments
+    : assessments.filter((assessment) => assessment.year.toString() === selectedYear);
+
+  // Perbarui data untuk grafik Tren Skor Tahunan
+  const filteredYearlyScoreData = filteredAssessments.map((assessment) => ({
+    year: assessment.year,
+    score: assessment.totalScore,
+    category: getHealthCategorykemendagri(assessment.totalScore).category,
+  }));
+
+  // Perbarui data untuk tabel
+  const filteredTableData = filteredAssessments;
+
   const yearlyScoreData = assessments.map(assessment => ({
     year: assessment.year,
     score: assessment.totalScore,
@@ -278,7 +293,7 @@ const ReportsKemendagri = () => {
           </div>
         </div>
         
-        {/* Filter card - existing */}
+        {/* Filter card - updated */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Filter</CardTitle>
@@ -287,7 +302,7 @@ const ReportsKemendagri = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="year-select">Tahun</Label>
-                <Select 
+                <Select
                   value={selectedYear}
                   onValueChange={(value) => setSelectedYear(value)}
                 >
@@ -296,11 +311,13 @@ const ReportsKemendagri = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Semua Tahun</SelectItem>
-                    {Array.from(new Set(assessments.map(a => a.year))).sort((a, b) => b - a).map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}
-                      </SelectItem>
-                    ))}
+                    {Array.from(new Set(assessments.map((a) => a.year)))
+                      .sort((a, b) => b - a)
+                      .map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -372,7 +389,7 @@ const ReportsKemendagri = () => {
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
-                  data={yearlyScoreData}
+                  data={filteredYearlyScoreData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
@@ -512,8 +529,8 @@ const ReportsKemendagri = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {assessments.length > 0 ? (
-                    assessments.map((assessment) => {
+                  {filteredTableData.length > 0 ? (
+                    filteredTableData.map((assessment) => {
                       const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
                       return (
                         <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer">
