@@ -19,7 +19,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Download, Printer, RefreshCw } from "lucide-react";
-import { getHealthCategory } from "@/models/health-categories";
+import { getHealthCategorykemendagri } from "@/models/health-categories";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
@@ -172,11 +172,11 @@ const ReportsKemendagri = () => {
   const yearlyScoreData = assessments.map(assessment => ({
     year: assessment.year,
     score: assessment.totalScore,
-    category: getHealthCategory(assessment.totalScore).category
+    category: getHealthCategorykemendagri(assessment.totalScore).category
   }));
   
   const healthCategories = assessments.reduce<Record<string, number>>((acc, assessment) => {
-    const category = getHealthCategory(assessment.totalScore).category;
+    const category = getHealthCategorykemendagri(assessment.totalScore).category;
     acc[category] = (acc[category] || 0) + 1;
     return acc;
   }, {});
@@ -519,7 +519,7 @@ const ReportsKemendagri = () => {
                 <tbody>
                   {assessments.length > 0 ? (
                     assessments.map((assessment) => {
-                      const healthCategory = getHealthCategory(assessment.totalScore);
+                      const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
                       return (
                         <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer">
                           <td className="p-2">{assessment.year}</td>
