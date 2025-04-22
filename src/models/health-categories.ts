@@ -50,11 +50,11 @@ export const getHealthCategorykemendagri = (score: number): {
   } else if (score >= 30) {
     return {
       category: "Kurang",
-      color: "bg--500"
+      color: "bg-Orange-500"
     };
   } else {
     return {
-      category: "Sakit",
+      category: "Tidak Baik",
       color: "bg-red-500"
     };
   }
