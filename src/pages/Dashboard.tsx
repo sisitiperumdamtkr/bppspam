@@ -69,8 +69,7 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <p className="text-gray-600">
-            Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan standar
-            BPPSPAM dan Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
+            Gunakan sistem ini untuk melakukan penilaian tingkat kesehatan PERUMDAM TIRTA KERTA RAHARJA sesuai dengan Penilaian Tingkat Kesehatan Menurut PUPR tahun 2020 dan Perhitungan dan Penilaian Indikator Kinerja Menurut KEMENDAGRI No.47 Tahun 1999 dengan perhitungan otomatis dan pembuatan laporan yang komprehensif dari tahun ke tahun.
           </p>
         </CardContent>
         
