@@ -64,7 +64,7 @@ const Dashboard = () => {
         <CardHeader className="pb-2">
           <CardTitle>Selamat Datang, {user?.name || "Pengguna"}</CardTitle>
           <CardDescription>
-            Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA berdasarkan BPPSPAM
+            Sistem Penilaian Tingkat Kesehatan PERUMDAM TIRTA KERTA RAHARJA
           </CardDescription>
         </CardHeader>
         <CardContent>
