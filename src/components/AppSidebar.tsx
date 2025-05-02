@@ -33,8 +33,15 @@ export function AppSidebar() {
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center justify-center h-16 bg-blue-700 text-white">
-          <h2 className="text-xl font-bold">Penilaian PERUMMDAM TKR</h2>
+        <div className="flex flex-col items-center justify-center bg-blue-700 text-white">
+          <div className="p-4">
+            <img 
+              src="/lovable-uploads/beac8e7e-3400-49fc-910b-3f582a71c1d5.png" 
+              alt="PERUMDAM Tirta Kerta Raharja" 
+              className="h-20 w-auto object-contain"
+            />
+          </div>
+          <h2 className="text-xl font-bold pb-2">Penilaian PERUMMDAM TKR</h2>
         </div>
         <div className="flex items-center space-x-3 p-4 border-b">
           <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold">
