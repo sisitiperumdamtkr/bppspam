@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -8,7 +9,26 @@ import {
   CardHeader, 
   CardTitle 
 } from "@/components/ui/card";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
+import { 
+  ResponsiveContainer, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  LineChart, 
+  Line, 
+  RadarChart, 
+  PolarGrid, 
+  PolarAngleAxis, 
+  PolarRadiusAxis, 
+  Radar 
+} from "recharts";
 import { 
   Select, 
   SelectContent, 
@@ -25,6 +45,7 @@ import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
 import { kemendagriIndicators } from "@/models/kemendagri-indicators";
 
+// Color scheme for charts with more vibrant colors for better 3D effect
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
 const ReportsKemendagri = () => {
@@ -376,9 +397,9 @@ const ReportsKemendagri = () => {
           </Card>
         </div>
 
-        {/* Charts Grid */}
+        {/* Charts Grid dengan efek 3D */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Trend Chart */}
+          {/* Trend Chart with 3D */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Tren Skor Tahunan</CardTitle>
@@ -401,7 +422,9 @@ const ReportsKemendagri = () => {
                     type="monotone"
                     dataKey="score"
                     stroke="#8884d8"
-                    activeDot={{ r: 8 }}
+                    strokeWidth={3}
+                    dot={{ strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8, strokeWidth: 2 }}
                     name="Skor Tahunan"
                   />
                 </LineChart>
@@ -409,7 +432,7 @@ const ReportsKemendagri = () => {
             </CardContent>
           </Card>
 
-          {/* Aspect Comparison Chart */}
+          {/* Aspect Comparison Chart with 3D */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Perkembangan Aspek Penilaian</CardTitle>
@@ -419,7 +442,10 @@ const ReportsKemendagri = () => {
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={yearlyAspectScores} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <BarChart 
+                  data={yearlyAspectScores} 
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
                   <YAxis domain={[0, 'auto']} />
@@ -431,6 +457,13 @@ const ReportsKemendagri = () => {
                       dataKey={category}
                       name={`Aspek ${category}`}
                       fill={COLORS[index % COLORS.length]}
+                      // Menambahkan efek 3D dengan stackId dan fillOpacity
+                      stackId="a"
+                      fillOpacity={0.8}
+                      // Menambahkan bayangan untuk efek 3D
+                      stroke="#000"
+                      strokeOpacity={0.2}
+                      strokeWidth={1}
                     />
                   ))}
                 </BarChart>
@@ -438,7 +471,7 @@ const ReportsKemendagri = () => {
             </CardContent>
           </Card>
 
-          {/* Category Distribution Chart */}
+          {/* Category Distribution Chart with 3D */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Distribusi Kategori Penilaian</CardTitle>
@@ -456,12 +489,18 @@ const ReportsKemendagri = () => {
                       nameKey="name"
                       cx="50%"
                       cy="50%"
+                      innerRadius={60} // Menambahkan innerRadius untuk efek donat 3D
                       outerRadius={80}
+                      paddingAngle={5} // Menambahkan padding antar segmen untuk efek 3D
                       labelLine={true}
                       label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     >
                       {healthCategoryData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={COLORS[index % COLORS.length]} 
+                          strokeWidth={2} // Menambahkan garis tepi tebal untuk efek 3D
+                        />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -472,7 +511,7 @@ const ReportsKemendagri = () => {
             </CardContent>
           </Card>
 
-          {/* Latest Assessment Radar Chart */}
+          {/* Latest Assessment Radar Chart with 3D */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Profil Kinerja Terkini</CardTitle>
@@ -491,7 +530,7 @@ const ReportsKemendagri = () => {
                     score: yearlyAspectScores[yearlyAspectScores.length - 1]?.[category] || 0
                   }))}
                 >
-                  <PolarGrid />
+                  <PolarGrid gridType="circle" /> {/* 'circle' untuk efek 3D bulat */}
                   <PolarAngleAxis dataKey="aspect" />
                   <PolarRadiusAxis domain={[0, 5]} />
                   <Radar
@@ -499,7 +538,8 @@ const ReportsKemendagri = () => {
                     dataKey="score"
                     stroke="#8884d8"
                     fill="#8884d8"
-                    fillOpacity={0.6}
+                    fillOpacity={0.7}
+                    strokeWidth={2} // Menambahkan ketebalan garis untuk efek 3D
                   />
                   <Tooltip />
                   <Legend />
@@ -533,7 +573,11 @@ const ReportsKemendagri = () => {
                     filteredTableData.map((assessment) => {
                       const healthCategory = getHealthCategorykemendagri(assessment.totalScore);
                       return (
-                        <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer">
+                        <tr 
+                          key={assessment.id} 
+                          className="border-b hover:bg-muted/50 cursor-pointer"
+                          onClick={() => navigate(`/assessment/kemendagri/${assessment.id}`)}
+                        >
                           <td className="p-2">{assessment.year}</td>
                           <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
                           <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>

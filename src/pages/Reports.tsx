@@ -44,7 +44,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
 
-// Color scheme for charts
+// Color scheme for charts with more vibrant colors for better 3D effect
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const ASPECT_COLORS = {
   Keuangan: '#0088FE',
@@ -312,9 +312,9 @@ const Reports = () => {
           </Card>
         </div>
         
-        {/* Charts */}
+        {/* Charts dengan efek 3D */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Trend Chart */}
+          {/* Trend Chart with 3D effect */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Tren Skor Tahunan</CardTitle>
@@ -338,7 +338,9 @@ const Reports = () => {
                       type="monotone"
                       dataKey="score"
                       stroke="#8884d8"
+                      strokeWidth={3} // Menambahkan ketebalan garis untuk efek 3D
                       activeDot={{ r: 8 }}
+                      dot={{ strokeWidth: 2, r: 6 }} // Menambahkan efek 3D pada titik
                       name="Skor Rata-rata"
                     />
                   </LineChart>
@@ -351,7 +353,7 @@ const Reports = () => {
             </CardContent>
           </Card>
           
-          {/* Aspect Comparison Over Years */}
+          {/* Aspect Comparison Over Years with 3D effect */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Perkembangan Aspek Penilaian</CardTitle>
@@ -377,6 +379,13 @@ const Reports = () => {
                         dataKey={aspect}
                         fill={ASPECT_COLORS[aspect as keyof typeof ASPECT_COLORS]}
                         name={`Aspek ${aspect}`}
+                        // Menambahkan efek 3D dengan stackId dan fillOpacity
+                        stackId="a"
+                        fillOpacity={0.8}
+                        // Menambahkan bayangan untuk efek 3D
+                        stroke="#000"
+                        strokeOpacity={0.2}
+                        strokeWidth={1}
                       />
                     ))}
                   </BarChart>
@@ -389,7 +398,7 @@ const Reports = () => {
             </CardContent>
           </Card>
           
-          {/* Category Distribution */}
+          {/* Category Distribution with 3D effect */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Distribusi Kategori Penilaian</CardTitle>
@@ -408,11 +417,17 @@ const Reports = () => {
                       labelLine={true}
                       label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                       outerRadius={80}
+                      innerRadius={40} // Menambahkan innerRadius untuk efek donat 3D
+                      paddingAngle={5} // Menambahkan padding antar segmen untuk efek 3D
                       fill="#8884d8"
                       dataKey="value"
                     >
                       {categoryDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={COLORS[index % COLORS.length]} 
+                          strokeWidth={2} // Menambahkan garis tepi tebal untuk efek 3D
+                        />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -427,7 +442,7 @@ const Reports = () => {
             </CardContent>
           </Card>
           
-          {/* Radar Chart */}
+          {/* Radar Chart with 3D effect */}
           <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Profil Kinerja Terkini</CardTitle>
@@ -439,7 +454,7 @@ const Reports = () => {
               {latestAssessment ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                    <PolarGrid />
+                    <PolarGrid gridType="circle" /> {/* 'circle' untuk efek 3D bulat */}
                     <PolarAngleAxis dataKey="aspect" />
                     <PolarRadiusAxis domain={[0, 5]} />
                     <Radar
@@ -447,7 +462,8 @@ const Reports = () => {
                       dataKey="score"
                       stroke="#8884d8"
                       fill="#8884d8"
-                      fillOpacity={0.6}
+                      fillOpacity={0.7}
+                      strokeWidth={2} // Menambahkan ketebalan garis untuk efek 3D
                     />
                     <Tooltip />
                     <Legend />
@@ -486,8 +502,11 @@ const Reports = () => {
                     filteredAssessments.map((assessment) => {
                       const healthCategory = getHealthCategory(assessment.totalScore);
                       return (
-                        <tr key={assessment.id} className="border-b hover:bg-muted/50 cursor-pointer" 
-                            onClick={() => navigate(`/assessment/${assessment.id}`)}>
+                        <tr 
+                          key={assessment.id} 
+                          className="border-b hover:bg-muted/50 cursor-pointer" 
+                          onClick={() => navigate(`/assessment/${assessment.id}`)}
+                        >
                           <td className="p-2">{assessment.year}</td>
                           <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
                           <td className="p-2 text-right font-medium">{assessment.totalScore.toFixed(2)}</td>

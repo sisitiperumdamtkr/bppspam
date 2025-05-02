@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
@@ -109,6 +110,7 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: "line" | "dot" | "dashed"
       nameKey?: string
       labelKey?: string
+      is3D?: boolean // Tambahkan opsi untuk efek 3D
     }
 >(
   (
@@ -126,6 +128,7 @@ const ChartTooltipContent = React.forwardRef<
       color,
       nameKey,
       labelKey,
+      is3D = false, // Default ke false untuk kompatibilitas mundur
     },
     ref
   ) => {
@@ -178,8 +181,11 @@ const ChartTooltipContent = React.forwardRef<
         ref={ref}
         className={cn(
           "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+          // Tambahkan shadow effect lebih besar untuk efek 3D
+          is3D ? "shadow-lg" : "",
           className
         )}
+        style={is3D ? { transform: "translateY(-2px)" } : undefined} // Efek hover 3D
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
@@ -208,17 +214,24 @@ const ChartTooltipContent = React.forwardRef<
                           className={cn(
                             "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
                             {
+                              // Menambahkan class untuk efek 3D
                               "h-2.5 w-2.5": indicator === "dot",
                               "w-1": indicator === "line",
                               "w-0 border-[1.5px] border-dashed bg-transparent":
                                 indicator === "dashed",
                               "my-0.5": nestLabel && indicator === "dashed",
+                              // Tambahkan shadow untuk efek 3D
+                              "shadow-sm": is3D && indicator === "dot",
                             }
                           )}
                           style={
                             {
                               "--color-bg": indicatorColor,
                               "--color-border": indicatorColor,
+                              // Menambahkan efek 3D dengan gradient jika is3D aktif
+                              background: is3D 
+                                ? `linear-gradient(135deg, ${indicatorColor}, ${adjustColorBrightness(indicatorColor as string, -30)})`
+                                : indicatorColor,
                             } as React.CSSProperties
                           }
                         />
@@ -238,7 +251,9 @@ const ChartTooltipContent = React.forwardRef<
                       </div>
                       {item.value && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {item.value.toLocaleString()}
+                          {typeof item.value === 'number' 
+                            ? item.value.toLocaleString() 
+                            : item.value}
                         </span>
                       )}
                     </div>
@@ -262,10 +277,18 @@ const ChartLegendContent = React.forwardRef<
     Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
+      is3D?: boolean // Tambahkan opsi untuk efek 3D
     }
 >(
   (
-    { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
+    { 
+      className, 
+      hideIcon = false, 
+      payload, 
+      verticalAlign = "bottom", 
+      nameKey,
+      is3D = false, // Default ke false untuk kompatibilitas mundur
+    },
     ref
   ) => {
     const { config } = useChart()
@@ -291,20 +314,35 @@ const ChartLegendContent = React.forwardRef<
             <div
               key={item.value}
               className={cn(
-                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground"
+                "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground",
+                // Tambahkan class untuk efek 3D
+                is3D ? "hover:translate-y-[-1px] transition-transform" : ""
               )}
             >
               {itemConfig?.icon && !hideIcon ? (
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
-                  style={{
-                    backgroundColor: item.color,
-                  }}
+                  className={cn(
+                    "h-2 w-2 shrink-0 rounded-[2px]",
+                    // Tambahkan shadow untuk efek 3D
+                    is3D ? "shadow-sm" : ""
+                  )}
+                  style={
+                    is3D
+                      ? {
+                          background: `linear-gradient(135deg, ${item.color}, ${adjustColorBrightness(
+                            item.color,
+                            -30
+                          )})`,
+                        }
+                      : { backgroundColor: item.color }
+                  }
                 />
               )}
-              {itemConfig?.label}
+              {itemConfig?.label || (
+                <span className={is3D ? "font-medium" : ""}>{item.value}</span>
+              )}
             </div>
           )
         })}
@@ -353,6 +391,29 @@ function getPayloadConfigFromPayload(
     : config[key as keyof typeof config]
 }
 
+// Utility function untuk menyesuaikan kecerahan warna untuk efek 3D
+function adjustColorBrightness(hexColor: string, percent: number): string {
+  // Handle untuk warna yang tidak dalam format hex
+  if (!hexColor || !hexColor.startsWith('#')) {
+    return hexColor;
+  }
+  
+  let hex = hexColor.replace('#', '');
+
+  // Konversi hex menjadi RGB
+  let r = parseInt(hex.substring(0, 2), 16);
+  let g = parseInt(hex.substring(2, 4), 16);
+  let b = parseInt(hex.substring(4, 6), 16);
+
+  // Sesuaikan kecerahan
+  r = Math.max(0, Math.min(255, r + percent));
+  g = Math.max(0, Math.min(255, g + percent));
+  b = Math.max(0, Math.min(255, b + percent));
+
+  // Konversi kembali ke hex
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
 export {
   ChartContainer,
   ChartTooltip,
@@ -360,4 +421,5 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
+  adjustColorBrightness // Ekspor fungsi bantuan
 }
