@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -43,6 +42,9 @@ import { getHealthCategory } from "@/models/health-categories";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
+import { downloadPDF } from "@/utils/exportUtils";
+import { printReport } from "@/utils/printUtils";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 // Color scheme for charts with more vibrant colors for better 3D effect
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -184,7 +186,29 @@ const Reports = () => {
   });
   
   const handlePrint = () => {
-    window.print();
+    printReport();
+  };
+  
+  const handleDownloadPDF = () => {
+    if (assessments.length > 0) {
+      // Gunakan assessment terbaru jika ada beberapa
+      const latestAssessment = [...assessments].sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      )[0];
+      
+      downloadPDF(latestAssessment);
+      
+      toast({
+        title: "Unduhan Berhasil",
+        description: "Laporan PDF telah diunduh",
+      });
+    } else {
+      toast({
+        title: "Tidak Ada Data",
+        description: "Tidak ada data untuk diunduh",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleRefresh = () => {
@@ -207,32 +231,48 @@ const Reports = () => {
   
   return (
     <DashboardLayout title="Laporan">
-      <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-6 printable">
+        <div className="flex justify-between items-center non-printable">
           <h1 className="text-2xl font-bold">Laporan Penilaian PERUMDAM TIRTA KERTA RAHARJA</h1>
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               onClick={handleRefresh} 
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 non-printable"
               disabled={loading}
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               <span className="hidden md:inline">Refresh</span>
             </Button>
-            <Button variant="outline" onClick={handlePrint} className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handlePrint} 
+              className="flex items-center gap-2 non-printable"
+            >
               <Printer className="h-4 w-4" />
               <span className="hidden md:inline">Cetak</span>
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadPDF} 
+              className="flex items-center gap-2 non-printable"
+            >
               <Download className="h-4 w-4" />
               <span className="hidden md:inline">Unduh PDF</span>
             </Button>
           </div>
         </div>
         
+        {/* Header untuk cetak */}
+        <div className="hidden print:block print:mb-4">
+          <h1 className="text-2xl font-bold text-center">Laporan Penilaian PERUMDAM TIRTA KERTA RAHARJA</h1>
+          <div className="text-center text-sm text-muted-foreground">
+            Tanggal cetak: {new Date().toLocaleDateString('id-ID')}
+          </div>
+        </div>
+        
         {/* Filter controls */}
-        <Card>
+        <Card className="non-printable">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Filter</CardTitle>
           </CardHeader>
@@ -313,7 +353,7 @@ const Reports = () => {
         </div>
         
         {/* Charts dengan efek 3D */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:break-inside-avoid">
           {/* Trend Chart with 3D effect */}
           <Card className="col-span-1">
             <CardHeader>
@@ -324,7 +364,7 @@ const Reports = () => {
             </CardHeader>
             <CardContent className="h-80">
               {trendData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer config={{ score: { color: '#8884d8' } }} className="w-full aspect-[4/3]">
                   <LineChart
                     data={trendData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -332,19 +372,32 @@ const Reports = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
                     <YAxis domain={[0, 5]} />
-                    <Tooltip />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <ChartTooltipContent 
+                              active={active}
+                              payload={payload}
+                              is3D={true}
+                            />
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Legend />
                     <Line
                       type="monotone"
                       dataKey="score"
                       stroke="#8884d8"
-                      strokeWidth={3} // Menambahkan ketebalan garis untuk efek 3D
+                      strokeWidth={3}
                       activeDot={{ r: 8 }}
-                      dot={{ strokeWidth: 2, r: 6 }} // Menambahkan efek 3D pada titik
+                      dot={{ strokeWidth: 2, r: 6 }}
                       name="Skor Rata-rata"
                     />
                   </LineChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-muted-foreground">
                   Tidak ada data untuk ditampilkan
@@ -363,7 +416,15 @@ const Reports = () => {
             </CardHeader>
             <CardContent className="h-80">
               {aspectOverYearsData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer 
+                  config={{
+                    Keuangan: { color: ASPECT_COLORS.Keuangan },
+                    Pelayanan: { color: ASPECT_COLORS.Pelayanan },
+                    Operasional: { color: ASPECT_COLORS.Operasional },
+                    SDM: { color: ASPECT_COLORS.SDM },
+                  }}
+                  className="w-full aspect-[4/3]"
+                >
                   <BarChart
                     data={aspectOverYearsData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
@@ -371,7 +432,20 @@ const Reports = () => {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
                     <YAxis domain={[0, 5]} />
-                    <Tooltip />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <ChartTooltipContent 
+                              active={active}
+                              payload={payload}
+                              is3D={true}
+                            />
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                     <Legend />
                     {Object.keys(ASPECT_COLORS).map((aspect, index) => (
                       <Bar
@@ -379,17 +453,15 @@ const Reports = () => {
                         dataKey={aspect}
                         fill={ASPECT_COLORS[aspect as keyof typeof ASPECT_COLORS]}
                         name={`Aspek ${aspect}`}
-                        // Menambahkan efek 3D dengan stackId dan fillOpacity
                         stackId="a"
                         fillOpacity={0.8}
-                        // Menambahkan bayangan untuk efek 3D
                         stroke="#000"
                         strokeOpacity={0.2}
                         strokeWidth={1}
                       />
                     ))}
                   </BarChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-muted-foreground">
                   Tidak ada data untuk ditampilkan
@@ -399,7 +471,7 @@ const Reports = () => {
           </Card>
           
           {/* Category Distribution with 3D effect */}
-          <Card className="col-span-1">
+          <Card className="col-span-1 print:break-inside-avoid">
             <CardHeader>
               <CardTitle>Distribusi Kategori Penilaian</CardTitle>
               <CardDescription>
@@ -408,7 +480,13 @@ const Reports = () => {
             </CardHeader>
             <CardContent className="h-80">
               {categoryDistributionData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer 
+                  config={categoryDistributionData.reduce((acc, item, index) => ({
+                    ...acc,
+                    [item.name]: { color: COLORS[index % COLORS.length] }
+                  }), {})}
+                  className="w-full aspect-[4/3]"
+                >
                   <PieChart>
                     <Pie
                       data={categoryDistributionData}
@@ -417,8 +495,8 @@ const Reports = () => {
                       labelLine={true}
                       label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                       outerRadius={80}
-                      innerRadius={40} // Menambahkan innerRadius untuk efek donat 3D
-                      paddingAngle={5} // Menambahkan padding antar segmen untuk efek 3D
+                      innerRadius={40}
+                      paddingAngle={5}
                       fill="#8884d8"
                       dataKey="value"
                     >
@@ -426,14 +504,26 @@ const Reports = () => {
                         <Cell 
                           key={`cell-${index}`} 
                           fill={COLORS[index % COLORS.length]} 
-                          strokeWidth={2} // Menambahkan garis tepi tebal untuk efek 3D
+                          strokeWidth={2}
                         />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <ChartTooltipContent 
+                              active={active}
+                              payload={payload}
+                              is3D={true}
+                            />
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                   </PieChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-muted-foreground">
                   Tidak ada data untuk ditampilkan
@@ -443,7 +533,7 @@ const Reports = () => {
           </Card>
           
           {/* Radar Chart with 3D effect */}
-          <Card className="col-span-1">
+          <Card className="col-span-1 print:break-inside-avoid">
             <CardHeader>
               <CardTitle>Profil Kinerja Terkini</CardTitle>
               <CardDescription>
@@ -452,9 +542,15 @@ const Reports = () => {
             </CardHeader>
             <CardContent className="h-80">
               {latestAssessment ? (
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer 
+                  config={radarData.reduce((acc, item) => ({
+                    ...acc,
+                    [item.aspect]: { color: ASPECT_COLORS[item.aspect as keyof typeof ASPECT_COLORS] || '#8884d8' }
+                  }), {})}
+                  className="w-full aspect-[4/3]"
+                >
                   <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                    <PolarGrid gridType="circle" /> {/* 'circle' untuk efek 3D bulat */}
+                    <PolarGrid gridType="circle" />
                     <PolarAngleAxis dataKey="aspect" />
                     <PolarRadiusAxis domain={[0, 5]} />
                     <Radar
@@ -463,12 +559,24 @@ const Reports = () => {
                       stroke="#8884d8"
                       fill="#8884d8"
                       fillOpacity={0.7}
-                      strokeWidth={2} // Menambahkan ketebalan garis untuk efek 3D
+                      strokeWidth={2}
                     />
-                    <Tooltip />
-                    <Legend />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <ChartTooltipContent 
+                              active={active}
+                              payload={payload}
+                              is3D={true}
+                            />
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                   </RadarChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               ) : (
                 <div className="flex h-full items-center justify-center text-muted-foreground">
                   Tidak ada data untuk ditampilkan
@@ -479,7 +587,7 @@ const Reports = () => {
         </div>
         
         {/* Data Table */}
-        <Card>
+        <Card className="print:break-inside-avoid">
           <CardHeader>
             <CardTitle>Data Penilaian</CardTitle>
             <CardDescription>
@@ -495,6 +603,7 @@ const Reports = () => {
                     <th className="text-left p-2">Tanggal</th>
                     <th className="text-right p-2">Skor</th>
                     <th className="text-left p-2">Kategori</th>
+                    <th className="text-right p-2 non-printable">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -505,7 +614,6 @@ const Reports = () => {
                         <tr 
                           key={assessment.id} 
                           className="border-b hover:bg-muted/50 cursor-pointer" 
-                          onClick={() => navigate(`/assessment/${assessment.id}`)}
                         >
                           <td className="p-2">{assessment.year}</td>
                           <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
@@ -514,6 +622,15 @@ const Reports = () => {
                             <span className={`${healthCategory.color} text-white text-xs px-2 py-1 rounded-full`}>
                               {healthCategory.category}
                             </span>
+                          </td>
+                          <td className="p-2 text-right non-printable">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => navigate(`/assessment/${assessment.id}`)}
+                            >
+                              Detail
+                            </Button>
                           </td>
                         </tr>
                       );
@@ -530,6 +647,13 @@ const Reports = () => {
             </div>
           </CardContent>
         </Card>
+        
+        {/* Footer untuk cetak */}
+        <div className="hidden print:block print:mt-6 print:pt-4 print:border-t print:text-center">
+          <div className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} - PERUMDAM TIRTA KERTA RAHARJA
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );

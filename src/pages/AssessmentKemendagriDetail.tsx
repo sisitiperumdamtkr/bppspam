@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -10,10 +11,12 @@ import {
   YAxis, 
   CartesianGrid, 
   Tooltip, 
-  ResponsiveContainer 
+  ResponsiveContainer,
+  Legend 
 } from "recharts";
-import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
-import { Edit, Download, FileSpreadsheet, FileText, Trash2 } from "lucide-react";
+import { downloadKemendagriCSV, downloadKemendagriPDF } from "@/utils/exportUtils";
+import { printReport } from "@/utils/printUtils";
+import { Edit, Download, FileSpreadsheet, FileText, Trash2, Printer } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Assessment, Value } from "@/models/types";
@@ -29,6 +32,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const AssessmentKemendagriDetail = () => {
   const { id } = useParams();
@@ -108,14 +112,26 @@ const AssessmentKemendagriDetail = () => {
     navigate(`/assessment/kemendagri/${id}/edit`);
   };
   
-  const handleExport = (type: "csv" | "pdf") => {
+  const handlePrint = () => {
+    printReport();
+  };
+  
+  const handleExportCSV = () => {
     if (!assessment) return;
-    
-    if (type === "csv") {
-      downloadCSV(assessment);
-    } else {
-      downloadPDF(assessment);
-    }
+    downloadKemendagriCSV(assessment);
+    toast({
+      title: "Berhasil",
+      description: "File CSV telah diunduh",
+    });
+  };
+  
+  const handleExportPDF = () => {
+    if (!assessment) return;
+    downloadKemendagriPDF(assessment);
+    toast({
+      title: "Berhasil",
+      description: "File PDF telah diunduh",
+    });
   };
 
   const handleDeleteAssessment = async () => {
@@ -270,151 +286,197 @@ const AssessmentKemendagriDetail = () => {
   
   return (
     <DashboardLayout title="Detail Penilaian">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Detail Penilaian KEMENDAGRI</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleExport("csv")}>
-            <FileSpreadsheet className="h-4 w-4 mr-2" />
-            CSV
-          </Button>
-          <Button variant="outline" onClick={() => handleExport("pdf")}>
-            <FileText className="h-4 w-4 mr-2" />
-            PDF
-          </Button>
-          <Button onClick={handleEdit}>
-            <Edit className="h-4 w-4 mr-2" />
-            Edit
-          </Button>
-          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-            <AlertDialogTrigger asChild>
-              <Button 
-                variant="destructive"
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Hapus
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Anda yakin ingin menghapus?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Penilaian tahun {assessment.year} akan dihapus secara permanen.
-                  Tindakan ini tidak dapat dibatalkan.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Batal</AlertDialogCancel>
-                <AlertDialogAction 
-                  onClick={handleDeleteAssessment}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
-                  Hapus
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+      <div className="printable">
+        {/* Header untuk cetak */}
+        <div className="hidden print:block print:mb-6">
+          <h1 className="text-xl font-bold text-center">Detail Penilaian KEMENDAGRI</h1>
+          <div className="text-sm text-muted-foreground text-center">
+            PERUMDAM TIRTA KERTA RAHARJA
+          </div>
+          <div className="text-sm text-muted-foreground text-center">
+            Tahun {assessment.year}
+          </div>
+          <div className="text-xs text-muted-foreground text-center mt-2">
+            Tanggal cetak: {new Date().toLocaleDateString('id-ID')}
+          </div>
         </div>
-      </div>
       
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="border rounded-lg p-4 bg-background">
-          <h2 className="text-lg font-semibold mb-4">Informasi Umum</h2>
-          <div className="space-y-2">
-            <div className="grid grid-cols-2">
-              <span className="text-muted-foreground">Nama PDAM:</span>
-              <span className="font-medium">{assessment.name}</span>
+        {/* Normal Content */}
+        <div className="flex justify-between items-center mb-6 non-printable">
+          <h1 className="text-2xl font-bold">Detail Penilaian KEMENDAGRI</h1>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handlePrint}>
+              <Printer className="h-4 w-4 mr-2" />
+              Cetak
+            </Button>
+            <Button variant="outline" onClick={handleExportCSV}>
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+              CSV
+            </Button>
+            <Button variant="outline" onClick={handleExportPDF}>
+              <FileText className="h-4 w-4 mr-2" />
+              PDF
+            </Button>
+            <Button onClick={handleEdit}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+            <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive"
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Hapus
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Anda yakin ingin menghapus?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Penilaian tahun {assessment.year} akan dihapus secara permanen.
+                    Tindakan ini tidak dapat dibatalkan.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction 
+                    onClick={handleDeleteAssessment}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Hapus
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="border rounded-lg p-4 bg-background">
+            <h2 className="text-lg font-semibold mb-4">Informasi Umum</h2>
+            <div className="space-y-2">
+              <div className="grid grid-cols-2">
+                <span className="text-muted-foreground">Nama PDAM:</span>
+                <span className="font-medium">{assessment.name}</span>
+              </div>
+              <div className="grid grid-cols-2">
+                <span className="text-muted-foreground">Tahun Penilaian:</span>
+                <span className="font-medium">{assessment.year}</span>
+              </div>
+              <div className="grid grid-cols-2">
+                <span className="text-muted-foreground">Tanggal Penilaian:</span>
+                <span className="font-medium">{new Date(assessment.date).toLocaleDateString('id-ID')}</span>
+              </div>
+              <div className="grid grid-cols-2">
+                <span className="text-muted-foreground">Status:</span>
+                <span className="font-medium capitalize">{assessment.status}</span>
+              </div>
             </div>
-            <div className="grid grid-cols-2">
-              <span className="text-muted-foreground">Tahun Penilaian:</span>
-              <span className="font-medium">{assessment.year}</span>
-            </div>
-            <div className="grid grid-cols-2">
-              <span className="text-muted-foreground">Tanggal Penilaian:</span>
-              <span className="font-medium">{new Date(assessment.date).toLocaleDateString('id-ID')}</span>
-            </div>
-            <div className="grid grid-cols-2">
-              <span className="text-muted-foreground">Status:</span>
-              <span className="font-medium capitalize">{assessment.status}</span>
+          </div>
+          
+          <div className="border rounded-lg p-4 bg-background">
+            <h2 className="text-lg font-semibold mb-4">Hasil Penilaian KEMENDAGRI</h2>
+            <div className="space-y-2">
+              <div className="grid grid-cols-2">
+                <span className="text-muted-foreground">Total Skor:</span>
+                <span className="font-medium">{assessment.totalScore.toFixed(3)}</span>
+              </div>
+              <div className="grid grid-cols-2">
+                <span className="text-muted-foreground">Kategori:</span>
+                <span className={`font-medium px-2 py-0.5 rounded-full text-white text-sm ${healthCategory.color} inline-block text-center`}>
+                  {healthCategory.category}
+                </span>
+              </div>
+              <div className="col-span-2 mt-2 text-sm text-muted-foreground">
+                <p>Berdasarkan Permendagri Nomor 47 Tahun 1999 tentang Pedoman Penilaian Kinerja PDAM</p>
+              </div>
             </div>
           </div>
         </div>
         
-        <div className="border rounded-lg p-4 bg-background">
-          <h2 className="text-lg font-semibold mb-4">Hasil Penilaian KEMENDAGRI</h2>
-          <div className="space-y-2">
-            <div className="grid grid-cols-2">
-              <span className="text-muted-foreground">Total Skor:</span>
-              <span className="font-medium">{assessment.totalScore.toFixed(3)}</span>
-            </div>
-            <div className="grid grid-cols-2">
-              <span className="text-muted-foreground">Kategori:</span>
-              <span className={`font-medium px-2 py-0.5 rounded-full text-white text-sm ${healthCategory.color} inline-block text-center`}>
-                {healthCategory.category}
-              </span>
-            </div>
-            <div className="col-span-2 mt-2 text-sm text-muted-foreground">
-              <p>Berdasarkan Permendagri Nomor 47 Tahun 1999 tentang Pedoman Penilaian Kinerja PDAM</p>
-            </div>
-          </div>
+        <div className="border rounded-lg p-4 mb-8 bg-background print:break-inside-avoid">
+          <h2 className="text-lg font-semibold mb-4">Grafik Penilaian KEMENDAGRI</h2>
+          <ChartContainer
+            config={{
+              score: { color: "#22c55e" },
+            }}
+            className="w-full aspect-[4/3] h-[300px]"
+          >
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis 
+                dataKey="name" 
+                angle={-45} 
+                textAnchor="end" 
+                height={80} 
+                tick={{ fontSize: 12 }} 
+              />
+              <YAxis />
+              <ChartTooltip 
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    return (
+                      <ChartTooltipContent 
+                        active={active}
+                        payload={payload}
+                        label={label}
+                        is3D={true}
+                        formatter={(value, name) => [
+                          typeof value === "number" ? value.toFixed(3) : value,
+                          name === "score" ? "Skor" : name
+                        ]}
+                      />
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Legend />
+              <Bar name="Skor" dataKey="score" fill="#22c55e" />
+            </BarChart>
+          </ChartContainer>
         </div>
-      </div>
-      
-      <div className="border rounded-lg p-4 mb-8 bg-background">
-        <h2 className="text-lg font-semibold mb-4">Grafik Penilaian KEMENDAGRI</h2>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="name" 
-              angle={-45} 
-              textAnchor="end" 
-              height={80} 
-              tick={{ fontSize: 12 }} 
-            />
-            <YAxis />
-            <Tooltip 
-              formatter={(value: number, name: string) => [
-                value.toFixed(3), 
-                name === "score" ? "Skor" : name
-              ]}
-              labelFormatter={(label) => `Indikator: ${label}`}
-            />
-            <Bar name="Skor" dataKey="score" fill="#22c55e" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      
-      {Object.entries(categoryData).map(([category, indicators]) => (
-        <div key={category} className="border rounded-lg p-4 mb-6 bg-background">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Aspek {category}</h2>
-            <div className="text-sm font-medium">
-              Total Aspek: {categoryTotals[category].toFixed(3)}
+        
+        {Object.entries(categoryData).map(([category, indicators]) => (
+          <div key={category} className="border rounded-lg p-4 mb-6 bg-background print:break-inside-avoid">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Aspek {category}</h2>
+              <div className="text-sm font-medium">
+                Total Aspek: {categoryTotals[category].toFixed(3)}
+              </div>
             </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px]">
-              <thead>
-                <tr className="border-b">
-                  <th className="py-2 px-4 text-left">Indikator</th>
-                  <th className="py-2 px-4 text-left">Nilai</th>
-                  <th className="py-2 px-4 text-left">Skor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {indicators.map((indicator) => (
-                  <tr key={indicator.id} className="border-b last:border-0">
-                    <td className="py-2 px-4">{indicator.name}</td>
-                    <td className="py-2 px-4">{indicator.value.toFixed(2)}</td>
-                    <td className="py-2 px-4">{indicator.score}</td>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px]">
+                <thead>
+                  <tr className="border-b">
+                    <th className="py-2 px-4 text-left">Indikator</th>
+                    <th className="py-2 px-4 text-left">Nilai</th>
+                    <th className="py-2 px-4 text-left">Skor</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {indicators.map((indicator) => (
+                    <tr key={indicator.id} className="border-b last:border-0">
+                      <td className="py-2 px-4">{indicator.name}</td>
+                      <td className="py-2 px-4">{indicator.value.toFixed(2)}</td>
+                      <td className="py-2 px-4">{indicator.score}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))}
+        
+        {/* Footer untuk cetak */}
+        <div className="hidden print:block print:mt-6 print:pt-4 print:border-t print:text-center">
+          <div className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} - PERUMDAM TIRTA KERTA RAHARJA
           </div>
         </div>
-      ))}
+      </div>
     </DashboardLayout>
   );
 };

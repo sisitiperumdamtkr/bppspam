@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { FileSpreadsheet, FileText } from "lucide-react";
 import { Assessment } from "@/models/types";
-import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
+import { downloadKemendagriCSV, downloadKemendagriPDF } from "@/utils/exportUtils";
 
 interface ExportOptionsKemendagriProps {
   assessment: Assessment;
@@ -13,9 +13,9 @@ interface ExportOptionsKemendagriProps {
 const ExportOptionsKemendagri = ({ assessment, onClose }: ExportOptionsKemendagriProps) => {
   const handleExport = (type: "csv" | "pdf") => {
     if (type === "csv") {
-      downloadCSV(assessment);
+      downloadKemendagriCSV(assessment);
     } else {
-      downloadPDF(assessment);
+      downloadKemendagriPDF(assessment);
     }
     onClose();
   };

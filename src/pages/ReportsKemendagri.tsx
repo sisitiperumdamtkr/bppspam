@@ -44,6 +44,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Assessment } from "@/models/types";
 import { useToast } from "@/components/ui/use-toast";
 import { kemendagriIndicators } from "@/models/kemendagri-indicators";
+import { downloadKemendagriPDF } from "@/utils/exportUtils";
+import { printReport } from "@/utils/printUtils";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 // Color scheme for charts with more vibrant colors for better 3D effect
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
@@ -120,7 +123,29 @@ const ReportsKemendagri = () => {
   }, []);
 
   const handlePrint = () => {
-    window.print();
+    printReport();
+  };
+  
+  const handleDownloadPDF = () => {
+    if (assessments.length > 0) {
+      // Gunakan assessment terbaru jika ada beberapa
+      const latestAssessment = [...assessments].sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      )[0];
+      
+      downloadKemendagriPDF(latestAssessment);
+      
+      toast({
+        title: "Unduhan Berhasil",
+        description: "Laporan PDF telah diunduh",
+      });
+    } else {
+      toast({
+        title: "Tidak Ada Data",
+        description: "Tidak ada data untuk diunduh",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleRefresh = () => {
@@ -289,25 +314,32 @@ const ReportsKemendagri = () => {
 
   return (
     <DashboardLayout title="Laporan Penilaian KEMENDAGRI">
-      <div className="flex flex-col gap-6">
-        {/* Existing header */}
-        <div className="flex justify-between items-center">
+      <div className="flex flex-col gap-6 printable">
+        <div className="flex justify-between items-center non-printable">
           <h1 className="text-2xl font-bold">Laporan Penilaian KEMENDAGRI</h1>
           <div className="flex gap-2">
             <Button 
               variant="outline" 
               onClick={handleRefresh} 
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 non-printable"
               disabled={loading}
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
               <span className="hidden md:inline">Refresh</span>
             </Button>
-            <Button variant="outline" onClick={handlePrint} className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handlePrint} 
+              className="flex items-center gap-2 non-printable"
+            >
               <Printer className="h-4 w-4" />
               <span className="hidden md:inline">Cetak</span>
             </Button>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handleDownloadPDF} 
+              className="flex items-center gap-2 non-printable"
+            >
               <Download className="h-4 w-4" />
               <span className="hidden md:inline">Unduh PDF</span>
             </Button>
@@ -315,7 +347,7 @@ const ReportsKemendagri = () => {
         </div>
         
         {/* Filter card - updated */}
-        <Card>
+        <Card className="non-printable">
           <CardHeader className="pb-3">
             <CardTitle className="text-base">Filter</CardTitle>
           </CardHeader>
@@ -345,6 +377,14 @@ const ReportsKemendagri = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Header untuk cetak */}
+        <div className="hidden print:block print:mb-4">
+          <h1 className="text-2xl font-bold text-center">Laporan Penilaian KEMENDAGRI</h1>
+          <div className="text-center text-sm text-muted-foreground">
+            Tanggal cetak: {new Date().toLocaleDateString('id-ID')}
+          </div>
+        </div>
 
         {/* Summary cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -408,7 +448,9 @@ const ReportsKemendagri = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer config={{
+                score: { color: '#8884d8' }
+              }} className="w-full aspect-[4/3]">
                 <LineChart
                   data={filteredYearlyScoreData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -416,7 +458,20 @@ const ReportsKemendagri = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
                   <YAxis domain={[0, 'auto']} />
-                  <Tooltip />
+                  <ChartTooltip 
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent 
+                            active={active}
+                            payload={payload}
+                            is3D={true}
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Legend />
                   <Line
                     type="monotone"
@@ -428,7 +483,7 @@ const ReportsKemendagri = () => {
                     name="Skor Tahunan"
                   />
                 </LineChart>
-              </ResponsiveContainer>
+              </ChartContainer>
             </CardContent>
           </Card>
 
@@ -441,7 +496,14 @@ const ReportsKemendagri = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer 
+                config={{
+                  Keuangan: { color: COLORS[0] },
+                  Operasional: { color: COLORS[1] },
+                  Administrasi: { color: COLORS[2] }
+                }}
+                className="w-full aspect-[4/3]"
+              >
                 <BarChart 
                   data={yearlyAspectScores} 
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -449,7 +511,20 @@ const ReportsKemendagri = () => {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="year" />
                   <YAxis domain={[0, 'auto']} />
-                  <Tooltip />
+                  <ChartTooltip 
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent 
+                            active={active}
+                            payload={payload}
+                            is3D={true}
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Legend />
                   {Object.keys(aspectData).map((category, index) => (
                     <Bar
@@ -467,7 +542,7 @@ const ReportsKemendagri = () => {
                     />
                   ))}
                 </BarChart>
-              </ResponsiveContainer>
+              </ChartContainer>
             </CardContent>
           </Card>
 
@@ -481,7 +556,13 @@ const ReportsKemendagri = () => {
             </CardHeader>
             <CardContent className="h-80">
               <div className="flex flex-col md:flex-row items-center justify-center">
-                <ResponsiveContainer width="100%" height={300}>
+                <ChartContainer 
+                  config={healthCategoryData.reduce((acc, item, index) => ({
+                    ...acc,
+                    [item.name]: { color: COLORS[index % COLORS.length] }
+                  }), {})}
+                  className="w-full aspect-[4/3]"
+                >
                   <PieChart>
                     <Pie
                       data={healthCategoryData}
@@ -503,10 +584,22 @@ const ReportsKemendagri = () => {
                         />
                       ))}
                     </Pie>
-                    <Tooltip />
-                    <Legend />
+                    <ChartTooltip 
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          return (
+                            <ChartTooltipContent 
+                              active={active}
+                              payload={payload}
+                              is3D={true}
+                            />
+                          );
+                        }
+                        return null;
+                      }}
+                    />
                   </PieChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               </div>
             </CardContent>
           </Card>
@@ -520,7 +613,14 @@ const ReportsKemendagri = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer 
+                config={{
+                  Keuangan: { color: COLORS[0] },
+                  Operasional: { color: COLORS[1] },
+                  Administrasi: { color: COLORS[2] }
+                }}
+                className="w-full aspect-[4/3]"
+              >
                 <RadarChart 
                   cx="50%" 
                   cy="50%" 
@@ -532,7 +632,7 @@ const ReportsKemendagri = () => {
                 >
                   <PolarGrid gridType="circle" /> {/* 'circle' untuk efek 3D bulat */}
                   <PolarAngleAxis dataKey="aspect" />
-                  <PolarRadiusAxis domain={[0, 5]} />
+                  <PolarRadiusAxis domain={[0, 'auto']} />
                   <Radar
                     name="Skor Aspek"
                     dataKey="score"
@@ -541,10 +641,22 @@ const ReportsKemendagri = () => {
                     fillOpacity={0.7}
                     strokeWidth={2} // Menambahkan ketebalan garis untuk efek 3D
                   />
-                  <Tooltip />
-                  <Legend />
+                  <ChartTooltip 
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <ChartTooltipContent 
+                            active={active}
+                            payload={payload}
+                            is3D={true}
+                          />
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                 </RadarChart>
-              </ResponsiveContainer>
+              </ChartContainer>
             </CardContent>
           </Card>
         </div>
@@ -566,6 +678,7 @@ const ReportsKemendagri = () => {
                     <th className="text-left p-2">Tanggal</th>
                     <th className="text-right p-2">Skor</th>
                     <th className="text-left p-2">Kategori</th>
+                    <th className="text-right p-2 non-printable">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -576,7 +689,6 @@ const ReportsKemendagri = () => {
                         <tr 
                           key={assessment.id} 
                           className="border-b hover:bg-muted/50 cursor-pointer"
-                          onClick={() => navigate(`/assessment/kemendagri/${assessment.id}`)}
                         >
                           <td className="p-2">{assessment.year}</td>
                           <td className="p-2">{new Date(assessment.date).toLocaleDateString("id-ID")}</td>
@@ -586,12 +698,21 @@ const ReportsKemendagri = () => {
                               {healthCategory.category}
                             </span>
                           </td>
+                          <td className="p-2 text-right non-printable">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => navigate(`/assessment/kemendagri/${assessment.id}`)}
+                            >
+                              Detail
+                            </Button>
+                          </td>
                         </tr>
                       );
                     })
                   ) : (
                     <tr>
-                      <td colSpan={4} className="p-4 text-center text-muted-foreground">
+                      <td colSpan={5} className="p-4 text-center text-muted-foreground">
                         Tidak ada data yang sesuai dengan filter
                       </td>
                     </tr>
@@ -601,6 +722,13 @@ const ReportsKemendagri = () => {
             </div>
           </CardContent>
         </Card>
+        
+        {/* Footer untuk cetak */}
+        <div className="hidden print:block print:mt-6 print:pt-4 print:border-t print:text-center">
+          <div className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} - PERUMDAM TIRTA KERTA RAHARJA
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
