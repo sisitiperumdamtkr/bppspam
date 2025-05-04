@@ -25,29 +25,29 @@ const ExportOptionsKemendagri = ({ assessment, onClose }: ExportOptionsKemendagr
   return (
     <div className="grid gap-4 py-4">
       <h3 className="font-medium mb-2">Pilih Format Export:</h3>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <Button 
           onClick={() => handleExport("csv")} 
           variant="outline" 
-          className="h-24 flex flex-col items-center justify-center gap-2"
+          className="h-20 md:h-24 flex flex-col items-center justify-center gap-2"
         >
-          <FileSpreadsheet className="h-8 w-8" />
+          <FileSpreadsheet className="h-6 w-6 md:h-8 md:w-8" />
           <span>CSV / Excel</span>
         </Button>
         <Button 
           onClick={() => handleExport("pdf")} 
           variant="outline" 
-          className="h-24 flex flex-col items-center justify-center gap-2"
+          className="h-20 md:h-24 flex flex-col items-center justify-center gap-2"
         >
-          <FileText className="h-8 w-8" />
+          <FileText className="h-6 w-6 md:h-8 md:w-8" />
           <span>PDF Kemendagri</span>
         </Button>
         <Button 
           onClick={() => handleExport("pupr")} 
           variant="outline" 
-          className="h-24 flex flex-col items-center justify-center gap-2"
+          className="h-20 md:h-24 flex flex-col items-center justify-center gap-2"
         >
-          <FileText className="h-8 w-8 text-green-600" />
+          <FileText className="h-6 w-6 md:h-8 md:w-8 text-green-600" />
           <span>PDF PUPR</span>
         </Button>
       </div>

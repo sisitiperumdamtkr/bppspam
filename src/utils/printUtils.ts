@@ -1,4 +1,8 @@
 
+import { Assessment } from "@/models/types";
+import { indicators } from "@/models/indicators";
+import { getHealthCategory } from "@/models/health-categories";
+
 // Fungsi untuk mencetak halaman dengan gaya khusus
 export const printReport = () => {
   // Simpan konten asli body
@@ -34,11 +38,13 @@ export const printReport = () => {
       table {
         width: 100%;
         border-collapse: collapse;
+        font-size: 10pt;
       }
       
       table th, table td {
         border: 1px solid #ddd;
-        padding: 8px;
+        padding: 6px;
+        word-wrap: break-word;
       }
       
       table th {
@@ -53,6 +59,17 @@ export const printReport = () => {
       @page {
         size: portrait;
         margin: 1cm;
+      }
+
+      svg, .recharts-responsive-container {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      .recharts-wrapper {
+        max-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
       }
     }
   `;
@@ -88,14 +105,15 @@ export const printReport = () => {
 };
 
 // Fungsi untuk mencetak laporan dalam format PUPR
-export const printPURPReport = (assessment: any) => {
+export const printPURPReport = (assessment: Assessment) => {
   // Buat elemen kontainer untuk laporan
   const reportContainer = document.createElement('div');
   reportContainer.className = 'pupr-report-container';
   reportContainer.style.fontFamily = 'Arial, sans-serif';
   reportContainer.style.padding = '20px';
-  reportContainer.style.maxWidth = '800px';
+  reportContainer.style.maxWidth = '100%';
   reportContainer.style.margin = '0 auto';
+  reportContainer.style.boxSizing = 'border-box';
   
   // Tambahkan header laporan
   const header = document.createElement('div');
@@ -112,16 +130,17 @@ export const printPURPReport = (assessment: any) => {
   table.style.width = '100%';
   table.style.borderCollapse = 'collapse';
   table.style.marginTop = '20px';
+  table.style.fontSize = '10pt';
   
   // Tambahkan header tabel
   const tableHeader = document.createElement('thead');
   tableHeader.innerHTML = `
     <tr style="background-color: #006400; color: white;">
-      <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Indikator</th>
-      <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Nilai</th>
-      <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Skor</th>
-      <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Bobot</th>
-      <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Nilai Tertimbang</th>
+      <th style="padding: 8px; border: 1px solid #ddd; text-align: left; word-wrap: break-word;">Indikator</th>
+      <th style="padding: 8px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">Nilai</th>
+      <th style="padding: 8px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">Skor</th>
+      <th style="padding: 8px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">Bobot</th>
+      <th style="padding: 8px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">Nilai Tertimbang</th>
     </tr>
   `;
   table.appendChild(tableHeader);
@@ -131,8 +150,8 @@ export const printPURPReport = (assessment: any) => {
   let rowCount = 0;
   
   // Impor indicators dari luar fungsi ini
-  const indicators = (window as any).indicators || [];
-  indicators.forEach((indicator: any) => {
+  const indicatorsData = indicators || [];
+  indicatorsData.forEach((indicator: any) => {
     const valueObj = assessment.values[indicator.id];
     if (valueObj) {
       const weightedScore = valueObj.score * indicator.weight;
@@ -141,11 +160,11 @@ export const printPURPReport = (assessment: any) => {
       
       tableBody.innerHTML += `
         <tr style="${rowStyle}">
-          <td style="padding: 8px; border: 1px solid #ddd;">${indicator.name}</td>
-          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${valueObj.value.toFixed(2)}</td>
-          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${valueObj.score}</td>
-          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${indicator.weight.toFixed(3)}</td>
-          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${weightedScore.toFixed(3)}</td>
+          <td style="padding: 6px; border: 1px solid #ddd; word-wrap: break-word;">${indicator.name}</td>
+          <td style="padding: 6px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">${valueObj.value.toFixed(2)}</td>
+          <td style="padding: 6px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">${valueObj.score}</td>
+          <td style="padding: 6px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">${indicator.weight.toFixed(3)}</td>
+          <td style="padding: 6px; border: 1px solid #ddd; text-align: right; word-wrap: break-word;">${weightedScore.toFixed(3)}</td>
         </tr>
       `;
     }
@@ -157,13 +176,12 @@ export const printPURPReport = (assessment: any) => {
   const footer = document.createElement('div');
   footer.style.marginTop = '20px';
   
-  const healthCategory = (window as any).getHealthCategory ? 
-    (window as any).getHealthCategory(assessment.totalScore) : 
-    { category: 'Tidak diketahui' };
+  const healthCategory = getHealthCategory(assessment.totalScore);
   
   footer.innerHTML = `
     <p style="font-weight: bold;">Total Skor: ${assessment.totalScore.toFixed(2)}</p>
     <p style="font-weight: bold;">Kategori: ${healthCategory.category}</p>
+    <p style="font-size: 8pt; margin-top: 30px; text-align: center;">Dicetak pada: ${new Date().toLocaleDateString('id-ID')}</p>
   `;
   reportContainer.appendChild(footer);
   
@@ -178,8 +196,11 @@ export const printPURPReport = (assessment: any) => {
   const style = document.createElement('style');
   style.textContent = `
     @media print {
-      body { margin: 0; padding: 15mm; }
+      body { margin: 0; padding: 10mm; font-size: 10pt; }
       @page { size: portrait; margin: 10mm; }
+      table { page-break-inside: auto; }
+      tr { page-break-inside: avoid; page-break-after: auto; }
+      h1 { font-size: 16pt; }
     }
   `;
   document.head.appendChild(style);
@@ -193,3 +214,4 @@ export const printPURPReport = (assessment: any) => {
   // Hapus style
   document.head.removeChild(style);
 };
+

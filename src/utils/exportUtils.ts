@@ -1,3 +1,4 @@
+
 import { Assessment } from "@/models/types";
 import { indicators } from "@/models/indicators";
 import { getHealthCategory, getHealthCategorykemendagri } from "@/models/health-categories";
@@ -90,6 +91,20 @@ export const downloadPDF = (assessment: Assessment): void => {
     headStyles: {
       fillColor: [0, 128, 0],
     },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 'auto', halign: 'right' },
+      2: { cellWidth: 'auto', halign: 'right' },
+      3: { cellWidth: 'auto', halign: 'right' },
+      4: { cellWidth: 'auto', halign: 'right' },
+    },
+    didDrawPage: (data) => {
+      // Footer
+      const pageSize = doc.internal.pageSize;
+      const pageHeight = pageSize.getHeight();
+      doc.setFontSize(8);
+      doc.text(`Halaman ${data.pageNumber}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+    }
   });
   
   // Tambahkan total skor
@@ -98,6 +113,10 @@ export const downloadPDF = (assessment: Assessment): void => {
   
   const healthCategory = getHealthCategory(assessment.totalScore);
   doc.text(`Kategori: ${healthCategory.category}`, 20, finalY + 17);
+  
+  // Tambahkan footer
+  doc.setFontSize(8);
+  doc.text(`Dokumen dibuat pada: ${new Date().toLocaleDateString('id-ID')}`, 20, doc.internal.pageSize.getHeight() - 10);
   
   // Simpan dokumen PDF
   doc.save(`penilaian-${assessment.name}-${assessment.year}.pdf`);
@@ -179,6 +198,12 @@ export const downloadKemendagriPDF = (assessment: Assessment): void => {
   let yPos = 55;
   
   categories.forEach(category => {
+    // Cek jika halaman perlu ditambahkan
+    if (yPos > 250) {
+      doc.addPage();
+      yPos = 20;
+    }
+    
     doc.setFontSize(12);
     doc.text(`Aspek ${category}`, 20, yPos);
     yPos += 7;
@@ -211,15 +236,21 @@ export const downloadKemendagriPDF = (assessment: Assessment): void => {
       headStyles: {
         fillColor: [13, 71, 161], // Warna biru tua
       },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 'auto', halign: 'right' },
+        2: { cellWidth: 'auto', halign: 'right' },
+      },
     });
     
     yPos = (doc as any).lastAutoTable.finalY + 10;
-    
-    if (yPos > 250) {
-      doc.addPage();
-      yPos = 20;
-    }
   });
+  
+  // Tambahkan halaman baru jika diperlukan untuk ringkasan
+  if (yPos > 200) {
+    doc.addPage();
+    yPos = 20;
+  }
   
   // Hitung skor per aspek
   const keuanganScore = kemendagriIndicators
@@ -271,26 +302,33 @@ export const downloadPURPPDF = (assessment: Assessment): void => {
   // Buat objek dokumen PDF baru
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
   
   // Tambahkan header dokumen
   doc.setFontSize(16);
   doc.text("Penilaian Tingkat Kesehatan PDAM", pageWidth / 2, 20, { align: "center" });
+  doc.setFontSize(14);
+  doc.text("PERUMDAM TIRTA KERTA RAHARJA", pageWidth / 2, 28, { align: "center" });
+  doc.text("Tahun 2020", pageWidth / 2, 36, { align: "center" });
   
   doc.setFontSize(12);
-  doc.text(`Nama PDAM: ${assessment.name}`, 14, 30);
-  doc.text(`Tahun: ${assessment.year}`, 14, 37);
-  doc.text(`Tanggal: ${new Date(assessment.date).toLocaleDateString('id-ID')}`, 14, 44);
+  doc.text(`Nama PDAM: ${assessment.name}`, 14, 46);
+  doc.text(`Tahun: ${assessment.year}`, 14, 53);
+  doc.text(`Tanggal: ${new Date(assessment.date).toLocaleDateString('id-ID')}`, 14, 60);
   
-  // Buat tabel untuk indikator dengan header warna hijau
-  const tableColumn = ["Indikator", "Nilai", "Skor", "Bobot", "Nilai Tertimbang"];
-  const tableRows: any[] = [];
+  // I. Aspek Keuangan
+  doc.setFontSize(13);
+  doc.text("I. ASPEK KEUANGAN", 14, 70);
   
-  // Siapkan data tabel sesuai format PUPR
-  indicators.forEach(indicator => {
+  // Buat tabel untuk indikator Aspek Keuangan
+  const keuanganIndicators = indicators.filter(i => i.category === "Keuangan");
+  const keuanganRows: any[] = [];
+  
+  keuanganIndicators.forEach(indicator => {
     const valueObj = assessment.values[indicator.id];
     if (valueObj) {
       const weightedScore = valueObj.score * indicator.weight;
-      tableRows.push([
+      keuanganRows.push([
         indicator.name, 
         valueObj.value.toFixed(2), 
         valueObj.score, 
@@ -302,9 +340,9 @@ export const downloadPURPPDF = (assessment: Assessment): void => {
   
   // Atur gaya tabel dengan warna hijau untuk header
   autoTable(doc, {
-    head: [tableColumn],
-    body: tableRows,
-    startY: 50,
+    head: [["Indikator", "Nilai", "Skor", "Bobot", "Nilai Tertimbang"]],
+    body: keuanganRows,
+    startY: 75,
     styles: {
       fontSize: 9,
       cellPadding: 3,
@@ -325,22 +363,205 @@ export const downloadPURPPDF = (assessment: Assessment): void => {
       4: { cellWidth: 'auto', halign: 'right' },
     },
   });
+
+  // Dapatkan posisi Y setelah tabel pertama
+  let currentY = (doc as any).lastAutoTable.finalY + 10;
+
+  // II. Aspek Pelayanan
+  doc.setFontSize(13);
+  doc.text("II. ASPEK PELAYANAN", 14, currentY);
+  currentY += 5;
+
+  // Buat tabel untuk indikator Aspek Pelayanan
+  const pelayananIndicators = indicators.filter(i => i.category === "Pelayanan");
+  const pelayananRows: any[] = [];
+  
+  pelayananIndicators.forEach(indicator => {
+    const valueObj = assessment.values[indicator.id];
+    if (valueObj) {
+      const weightedScore = valueObj.score * indicator.weight;
+      pelayananRows.push([
+        indicator.name, 
+        valueObj.value.toFixed(2), 
+        valueObj.score, 
+        indicator.weight.toFixed(3), 
+        weightedScore.toFixed(3)
+      ]);
+    }
+  });
+  
+  // Cek apakah perlu halaman baru
+  if (currentY + 50 > pageHeight - 20) {
+    doc.addPage();
+    currentY = 20;
+  }
+  
+  // Tambahkan tabel aspek pelayanan
+  autoTable(doc, {
+    head: [["Indikator", "Nilai", "Skor", "Bobot", "Nilai Tertimbang"]],
+    body: pelayananRows,
+    startY: currentY,
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [0, 128, 0],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 240],
+    },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 'auto', halign: 'right' },
+      2: { cellWidth: 'auto', halign: 'right' },
+      3: { cellWidth: 'auto', halign: 'right' },
+      4: { cellWidth: 'auto', halign: 'right' },
+    },
+  });
+  
+  // Dapatkan posisi Y setelah tabel kedua
+  currentY = (doc as any).lastAutoTable.finalY + 10;
+  
+  // III. Aspek Operasi
+  doc.setFontSize(13);
+  doc.text("III. ASPEK OPERASI", 14, currentY);
+  currentY += 5;
+  
+  // Buat tabel untuk indikator Aspek Operasi
+  const operasiIndicators = indicators.filter(i => i.category === "Operasi");
+  const operasiRows: any[] = [];
+  
+  operasiIndicators.forEach(indicator => {
+    const valueObj = assessment.values[indicator.id];
+    if (valueObj) {
+      const weightedScore = valueObj.score * indicator.weight;
+      operasiRows.push([
+        indicator.name, 
+        valueObj.value.toFixed(2), 
+        valueObj.score, 
+        indicator.weight.toFixed(3), 
+        weightedScore.toFixed(3)
+      ]);
+    }
+  });
+  
+  // Cek apakah perlu halaman baru
+  if (currentY + 50 > pageHeight - 20) {
+    doc.addPage();
+    currentY = 20;
+  }
+  
+  // Tambahkan tabel aspek operasi
+  autoTable(doc, {
+    head: [["Indikator", "Nilai", "Skor", "Bobot", "Nilai Tertimbang"]],
+    body: operasiRows,
+    startY: currentY,
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [0, 128, 0],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 240],
+    },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 'auto', halign: 'right' },
+      2: { cellWidth: 'auto', halign: 'right' },
+      3: { cellWidth: 'auto', halign: 'right' },
+      4: { cellWidth: 'auto', halign: 'right' },
+    },
+  });
+  
+  // Dapatkan posisi Y setelah tabel ketiga
+  currentY = (doc as any).lastAutoTable.finalY + 10;
+  
+  // IV. Aspek SDM
+  doc.setFontSize(13);
+  doc.text("IV. ASPEK SDM", 14, currentY);
+  currentY += 5;
+  
+  // Buat tabel untuk indikator Aspek SDM
+  const sdmIndicators = indicators.filter(i => i.category === "SDM");
+  const sdmRows: any[] = [];
+  
+  sdmIndicators.forEach(indicator => {
+    const valueObj = assessment.values[indicator.id];
+    if (valueObj) {
+      const weightedScore = valueObj.score * indicator.weight;
+      sdmRows.push([
+        indicator.name, 
+        valueObj.value.toFixed(2), 
+        valueObj.score, 
+        indicator.weight.toFixed(3), 
+        weightedScore.toFixed(3)
+      ]);
+    }
+  });
+  
+  // Cek apakah perlu halaman baru
+  if (currentY + 50 > pageHeight - 20) {
+    doc.addPage();
+    currentY = 20;
+  }
+  
+  // Tambahkan tabel aspek SDM
+  autoTable(doc, {
+    head: [["Indikator", "Nilai", "Skor", "Bobot", "Nilai Tertimbang"]],
+    body: sdmRows,
+    startY: currentY,
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [0, 128, 0],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 240],
+    },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 'auto', halign: 'right' },
+      2: { cellWidth: 'auto', halign: 'right' },
+      3: { cellWidth: 'auto', halign: 'right' },
+      4: { cellWidth: 'auto', halign: 'right' },
+    },
+  });
+  
+  // Dapatkan posisi Y setelah tabel keempat
+  currentY = (doc as any).lastAutoTable.finalY + 10;
+  
+  // Cek apakah perlu halaman baru untuk kesimpulan
+  if (currentY + 40 > pageHeight - 20) {
+    doc.addPage();
+    currentY = 20;
+  }
   
   // Tambahkan total skor dan kategori kesehatan
-  const finalY = (doc as any).lastAutoTable.finalY || 150;
   doc.setFontSize(12);
   doc.setFont(undefined, 'bold');
-  doc.text(`Total Skor: ${assessment.totalScore.toFixed(2)}`, 14, finalY + 10);
+  doc.text(`Total Skor: ${assessment.totalScore.toFixed(2)}`, 14, currentY + 10);
   
   const healthCategory = getHealthCategory(assessment.totalScore);
-  doc.text(`Kategori: ${healthCategory.category}`, 14, finalY + 20);
+  doc.text(`Kategori: ${healthCategory.category}`, 14, currentY + 20);
   
   // Tambahkan footer
   doc.setFontSize(8);
   doc.setFont(undefined, 'normal');
   const today = new Date().toLocaleDateString('id-ID');
-  doc.text(`Dokumen ini dicetak pada: ${today}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+  doc.text(`Dokumen ini dicetak pada: ${today}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
   
   // Simpan dokumen PDF
   doc.save(`penilaian-pupr-${assessment.name}-${assessment.year}.pdf`);
 };
+
