@@ -1,4 +1,3 @@
-
 import { Assessment } from "@/models/types";
 import { indicators } from "@/models/indicators";
 import { getHealthCategory, getHealthCategorykemendagri } from "@/models/health-categories";
@@ -431,7 +430,7 @@ export const downloadPURPPDF = (assessment: Assessment): void => {
   currentY += 5;
   
   // Buat tabel untuk indikator Aspek Operasi
-  const operasiIndicators = indicators.filter(i => i.category === "Operasi");
+  const operasiIndicators = indicators.filter(i => i.category === "Operasional");
   const operasiRows: any[] = [];
   
   operasiIndicators.forEach(indicator => {
@@ -564,4 +563,3 @@ export const downloadPURPPDF = (assessment: Assessment): void => {
   // Simpan dokumen PDF
   doc.save(`penilaian-pupr-${assessment.name}-${assessment.year}.pdf`);
 };
-
