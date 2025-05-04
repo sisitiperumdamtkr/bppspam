@@ -12,7 +12,7 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from "recharts";
-import { downloadCSV, downloadPDF } from "@/utils/exportUtils";
+import { downloadCSV, downloadPDF, downloadPURPPDF } from "@/utils/exportUtils";
 import { Edit, Download, FileSpreadsheet, FileText, Trash2 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,6 +28,14 @@ import {
   AlertDialogAction,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 
 const AssessmentDetail = () => {
@@ -108,13 +116,15 @@ const AssessmentDetail = () => {
     navigate(`/assessment/${id}/edit`);
   };
   
-  const handleExport = (type: "csv" | "pdf") => {
+  const handleExport = (type: "csv" | "pdf" | "pupr") => {
     if (!assessment) return;
     
     if (type === "csv") {
       downloadCSV(assessment);
-    } else {
+    } else if (type === "pdf") {
       downloadPDF(assessment);
+    } else if (type === "pupr") {
+      downloadPURPPDF(assessment);
     }
   };
 
@@ -247,14 +257,30 @@ const AssessmentDetail = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Detail Penilaian</h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleExport("csv")}>
-            <FileSpreadsheet className="h-4 w-4 mr-2" />
-            CSV
-          </Button>
-          <Button variant="outline" onClick={() => handleExport("pdf")}>
-            <FileText className="h-4 w-4 mr-2" />
-            PDF
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Format Export</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => handleExport("csv")}>
+                <FileSpreadsheet className="h-4 w-4 mr-2" />
+                CSV / Excel
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExport("pdf")}>
+                <FileText className="h-4 w-4 mr-2" />
+                PDF Standar
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExport("pupr")}>
+                <FileText className="h-4 w-4 mr-2 text-green-600" />
+                PDF Format PUPR
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button onClick={handleEdit}>
             <Edit className="h-4 w-4 mr-2" />
             Edit

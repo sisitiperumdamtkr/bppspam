@@ -1,4 +1,3 @@
-
 import { Assessment } from "@/models/types";
 import { indicators } from "@/models/indicators";
 import { getHealthCategory, getHealthCategorykemendagri } from "@/models/health-categories";
@@ -265,4 +264,83 @@ export const downloadKemendagriPDF = (assessment: Assessment): void => {
   
   // Simpan dokumen PDF
   doc.save(`penilaian-kemendagri-${assessment.name}-${assessment.year}.pdf`);
+};
+
+// Fungsi untuk membuat PDF dengan format PUPR
+export const downloadPURPPDF = (assessment: Assessment): void => {
+  // Buat objek dokumen PDF baru
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  
+  // Tambahkan header dokumen
+  doc.setFontSize(16);
+  doc.text("Penilaian Tingkat Kesehatan PDAM", pageWidth / 2, 20, { align: "center" });
+  
+  doc.setFontSize(12);
+  doc.text(`Nama PDAM: ${assessment.name}`, 14, 30);
+  doc.text(`Tahun: ${assessment.year}`, 14, 37);
+  doc.text(`Tanggal: ${new Date(assessment.date).toLocaleDateString('id-ID')}`, 14, 44);
+  
+  // Buat tabel untuk indikator dengan header warna hijau
+  const tableColumn = ["Indikator", "Nilai", "Skor", "Bobot", "Nilai Tertimbang"];
+  const tableRows: any[] = [];
+  
+  // Siapkan data tabel sesuai format PUPR
+  indicators.forEach(indicator => {
+    const valueObj = assessment.values[indicator.id];
+    if (valueObj) {
+      const weightedScore = valueObj.score * indicator.weight;
+      tableRows.push([
+        indicator.name, 
+        valueObj.value.toFixed(2), 
+        valueObj.score, 
+        indicator.weight.toFixed(3), 
+        weightedScore.toFixed(3)
+      ]);
+    }
+  });
+  
+  // Atur gaya tabel dengan warna hijau untuk header
+  autoTable(doc, {
+    head: [tableColumn],
+    body: tableRows,
+    startY: 50,
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [0, 128, 0], // Warna hijau untuk header
+      textColor: [255, 255, 255], // Teks putih
+      fontStyle: 'bold',
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 240], // Warna abu-abu muda untuk baris alternatif
+    },
+    columnStyles: {
+      0: { cellWidth: 'auto' },
+      1: { cellWidth: 'auto', halign: 'right' },
+      2: { cellWidth: 'auto', halign: 'right' },
+      3: { cellWidth: 'auto', halign: 'right' },
+      4: { cellWidth: 'auto', halign: 'right' },
+    },
+  });
+  
+  // Tambahkan total skor dan kategori kesehatan
+  const finalY = (doc as any).lastAutoTable.finalY || 150;
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text(`Total Skor: ${assessment.totalScore.toFixed(2)}`, 14, finalY + 10);
+  
+  const healthCategory = getHealthCategory(assessment.totalScore);
+  doc.text(`Kategori: ${healthCategory.category}`, 14, finalY + 20);
+  
+  // Tambahkan footer
+  doc.setFontSize(8);
+  doc.setFont(undefined, 'normal');
+  const today = new Date().toLocaleDateString('id-ID');
+  doc.text(`Dokumen ini dicetak pada: ${today}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+  
+  // Simpan dokumen PDF
+  doc.save(`penilaian-pupr-${assessment.name}-${assessment.year}.pdf`);
 };
