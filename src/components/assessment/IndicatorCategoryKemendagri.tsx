@@ -64,7 +64,7 @@ const IndicatorCategoryKemendagri = ({
           
           return (
             <div key={indicator.id} className="border p-4 rounded-lg">
-              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
+              <div className="flex flex-col space-y-2 md:space-y-0 md:flex-row md:items-center md:gap-4 mb-2">
                 <h3 className="font-medium text-base md:w-1/3">{indicator.name}</h3>
                 <div className="text-sm text-muted-foreground md:w-2/3 break-words">
                   Formula KEMENDAGRI: {indicator.formula}

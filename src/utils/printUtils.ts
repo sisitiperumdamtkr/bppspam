@@ -61,15 +61,56 @@ export const printReport = () => {
         margin: 1cm;
       }
 
-      svg, .recharts-responsive-container {
-        max-width: 100% !important;
+      /* Perbaikan styling untuk chart responsif saat cetak */
+      .recharts-wrapper {
+        width: 100% !important;
         height: auto !important;
       }
 
-      .recharts-wrapper {
-        max-width: 100% !important;
+      .recharts-surface {
         width: 100% !important;
         height: auto !important;
+      }
+
+      .recharts-legend-wrapper {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        margin-top: 10px !important;
+      }
+
+      .recharts-responsive-container {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 300px !important;
+        aspect-ratio: 16/9;
+      }
+      
+      /* Fix untuk label dan tick text */
+      .recharts-cartesian-axis-tick-value {
+        font-size: 8pt !important;
+      }
+      
+      .recharts-legend-item-text {
+        font-size: 9pt !important;
+      }
+      
+      /* Memastikan grid dicetak dengan baik */
+      .grid-cols-1 {
+        display: block !important;
+      }
+      
+      .lg\\:grid-cols-2, 
+      .lg\\:grid-cols-4,
+      .md\\:grid-cols-2 {
+        display: block !important;
+      }
+      
+      /* Card styling saat dicetak */
+      .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
       }
     }
   `;
@@ -198,9 +239,15 @@ export const printPURPReport = (assessment: Assessment) => {
     @media print {
       body { margin: 0; padding: 10mm; font-size: 10pt; }
       @page { size: portrait; margin: 10mm; }
-      table { page-break-inside: auto; }
+      table { page-break-inside: auto; width: 100% !important; }
       tr { page-break-inside: avoid; page-break-after: auto; }
       h1 { font-size: 16pt; }
+      
+      /* Pastikan semua chart dicetak dengan baik */
+      svg, img, .recharts-wrapper, .recharts-surface {
+        max-width: 100% !important;
+        height: auto !important;
+      }
     }
   `;
   document.head.appendChild(style);
@@ -214,4 +261,3 @@ export const printPURPReport = (assessment: Assessment) => {
   // Hapus style
   document.head.removeChild(style);
 };
-

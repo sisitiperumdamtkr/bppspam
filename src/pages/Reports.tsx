@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -302,7 +303,7 @@ const Reports = () => {
         </Card>
         
         {/* Summary cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium">Total Penilaian</CardTitle>
@@ -353,21 +354,25 @@ const Reports = () => {
         </div>
         
         {/* Charts dengan efek 3D */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:break-inside-avoid">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 print:gap-10 print:break-inside-avoid">
           {/* Trend Chart with 3D effect */}
-          <Card className="col-span-1">
+          <Card className="col-span-1 print:break-inside-avoid">
             <CardHeader>
               <CardTitle>Tren Skor Tahunan</CardTitle>
               <CardDescription>
                 Perkembangan skor penilaian PERUMDAM TIRTA KERTA RAHARJA per tahun
               </CardDescription>
             </CardHeader>
-            <CardContent className="h-80">
+            <CardContent className="h-80 sm:h-96">
               {trendData.length > 0 ? (
-                <ChartContainer config={{ score: { color: '#8884d8' } }} className="w-full aspect-[4/3]">
+                <ChartContainer 
+                  config={{ score: { color: '#8884d8' } }}
+                  className="w-full"
+                  aspectRatio={4/3}
+                >
                   <LineChart
                     data={trendData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
@@ -407,14 +412,14 @@ const Reports = () => {
           </Card>
           
           {/* Aspect Comparison Over Years with 3D effect */}
-          <Card className="col-span-1">
+          <Card className="col-span-1 print:break-inside-avoid">
             <CardHeader>
               <CardTitle>Perkembangan Aspek Penilaian</CardTitle>
               <CardDescription>
                 Skor per aspek dari tahun ke tahun
               </CardDescription>
             </CardHeader>
-            <CardContent className="h-80">
+            <CardContent className="h-80 sm:h-96">
               {aspectOverYearsData.length > 0 ? (
                 <ChartContainer 
                   config={{
@@ -423,11 +428,12 @@ const Reports = () => {
                     Operasional: { color: ASPECT_COLORS.Operasional },
                     SDM: { color: ASPECT_COLORS.SDM },
                   }}
-                  className="w-full aspect-[4/3]"
+                  className="w-full"
+                  aspectRatio={4/3}
                 >
                   <BarChart
                     data={aspectOverYearsData}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
@@ -446,7 +452,7 @@ const Reports = () => {
                         return null;
                       }}
                     />
-                    <Legend />
+                    <Legend layout="horizontal" verticalAlign="bottom" />
                     {Object.keys(ASPECT_COLORS).map((aspect, index) => (
                       <Bar
                         key={aspect}
@@ -478,16 +484,17 @@ const Reports = () => {
                 Jumlah penilaian per kategori kesehatan
               </CardDescription>
             </CardHeader>
-            <CardContent className="h-80">
+            <CardContent className="h-80 sm:h-96">
               {categoryDistributionData.length > 0 ? (
                 <ChartContainer 
                   config={categoryDistributionData.reduce((acc, item, index) => ({
                     ...acc,
                     [item.name]: { color: COLORS[index % COLORS.length] }
                   }), {})}
-                  className="w-full aspect-[4/3]"
+                  className="w-full"
+                  aspectRatio={4/3}
                 >
-                  <PieChart>
+                  <PieChart margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
                     <Pie
                       data={categoryDistributionData}
                       cx="50%"
@@ -540,16 +547,23 @@ const Reports = () => {
                 Skor per aspek penilaian pada tahun terbaru ({latestAssessment?.year || 'Tidak ada data'})
               </CardDescription>
             </CardHeader>
-            <CardContent className="h-80">
+            <CardContent className="h-80 sm:h-96">
               {latestAssessment ? (
                 <ChartContainer 
                   config={radarData.reduce((acc, item) => ({
                     ...acc,
                     [item.aspect]: { color: ASPECT_COLORS[item.aspect as keyof typeof ASPECT_COLORS] || '#8884d8' }
                   }), {})}
-                  className="w-full aspect-[4/3]"
+                  className="w-full"
+                  aspectRatio={4/3}
                 >
-                  <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                  <RadarChart 
+                    cx="50%" 
+                    cy="50%" 
+                    outerRadius="80%" 
+                    data={radarData}
+                    margin={{ top: 5, right: 20, left: 20, bottom: 5 }}
+                  >
                     <PolarGrid gridType="circle" />
                     <PolarAngleAxis dataKey="aspect" />
                     <PolarRadiusAxis domain={[0, 5]} />

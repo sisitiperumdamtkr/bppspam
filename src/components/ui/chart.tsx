@@ -40,8 +40,10 @@ const ChartContainer = React.forwardRef<
     children: React.ComponentProps<
       typeof RechartsPrimitive.ResponsiveContainer
     >["children"]
+    className?: string
+    aspectRatio?: number
   }
->(({ id, className, children, config, ...props }, ref) => {
+>(({ id, className, children, config, aspectRatio = 2, ...props }, ref) => {
   const uniqueId = React.useId()
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
 
@@ -54,6 +56,13 @@ const ChartContainer = React.forwardRef<
           "flex w-full justify-center text-xs overflow-hidden [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
           className
         )}
+        style={{
+          // Pastikan kontainer chart memiliki tinggi yang memadai
+          minHeight: "300px", 
+          width: "100%",
+          aspectRatio: aspectRatio.toString(),
+          position: "relative"
+        }}
         {...props}
       >
         <ChartStyle id={chartId} config={config} />
@@ -110,7 +119,7 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: "line" | "dot" | "dashed"
       nameKey?: string
       labelKey?: string
-      is3D?: boolean // Tambahkan opsi untuk efek 3D
+      is3D?: boolean // Opsi untuk efek 3D
     }
 >(
   (
@@ -181,22 +190,21 @@ const ChartTooltipContent = React.forwardRef<
         ref={ref}
         className={cn(
           "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
-          // Tambahkan shadow effect lebih besar untuk efek 3D
           is3D ? "shadow-lg" : "",
           className
         )}
-        style={is3D ? { transform: "translateY(-2px)" } : undefined} // Efek hover 3D
+        style={is3D ? { transform: "translateY(-2px)" } : undefined}
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
           {payload.map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
-            const indicatorColor = color || item.payload.fill || item.color
+            const indicatorColor = color || item.payload?.fill || item.color
 
             return (
               <div
-                key={item.dataKey}
+                key={item.dataKey || index}
                 className={cn(
                   "flex w-full flex-wrap items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                   indicator === "dot" && "items-center"
@@ -214,13 +222,11 @@ const ChartTooltipContent = React.forwardRef<
                           className={cn(
                             "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
                             {
-                              // Menambahkan class untuk efek 3D
                               "h-2.5 w-2.5": indicator === "dot",
                               "w-1": indicator === "line",
                               "w-0 border-[1.5px] border-dashed bg-transparent":
                                 indicator === "dashed",
                               "my-0.5": nestLabel && indicator === "dashed",
-                              // Tambahkan shadow untuk efek 3D
                               "shadow-sm": is3D && indicator === "dot",
                             }
                           )}
@@ -228,8 +234,7 @@ const ChartTooltipContent = React.forwardRef<
                             {
                               "--color-bg": indicatorColor,
                               "--color-border": indicatorColor,
-                              // Menambahkan efek 3D dengan gradient jika is3D aktif
-                              background: is3D 
+                              background: is3D && indicatorColor 
                                 ? `linear-gradient(135deg, ${indicatorColor}, ${adjustColorBrightness(indicatorColor as string, -30)})`
                                 : indicatorColor,
                             } as React.CSSProperties
@@ -277,7 +282,7 @@ const ChartLegendContent = React.forwardRef<
     Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
       hideIcon?: boolean
       nameKey?: string
-      is3D?: boolean // Tambahkan opsi untuk efek 3D
+      is3D?: boolean // Opsi untuk efek 3D
     }
 >(
   (
@@ -287,7 +292,7 @@ const ChartLegendContent = React.forwardRef<
       payload, 
       verticalAlign = "bottom", 
       nameKey,
-      is3D = false, // Default ke false untuk kompatibilitas mundur
+      is3D = false,
     },
     ref
   ) => {
@@ -301,7 +306,7 @@ const ChartLegendContent = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "flex flex-wrap items-center justify-center gap-4",
+          "flex flex-wrap items-center justify-center gap-4 text-xs",
           verticalAlign === "top" ? "pb-3" : "pt-3",
           className
         )}
@@ -315,7 +320,6 @@ const ChartLegendContent = React.forwardRef<
               key={item.value}
               className={cn(
                 "flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground",
-                // Tambahkan class untuk efek 3D
                 is3D ? "hover:translate-y-[-1px] transition-transform" : ""
               )}
             >
@@ -325,11 +329,10 @@ const ChartLegendContent = React.forwardRef<
                 <div
                   className={cn(
                     "h-2 w-2 shrink-0 rounded-[2px]",
-                    // Tambahkan shadow untuk efek 3D
                     is3D ? "shadow-sm" : ""
                   )}
                   style={
-                    is3D
+                    is3D && item.color
                       ? {
                           background: `linear-gradient(135deg, ${item.color}, ${adjustColorBrightness(
                             item.color,
@@ -394,7 +397,7 @@ function getPayloadConfigFromPayload(
 // Utility function untuk menyesuaikan kecerahan warna untuk efek 3D
 function adjustColorBrightness(hexColor: string, percent: number): string {
   // Handle untuk warna yang tidak dalam format hex
-  if (!hexColor || !hexColor.startsWith('#')) {
+  if (!hexColor || typeof hexColor !== 'string' || !hexColor.startsWith('#')) {
     return hexColor;
   }
   
@@ -421,5 +424,5 @@ export {
   ChartLegend,
   ChartLegendContent,
   ChartStyle,
-  adjustColorBrightness // Ekspor fungsi bantuan
+  adjustColorBrightness
 }

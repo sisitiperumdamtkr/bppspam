@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -98,4 +99,49 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Perbaikan responsif pada chart */
+.recharts-responsive-container {
+  width: 100% !important;
+  min-height: 300px;
+  aspect-ratio: 16/9;
+}
+
+.recharts-wrapper {
+  max-width: 100% !important;
+}
+
+/* Media query untuk perangkat mobile */
+@media (max-width: 768px) {
+  .recharts-legend-wrapper {
+    position: relative !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .recharts-default-legend {
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .recharts-legend-item {
+    margin: 0 8px 8px 0 !important;
+    display: inline-flex !important;
+  }
+}
+
+/* Pastikan chart tidak overflow pada container */
+[data-chart] {
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Perbaikan untuk tooltip yang mungkin keluar batas */
+.recharts-tooltip-wrapper {
+  max-width: 90vw;
 }
